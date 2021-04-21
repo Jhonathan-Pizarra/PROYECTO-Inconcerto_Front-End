@@ -3,7 +3,6 @@ import Navigation from "../../components/Navigation";
 export default function Festivales({festivals}) {
     return(
         <div>
-            <Navigation/>
             <h1>Festivales InConcerto</h1>
             <div>
                 {festivals.data.map(festival => {
@@ -26,7 +25,10 @@ export default function Festivales({festivals}) {
 
 //Static Render Content
 export async function getStaticProps() {
-    const resp = await fetch('http://localhost:8000/api/festivals');
+
+    const resp = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/festivals`);
+    console.log('response', resp);
+
     const festivals = await resp.json();
 
     return {
