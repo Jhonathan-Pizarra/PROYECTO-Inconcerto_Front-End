@@ -1,5 +1,3 @@
-import Navigation from "../../components/Navigation";
-
 export default function Festivales({festivals}) {
     return(
         <div>

@@ -1,18 +1,26 @@
 import {useAuth} from "@/lib/auth";
-import {Festival} from "@/lib/festivals";
 import withoutAuth from "@/hocs/withoutAuth";
+import {useForm} from "react-hook-form";
+import {yupResolver} from '@hookform/resolvers/yup';
+import * as yup from "yup";
+
+const schema = yup.object().shape({
+    email: yup.string().email("Esé email no es válido").required("Ingresa el email"),
+    password: yup.string().required(),
+});
+
 
 const Login = () => {
 
-    const {login, user, logout} = useAuth();
+    const {login} = useAuth();
+    const { register, handleSubmit,  formState:{ errors }} = useForm({
+        resolver: yupResolver(schema)
+    });
 
-    const handleLogin = async (data) =>{
+    const onSubmit = async (data) =>{
         try {
-            const userData = await login({
-                email: "jhonathan@mail.com",
-                password: "123456"
-            });
-            console.log('userData', userData);
+            const userData = await login(data);
+            console.log('userData', data);
 
         }catch (error) {
             if (error.response) {
@@ -32,6 +40,7 @@ const Login = () => {
         }
     };
 
+    /* Ver festival...
     const handleViewFestival = async () =>{
         try {
             const festivalData = await Festival.getById('1');
@@ -54,29 +63,23 @@ const Login = () => {
             console.log(error.config);
         }
 
-    };
-
-    const handleLogout = async () =>{
-        try {
-            await logout();
-        }catch (error){
-            console.log("error", error);
-
-        }
-    };
+    };*/
 
     return (
         <div>
-            {
-                user === null ? 'Verificando sesión...':
-                user === false ? <button onClick={handleLogin}>Login</button>:
-                (<div>
-                    Hola {user.name}!
-                    <br/>
-                    <button onClick={handleViewFestival}>Ver Festival</button>
-                    <button onClick={handleLogout}>Logout</button>
-                </div>)
-            }
+            <form onSubmit={handleSubmit(onSubmit)} noValidate>
+                <div>
+                    <label htmlFor='email'>Email</label>
+                    <input type='text' id='email' {...register('email')} />
+                    <p>{errors.email?.message}</p>
+                </div>
+                <div>
+                    <label htmlFor='password'>Password</label>
+                    <input type='password' id='password' {...register('password')}  />
+                    <p>{errors.password?.message}</p>
+                </div>
+                <input type="submit"/>
+            </form>
         </div>
     );
 

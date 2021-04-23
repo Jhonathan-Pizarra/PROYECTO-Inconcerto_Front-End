@@ -3,6 +3,7 @@
  */
 
 const publicRoutes = {
+    HOME: "/",
     LOGIN: "/login",
     REGISTER: "/registro",
     FESTIVALS: "/festivales",
@@ -12,7 +13,6 @@ const publicRoutes = {
 };
 
 const privateRoutes = {
-    HOME: "/",
     // FESTIVAL_ID: "/festival/:id",
 };
 

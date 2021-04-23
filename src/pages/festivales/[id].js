@@ -1,4 +1,3 @@
-import {useEffect, useState} from "react";
 import useSWR from "swr";
 import {useRouter} from "next/router";
 import Loading from "@/components/Loading";

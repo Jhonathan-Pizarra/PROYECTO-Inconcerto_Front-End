@@ -1,3 +1,4 @@
+/*
 import api from "./api";
 
 async function getById(id){
@@ -8,3 +9,4 @@ async function getById(id){
 export const Festival = {
     getById
 }
+*/

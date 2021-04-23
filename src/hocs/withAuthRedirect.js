@@ -1,10 +1,10 @@
 /**
  * Created by Chalo
  */
-import { useAuth } from "@/lib/auth";
+import {useAuth} from "@/lib/auth";
 import Loading from "@/components/Loading";
 import Routes from "@/constants/routes";
-import { useRouter } from "next/router";
+import {useRouter} from "next/router";
 
 /**
  * Support client-side conditional redirecting based on the user's
