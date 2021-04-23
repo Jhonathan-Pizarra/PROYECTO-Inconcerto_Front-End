@@ -3,23 +3,36 @@ import withoutAuth from "@/hocs/withoutAuth";
 import {useForm} from "react-hook-form";
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from "yup";
+import {Button, Grid, makeStyles, TextField} from "@material-ui/core";
+import {useState} from "react";
 
 const schema = yup.object().shape({
     email: yup.string().email("Esé email no es válido").required("Ingresa el email"),
     password: yup.string().required(),
 });
 
+const useStyles = makeStyles((theme) => ({
+    textField: {
+        width: "100%",
+    },
+    buttonWrapper: {
+        textAlign: "center",
+    },
+}));
 
 const Login = () => {
-
+    const classes = useStyles();
+    const [loading, setLoading] = useState(false);
     const {login} = useAuth();
     const { register, handleSubmit,  formState:{ errors }} = useForm({
         resolver: yupResolver(schema)
     });
 
     const onSubmit = async (data) =>{
+        setLoading(true);
         try {
             const userData = await login(data);
+            setLoading(false);
             console.log('userData', data);
 
         }catch (error) {
@@ -36,6 +49,7 @@ const Login = () => {
                 // Something happened in setting up the request that triggered an Error
                 console.log("Error", error.message);
             }
+            setLoading(false);
             console.log(error.config);
         }
     };
@@ -67,19 +81,64 @@ const Login = () => {
 
     return (
         <div>
-            <form onSubmit={handleSubmit(onSubmit)} noValidate>
-                <div>
-                    <label htmlFor='email'>Email</label>
-                    <input type='text' id='email' {...register('email')} />
-                    <p>{errors.email?.message}</p>
-                </div>
-                <div>
-                    <label htmlFor='password'>Password</label>
-                    <input type='password' id='password' {...register('password')}  />
-                    <p>{errors.password?.message}</p>
-                </div>
-                <input type="submit"/>
-            </form>
+            <Grid container justify="center">
+                <Grid item xs={6}>
+                    <form noValidate autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
+                        <Grid container spacing={2} justify="center" alignItems="center">
+                            <Grid xs={12} item>
+                                <TextField
+                                    id="email"
+                                    name="email"
+                                    type="email"
+                                    label="Correo electrónico"
+                                    {...register('email')}
+                                    // inputRef={register}
+                                    autoComplete="email"
+                                    error={!!errors.email}
+                                    helperText={errors.email?.message}
+                                />
+                            </Grid>
+                            <Grid xs={12} item>
+                                <TextField
+                                    id="password"
+                                    name="password"
+                                    type="password"
+                                    label="Clave"
+                                    {...register('password')}
+                                    // inputRef={register}
+                                    autoComplete="current-password"
+                                    error={!!errors.password}
+                                    helperText={errors.password?.message}
+                                />
+                            </Grid>
+                            <Grid xs={12} item className={classes.buttonWrapper}>
+                                <Button
+                                    name="submit"
+                                    variant="contained"
+                                    type="submit"
+                                    color="secondary"
+                                    disabled={loading}
+                                >
+                                    Iniciar sesión
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    </form>
+                </Grid>
+            </Grid>
+            {/*<form onSubmit={handleSubmit(onSubmit)} noValidate>*/}
+            {/*    <div>*/}
+            {/*        <label htmlFor='email'>Email</label>*/}
+            {/*        <input type='text' id='email' {...register('email')} />*/}
+            {/*        <p>{errors.email?.message}</p>*/}
+            {/*    </div>*/}
+            {/*    <div>*/}
+            {/*        <label htmlFor='password'>Password</label>*/}
+            {/*        <input type='password' id='password' {...register('password')}  />*/}
+            {/*        <p>{errors.password?.message}</p>*/}
+            {/*    </div>*/}
+            {/*    <input type="submit"/>*/}
+            {/*</form>*/}
         </div>
     );
 

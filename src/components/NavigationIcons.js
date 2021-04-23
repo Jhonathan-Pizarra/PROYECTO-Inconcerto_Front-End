@@ -4,14 +4,12 @@
 import React from "react";
 import IconButton from "@material-ui/core/IconButton";
 import AccountCircle from "@material-ui/icons/AccountCircle";
-import MoreIcon from "@material-ui/icons/MoreVert";
-import { makeStyles } from "@material-ui/core/styles";
+import {makeStyles} from "@material-ui/core/styles";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
-import { useAuth } from "@/lib/auth";
+import {useAuth} from "@/lib/auth";
 import Link from "next/link";
 import Routes from "@/constants/routes";
-import {Button} from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
     sectionDesktop: {
@@ -71,7 +69,7 @@ const NavigationIcons = () => {
             onClose={handleMenuAccountClose}
         >
             <MenuItem onClick={handleMenuAccountClose}>Profile</MenuItem>
-            <MenuItem onClick={handleMenuAccountClose}>My account</MenuItem>
+            {/*<MenuItem onClick={handleMenuAccountClose}>My account</MenuItem>*/}
             <MenuItem onClick={handleLogout}>Cerrar sesión</MenuItem>
         </Menu>
     );
@@ -127,8 +125,8 @@ const NavigationIcons = () => {
                     </MenuItem>
                 ) : (
                     <Link href={Routes.LOGIN}>
-                        {/*<MenuItem>Iniciar Sesión</MenuItem>*/}
-                        <Button variant="contained" color="secondary">Iniciar Sesión</Button>
+                        <MenuItem>Iniciar Sesión</MenuItem>
+                        {/*<Button variant="contained" color="secondary">Iniciar Sesión</Button>*/}
                     </Link>
                 )}
             </div>
@@ -150,8 +148,8 @@ const NavigationIcons = () => {
                     </MenuItem>
                 ) : (
                     <Link href={Routes.LOGIN}>
-                        {/*<MenuItem>Iniciar sesión</MenuItem>*/}
-                        <Button variant="contained" color="secondary">Iniciar Sesión</Button>
+                        <MenuItem>Iniciar sesión</MenuItem>
+                        {/*<Button variant="contained" color="secondary">Iniciar Sesión</Button>*/}
                     </Link>
                 )}
             </div>

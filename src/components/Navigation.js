@@ -1,15 +1,14 @@
-import { useState } from "react";
+import {useState} from "react";
 import Image from "next/image";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
+import {makeStyles} from "@material-ui/core/styles";
 import Link from "next/link";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
-import {Link as MuiLink, ListItemIcon, Typography} from "@material-ui/core";
+import {Box, Divider, Drawer, Link as MuiLink, ListItem, ListItemText, useScrollTrigger} from "@material-ui/core";
 import IconButton from "@material-ui/core/IconButton";
 import MenuItem from "@material-ui/core/MenuItem";
 import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-import {Box, Divider, Drawer, ListItem, ListItemText, useScrollTrigger,} from "@material-ui/core";
 import Slide from "@material-ui/core/Slide";
 import List from "@material-ui/core/List";
 import clsx from "clsx";
@@ -123,7 +122,7 @@ function HideOnScroll(props) {
 export default function MainMenu(props) {
     const classes = useStyles();
     const [openDrawer, setOpenDrawer] = useState(false);
-    const theme = useTheme();
+    //const theme = useTheme();
 
     const handleDrawerOpen = () => {
         setOpenDrawer(true);
