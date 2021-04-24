@@ -54,91 +54,67 @@ const Login = () => {
         }
     };
 
-    /* Ver festival...
-    const handleViewFestival = async () =>{
-        try {
-            const festivalData = await Festival.getById('1');
-            console.log('festivalData', festivalData);
-
-        }catch (error) {
-            if (error.response) {
-                // The request was made and the server responded with a status code
-                // that falls out of the range of 2xx
-                console.log(error.response);
-            } else if (error.request) {
-                // The request was made but no response was received
-                // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-                // http.ClientRequest in node.js
-                console.log(error.request);
-            } else {
-                // Something happened in setting up the request that triggered an Error
-                console.log("Error", error.message);
-            }
-            console.log(error.config);
-        }
-
-    };*/
 
     return (
         <div>
-            <Grid container justify="center">
-                <Grid item xs={6}>
-                    <form noValidate autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
-                        <Grid container spacing={2} justify="center" alignItems="center">
-                            <Grid xs={12} item>
-                                <TextField
-                                    id="email"
-                                    name="email"
-                                    type="email"
-                                    label="Correo electrónico"
-                                    {...register('email')}
-                                    // inputRef={register}
-                                    autoComplete="email"
-                                    error={!!errors.email}
-                                    helperText={errors.email?.message}
-                                />
-                            </Grid>
-                            <Grid xs={12} item>
-                                <TextField
-                                    id="password"
-                                    name="password"
-                                    type="password"
-                                    label="Clave"
-                                    {...register('password')}
-                                    // inputRef={register}
-                                    autoComplete="current-password"
-                                    error={!!errors.password}
-                                    helperText={errors.password?.message}
-                                />
-                            </Grid>
-                            <Grid xs={12} item className={classes.buttonWrapper}>
-                                <Button
-                                    name="submit"
-                                    variant="contained"
-                                    type="submit"
-                                    color="secondary"
-                                    disabled={loading}
-                                >
-                                    Iniciar sesión
-                                </Button>
-                            </Grid>
-                        </Grid>
-                    </form>
-                </Grid>
-            </Grid>
-            {/*<form onSubmit={handleSubmit(onSubmit)} noValidate>*/}
-            {/*    <div>*/}
-            {/*        <label htmlFor='email'>Email</label>*/}
-            {/*        <input type='text' id='email' {...register('email')} />*/}
-            {/*        <p>{errors.email?.message}</p>*/}
-            {/*    </div>*/}
-            {/*    <div>*/}
-            {/*        <label htmlFor='password'>Password</label>*/}
-            {/*        <input type='password' id='password' {...register('password')}  />*/}
-            {/*        <p>{errors.password?.message}</p>*/}
-            {/*    </div>*/}
-            {/*    <input type="submit"/>*/}
-            {/*</form>*/}
+            {/*<Grid container justify="center">*/}
+            {/*    <Grid item xs={6}>*/}
+            {/*        <form noValidate autoComplete="off" onSubmit={handleSubmit(onSubmit)}>*/}
+            {/*            <Grid container spacing={2} justify="center" alignItems="center">*/}
+            {/*                <Grid xs={12} item>*/}
+            {/*                    <TextField*/}
+            {/*                        id="email"*/}
+            {/*                        name="email"*/}
+            {/*                        type="email"*/}
+            {/*                        label="Correo electrónico"*/}
+            {/*                        {...register('email')}*/}
+            {/*                        // inputRef={register}*/}
+            {/*                        autoComplete="email"*/}
+            {/*                        error={!!errors.email}*/}
+            {/*                        helperText={errors.email?.message}*/}
+            {/*                    />*/}
+            {/*                </Grid>*/}
+            {/*                <Grid xs={12} item>*/}
+            {/*                    <TextField*/}
+            {/*                        id="password"*/}
+            {/*                        name="password"*/}
+            {/*                        type="password"*/}
+            {/*                        label="Clave"*/}
+            {/*                        {...register('password')}*/}
+            {/*                        // inputRef={register}*/}
+            {/*                        autoComplete="current-password"*/}
+            {/*                        error={!!errors.password}*/}
+            {/*                        helperText={errors.password?.message}*/}
+            {/*                    />*/}
+            {/*                </Grid>*/}
+            {/*                <Grid xs={12} item className={classes.buttonWrapper}>*/}
+            {/*                    <Button*/}
+            {/*                        name="submit"*/}
+            {/*                        variant="contained"*/}
+            {/*                        type="submit"*/}
+            {/*                        color="secondary"*/}
+            {/*                        disabled={loading}*/}
+            {/*                    >*/}
+            {/*                        Iniciar sesión*/}
+            {/*                    </Button>*/}
+            {/*                </Grid>*/}
+            {/*            </Grid>*/}
+            {/*        </form>*/}
+            {/*    </Grid>*/}
+            {/*</Grid>*/}
+            <form onSubmit={handleSubmit(onSubmit)} noValidate>
+                <div>
+                    <label htmlFor='email'>Email</label>
+                    <input type='text' id='email' {...register('email')} />
+                    <p>{errors.email?.message}</p>
+                </div>
+                <div>
+                    <label htmlFor='password'>Password</label>
+                    <input type='password' id='password' {...register('password')}  />
+                    <p>{errors.password?.message}</p>
+                </div>
+                <input type="submit"/>
+            </form>
         </div>
     );
 
