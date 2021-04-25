@@ -5,6 +5,7 @@ import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from "yup";
 import {Button, Grid, makeStyles, TextField} from "@material-ui/core";
 import {useState} from "react";
+import Image from "next/image";
 
 const schema = yup.object().shape({
     email: yup.string().email("Esé email no es válido").required("Ingresa el email"),
@@ -57,64 +58,57 @@ const Login = () => {
 
     return (
         <div>
-            {/*<Grid container justify="center">*/}
-            {/*    <Grid item xs={6}>*/}
-            {/*        <form noValidate autoComplete="off" onSubmit={handleSubmit(onSubmit)}>*/}
-            {/*            <Grid container spacing={2} justify="center" alignItems="center">*/}
-            {/*                <Grid xs={12} item>*/}
-            {/*                    <TextField*/}
-            {/*                        id="email"*/}
-            {/*                        name="email"*/}
-            {/*                        type="email"*/}
-            {/*                        label="Correo electrónico"*/}
-            {/*                        {...register('email')}*/}
-            {/*                        // inputRef={register}*/}
-            {/*                        autoComplete="email"*/}
-            {/*                        error={!!errors.email}*/}
-            {/*                        helperText={errors.email?.message}*/}
-            {/*                    />*/}
-            {/*                </Grid>*/}
-            {/*                <Grid xs={12} item>*/}
-            {/*                    <TextField*/}
-            {/*                        id="password"*/}
-            {/*                        name="password"*/}
-            {/*                        type="password"*/}
-            {/*                        label="Clave"*/}
-            {/*                        {...register('password')}*/}
-            {/*                        // inputRef={register}*/}
-            {/*                        autoComplete="current-password"*/}
-            {/*                        error={!!errors.password}*/}
-            {/*                        helperText={errors.password?.message}*/}
-            {/*                    />*/}
-            {/*                </Grid>*/}
-            {/*                <Grid xs={12} item className={classes.buttonWrapper}>*/}
-            {/*                    <Button*/}
-            {/*                        name="submit"*/}
-            {/*                        variant="contained"*/}
-            {/*                        type="submit"*/}
-            {/*                        color="secondary"*/}
-            {/*                        disabled={loading}*/}
-            {/*                    >*/}
-            {/*                        Iniciar sesión*/}
-            {/*                    </Button>*/}
-            {/*                </Grid>*/}
-            {/*            </Grid>*/}
-            {/*        </form>*/}
-            {/*    </Grid>*/}
-            {/*</Grid>*/}
-            <form onSubmit={handleSubmit(onSubmit)} noValidate>
-                <div>
-                    <label htmlFor='email'>Email</label>
-                    <input type='text' id='email' {...register('email')} />
-                    <p>{errors.email?.message}</p>
-                </div>
-                <div>
-                    <label htmlFor='password'>Password</label>
-                    <input type='password' id='password' {...register('password')}  />
-                    <p>{errors.password?.message}</p>
-                </div>
-                <input type="submit"/>
-            </form>
+            <Grid container justify="center">
+                <Grid item xs={6}>
+                    <form noValidate autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
+                        <Grid container spacing={2} justify="center" alignItems="center">
+                            <Image
+                                src="/logo1-inconcerto.png"
+                                alt="InConcerto"
+                                width={250}
+                                height={200}
+                            />
+                            <Grid xs={12} item>
+                                <TextField
+                                    id="email"
+                                    name="email"
+                                    type="email"
+                                    label="Correo electrónico"
+                                    {...register('email')}
+                                    // inputRef={register}
+                                    autoComplete="email"
+                                    error={!!errors.email}
+                                    helperText={errors.email?.message}
+                                />
+                            </Grid>
+                            <Grid xs={12} item>
+                                <TextField
+                                    id="password"
+                                    name="password"
+                                    type="password"
+                                    label="Clave"
+                                    {...register('password')}
+                                    // inputRef={register}
+                                    autoComplete="current-password"
+                                    error={!!errors.password}
+                                    helperText={errors.password?.message}
+                                />
+                            </Grid>
+                            <Grid xs={12} item className={classes.buttonWrapper}>
+                                <Button
+                                    name="submit"
+                                    variant="contained"
+                                    type="submit"
+                                    color="secondary"
+                                    disabled={loading}
+                                >
+                                    Iniciar sesión
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    </form>
+                </Grid>
+            </Grid>
         </div>
     );
 
