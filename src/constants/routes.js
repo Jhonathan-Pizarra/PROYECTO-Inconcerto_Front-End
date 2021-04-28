@@ -13,6 +13,7 @@ const publicRoutes = {
 };
 
 const privateRoutes = {
+    // FESTIVALS: "/festivales",
     // FESTIVAL_ID: "/festival/:id",
 };
 

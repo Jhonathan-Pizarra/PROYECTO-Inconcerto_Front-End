@@ -2,19 +2,20 @@ import React from 'react';
 import {
     Box,
     Button,
-    Card, CardActions,
+    Card,
+    CardActions,
     CardContent,
     CardMedia,
-    Grid, Link,
+    Grid,
+    Link,
     makeStyles,
-    Paper,
     Typography,
     useTheme
 } from "@material-ui/core";
-import Toolbar from "@material-ui/core/Toolbar";
 import BackToTop from "@/components/BackToTop";
 import Routes from "@/constants/routes";
-import FestivalForm from "@/components/FestivalForm";
+import FestivalCreateForm from "@/components/festivals/FestivalCreateForm";
+import withAuth from "@/hocs/withAuth";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -60,6 +61,9 @@ const useStyles = makeStyles((theme) => ({
         "-webkit-line-clamp": 4,
         "-webkit-box-orient": "vertical",
     },
+    component: {
+        textAlign: 'center',
+    }
 }));
 
 
@@ -67,14 +71,15 @@ const Festivales = ({festivals}) => {
     const classes = useStyles();
     const theme = useTheme();
 
+
     return(
         <div>
-            <FestivalForm />
+            <span className={classes.component}> <FestivalCreateForm/> </span>
             <BackToTop/>
             <Grid container className={classes.root} spacing={3} direction='row' justify='flex-start'>
                 {festivals.data.map(festival => {
                     return(
-                        <Grid container item xs={12} sm={6} md={4} lg={3} xl={3}>
+                        <Grid container item xs={12} sm={6} md={4} lg={3} xl={3} key={festival.id}>
                             <Card className={classes.root}>
                                 <Box m={2} className={classes.cardDimension}>
                                     <div>
@@ -111,7 +116,6 @@ const Festivales = ({festivals}) => {
                         </Grid>
                     )
                 })}
-
             </Grid>
         </div>
 
@@ -119,7 +123,7 @@ const Festivales = ({festivals}) => {
 };
 
 
-export default Festivales;
+export default withAuth(Festivales);
 
 //Static Render Content
 export async function getStaticProps() {

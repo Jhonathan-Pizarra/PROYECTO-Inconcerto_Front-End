@@ -3,23 +3,12 @@ import {useRouter} from "next/router";
 import Loading from "@/components/Loading";
 import {fetcher} from "../../utils";
 import withAuth from "@/hocs/withAuth";
-import Image from "next/image";
-import {
-    Box,
-    Button,
-    ButtonBase,
-    Card,
-    CardActions,
-    CardMedia,
-    Grid,
-    Link,
-    makeStyles,
-    Paper,
-    Typography
-} from "@material-ui/core";
+import {Button, CardActions, CardMedia, Grid, Link, makeStyles, Paper, Typography} from "@material-ui/core";
 import React from "react";
 import Routes from "@/constants/routes";
 import {Festival} from "@/lib/festivals";
+import DeleteIcon from '@material-ui/icons/Delete';
+import FestivalUpdateForm from "@/components/festivals/FestivalUpdateForm";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -38,34 +27,6 @@ const FestivalID = () =>{
     const router = useRouter();
     const {id} = router.query;
     const {data, error, mutate} = useSWR(`/festivals/${id}`, fetcher);
-
-    /*UPDATE*/
-    const handleUpdate = async () => {
-        try {
-            await Festival.update(id, {
-                ...data,
-                name: "Name-Edit",
-                description: "Desc-Edit",
-            });
-            mutate();
-        } catch (error) {
-            if (error.response) {
-                // The request was made and the server responded with a status code
-                // that falls out of the range of 2xx
-                alert(error.response.message);
-                console.log(error.response);
-            } else if (error.request) {
-                // The request was made but no response was received
-                // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-                // http.ClientRequest in node.js
-                console.log(error.request);
-            } else {
-                // Something happened in setting up the request that triggered an Error
-                console.log("Error", error.message);
-            }
-            console.log(error.config);
-        }
-    };
 
     /*DELETE*/
     const handleDelete = async () => {
@@ -139,21 +100,36 @@ const FestivalID = () =>{
                                 <Grid item>
                                     <CardActions>
                                         <Link>
-                                            <Button
-                                                size="small"
-                                                color="primary"
-                                                onClick={handleUpdate}
-                                            >
-                                                EDITAR
-                                            </Button>
+                                            {/*<Button*/}
+                                            {/*    // size="small"*/}
+                                            {/*    // color="primary"*/}
+                                            {/*    variant="contained"*/}
+                                            {/*    color="secondary"*/}
+                                            {/*    // onClick={handleUpdate}*/}
+                                            {/*    // className={classes.button}*/}
+                                            {/*    startIcon={<EditIcon />}*/}
+                                            {/*>*/}
+                                            {/*    EDITAR*/}
+                                            {/*</Button>*/}
+                                            <FestivalUpdateForm/>
                                         </Link>
                                         <Link>
+                                            {/*<Button*/}
+                                            {/*    size="small"*/}
+                                            {/*    color="primary"*/}
+                                            {/*    onClick={handleDelete}*/}
+                                            {/*>*/}
+                                            {/*    ELIMINAR*/}
+                                            {/*</Button>*/}
+
                                             <Button
-                                                size="small"
-                                                color="primary"
+                                                variant="contained"
+                                                color="secondary"
                                                 onClick={handleDelete}
+                                                // className={classes.button}
+                                                startIcon={<DeleteIcon />}
                                             >
-                                                ELIMINAR
+                                                Eliminar
                                             </Button>
                                         </Link>
                                     </CardActions>
