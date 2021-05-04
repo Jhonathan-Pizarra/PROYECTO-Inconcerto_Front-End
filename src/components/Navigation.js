@@ -28,6 +28,10 @@ const mainMenuItems = [
         to: Routes.FESTIVALS,
     },
     {
+        text: "Conciertos",
+        to: Routes.CONCERTS,
+    },
+    {
         text: "Sobre nosotros",
         to: Routes.ABOUT,
     },

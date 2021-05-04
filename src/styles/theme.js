@@ -16,13 +16,13 @@ const theme = createMuiTheme({
         type: "light",
         primary: {
             //main: "#0088ff",
-            //main: "#0d47a1",
-            main: "#FF7D23"
+            main: "#0d47a1",
+            //main: "#FF7D23"
         },
         secondary: {
             //main: "#19857b",
-            //main: "#f44336",
-            main: "#FAC800"
+            main: "#f44336",
+            //main: "#FAC800"
         },
         error: {
             main: red.A400,
