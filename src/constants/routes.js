@@ -15,6 +15,8 @@ const publicRoutes = {
 const privateRoutes = {
     CONCERTS: "/conciertos",
     CONCERT_ID: "/concert/:id",
+    ESSAYS: "/ensayos",
+    ESSAYS_ID: "/ensayos/:id",
     // FESTIVALS: "/festivales",
     // FESTIVAL_ID: "/festival/:id",
 };

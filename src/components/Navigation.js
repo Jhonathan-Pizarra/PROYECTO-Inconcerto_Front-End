@@ -32,6 +32,10 @@ const mainMenuItems = [
         to: Routes.CONCERTS,
     },
     {
+        text: "Ensayos",
+        to: Routes.ESSAYS,
+    },
+    {
         text: "Sobre nosotros",
         to: Routes.ABOUT,
     },
