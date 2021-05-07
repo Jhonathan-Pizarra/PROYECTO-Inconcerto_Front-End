@@ -36,6 +36,10 @@ const mainMenuItems = [
         to: Routes.ESSAYS,
     },
     {
+        text: "Artistas",
+        to: Routes.ARTISTS,
+    },
+    {
         text: "Sobre nosotros",
         to: Routes.ABOUT,
     },
