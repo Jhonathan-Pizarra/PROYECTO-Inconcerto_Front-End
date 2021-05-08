@@ -19,6 +19,9 @@ const privateRoutes = {
     ESSAYS_ID: "/ensayos/:id",
     ARTISTS: "/artistas",
     ARTISTS_ID: "/artistas/:id",
+    RESOURCES: "/recursos",
+    //RESOURCES_ID: "recursos/:id",
+
     // FESTIVALS: "/festivales",
     // FESTIVAL_ID: "/festival/:id",
 };

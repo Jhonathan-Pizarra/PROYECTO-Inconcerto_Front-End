@@ -40,6 +40,10 @@ const mainMenuItems = [
         to: Routes.ARTISTS,
     },
     {
+        text: "Necesidades",
+        to: Routes.RESOURCES,
+    },
+    {
         text: "Sobre nosotros",
         to: Routes.ABOUT,
     },
