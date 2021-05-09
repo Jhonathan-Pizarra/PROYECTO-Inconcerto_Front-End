@@ -44,6 +44,10 @@ const mainMenuItems = [
         to: Routes.RESOURCES,
     },
     {
+        text: "Lugares",
+        to: Routes.PLACES,
+    },
+    {
         text: "Sobre nosotros",
         to: Routes.ABOUT,
     },

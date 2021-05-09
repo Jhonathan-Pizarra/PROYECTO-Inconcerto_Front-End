@@ -21,6 +21,9 @@ const privateRoutes = {
     ARTISTS_ID: "/artistas/:id",
     RESOURCES: "/recursos",
     //RESOURCES_ID: "recursos/:id",
+    PLACES: "/lugares-concierto",
+    //PLACES_ID: "/places/:id",
+
 
     // FESTIVALS: "/festivales",
     // FESTIVAL_ID: "/festival/:id",
