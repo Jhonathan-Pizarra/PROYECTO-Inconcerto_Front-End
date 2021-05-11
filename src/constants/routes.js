@@ -27,7 +27,8 @@ const privateRoutes = {
     //CALENDARS_ID: "/calendarios/:id",
     TRANSPORTS: "/transportes",
     //TRANSPORTS_ID: "/transportes/:id",
-
+    LODGINGS: "/hospedajes",
+    //LODGINGS_ID: "/hospedajes/:id",
 
     // FESTIVALS: "/festivales",
     // FESTIVAL_ID: "/festival/:id",

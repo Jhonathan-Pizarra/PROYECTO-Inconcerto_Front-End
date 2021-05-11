@@ -56,6 +56,10 @@ const mainMenuItems = [
         to: Routes.TRANSPORTS,
     },
     {
+        text: "Hospedajes",
+        to: Routes.LODGINGS,
+    },
+    {
         text: "Sobre nosotros",
         to: Routes.ABOUT,
     },
