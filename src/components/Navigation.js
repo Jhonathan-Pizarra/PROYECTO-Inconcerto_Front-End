@@ -48,6 +48,10 @@ const mainMenuItems = [
         to: Routes.PLACES,
     },
     {
+        text: "Calendarios",
+        to: Routes.CALENDARS,
+    },
+    {
         text: "Sobre nosotros",
         to: Routes.ABOUT,
     },

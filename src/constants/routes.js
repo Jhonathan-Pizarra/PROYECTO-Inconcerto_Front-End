@@ -23,6 +23,8 @@ const privateRoutes = {
     //RESOURCES_ID: "recursos/:id",
     PLACES: "/lugares-concierto",
     //PLACES_ID: "/places/:id",
+    CALENDARS: "/calendarios",
+    //CALENDARS_ID: "/calendarios/:id",
 
 
     // FESTIVALS: "/festivales",

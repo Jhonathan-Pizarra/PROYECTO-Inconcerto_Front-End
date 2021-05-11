@@ -54,7 +54,7 @@ const useStyles = makeStyles({
     },
 });
 
-const EnsayosReadForm = () => {
+const ReadConcertPlace = () => {
 
     const {data: places, error} = useSWR(`/places/${''}`, fetcher);
     const classes = useStyles();
@@ -154,4 +154,4 @@ const EnsayosReadForm = () => {
     )
 }
 
-export default EnsayosReadForm; //Colocar WithAuth Al terminar
+export default ReadConcertPlace; //Colocar WithAuth Al terminar
