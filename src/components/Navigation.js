@@ -60,6 +60,10 @@ const mainMenuItems = [
         to: Routes.LODGINGS,
     },
     {
+        text: "Alimentación",
+        to: Routes.FEEDINGPLACES,
+    },
+    {
         text: "Sobre nosotros",
         to: Routes.ABOUT,
     },
