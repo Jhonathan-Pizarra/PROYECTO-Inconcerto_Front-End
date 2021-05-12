@@ -33,6 +33,8 @@ const privateRoutes = {
     //FEEDINGPLACES_ID: "/lugares-alimentacion/:id",
     FEEDINGS: "/alimentaciones",
     //FEEDINGS_ID: "/alimentacion/:id",
+    ACTIVITIES: "/actividades",
+    //ACTIVITIES_ID: "/actividades/:id",
 
 
     // FESTIVALS: "/festivales",

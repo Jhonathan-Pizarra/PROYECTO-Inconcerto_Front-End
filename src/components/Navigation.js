@@ -68,6 +68,10 @@ const mainMenuItems = [
         to: Routes.FEEDINGS,
     },
     {
+        text: "Actividades",
+        to: Routes.ACTIVITIES,
+    },
+    {
         text: "Sobre nosotros",
         to: Routes.ABOUT,
     },
