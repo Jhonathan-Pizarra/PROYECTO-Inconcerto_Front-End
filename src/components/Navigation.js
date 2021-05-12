@@ -60,8 +60,12 @@ const mainMenuItems = [
         to: Routes.LODGINGS,
     },
     {
-        text: "Alimentación",
+        text: "Huecas",
         to: Routes.FEEDINGPLACES,
+    },
+    {
+        text: "Alimentación",
+        to: Routes.FEEDINGS,
     },
     {
         text: "Sobre nosotros",

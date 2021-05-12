@@ -31,6 +31,8 @@ const privateRoutes = {
     //LODGINGS_ID: "/hospedajes/:id",
     FEEDINGPLACES: "/lugares-alimentacion",
     //FEEDINGPLACES_ID: "/lugares-alimentacion/:id",
+    FEEDINGS: "/alimentaciones",
+    //FEEDINGS_ID: "/alimentacion/:id",
 
 
     // FESTIVALS: "/festivales",
