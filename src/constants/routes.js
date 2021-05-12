@@ -32,6 +32,7 @@ const privateRoutes = {
     FEEDINGPLACES: "/lugares-alimentacion",
     //FEEDINGPLACES_ID: "/lugares-alimentacion/:id",
 
+
     // FESTIVALS: "/festivales",
     // FESTIVAL_ID: "/festival/:id",
 };
