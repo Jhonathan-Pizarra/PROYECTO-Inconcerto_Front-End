@@ -13,12 +13,13 @@ const publicRoutes = {
 };
 
 const privateRoutes = {
+    //FESTIVALS_ID: "/festivales/:id",
     CONCERTS: "/conciertos",
-    CONCERT_ID: "/concert/:id",
+    //CONCERT_ID: "/concert/:id",
     ESSAYS: "/ensayos",
-    ESSAYS_ID: "/ensayos/:id",
+    //ESSAYS_ID: "/ensayos/:id",
     ARTISTS: "/artistas",
-    ARTISTS_ID: "/artistas/:id",
+    //ARTISTS_ID: "/artistas/:id",
     RESOURCES: "/recursos",
     //RESOURCES_ID: "recursos/:id",
     PLACES: "/lugares-concierto",
@@ -36,9 +37,6 @@ const privateRoutes = {
     ACTIVITIES: "/actividades",
     //ACTIVITIES_ID: "/actividades/:id",
 
-
-    // FESTIVALS: "/festivales",
-    // FESTIVAL_ID: "/festival/:id",
 };
 
 const Routes = {

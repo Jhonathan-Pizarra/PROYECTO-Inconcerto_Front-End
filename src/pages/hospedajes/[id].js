@@ -6,6 +6,7 @@ import withAuth from "@/hocs/withAuth";
 
 
 const HospedajesID= () =>{
+
     const router = useRouter();
     const {id} = router.query;
     const {data: lodging, error, mutate} = useSWR(`/lodgings/${id}`, fetcher);

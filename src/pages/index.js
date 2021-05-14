@@ -7,7 +7,7 @@ export default function Home() {
         <p className={styles.title}>Bienvenido...!!</p>
           <BackToTop/>
 
-              {[...new Array(6)]
+              {[...new Array(10)]
                   .map(() =>
                       `Cras mattis consectetur purus sit amet fermentum.
                        Cras justo odio, dapibus ac facilisis in, egestas eget quam.
@@ -15,9 +15,6 @@ export default function Home() {
                        Praesent commodo cursus magna, vel scelerisque nisl consectetur et.`,
                   )
                   .join('\n')}
-
-
-
       </div>
 
   )

@@ -2,7 +2,6 @@ import React from "react";
 import {useForm} from "react-hook-form";
 import {Festival} from "@/lib/festivals";
 import useSWR from "swr";
-import {useRouter} from "next/router";
 import {
     Button,
     Dialog,
@@ -10,66 +9,68 @@ import {
     DialogContent,
     DialogContentText,
     DialogTitle,
+    Fab,
     makeStyles,
-    TextField
+    TextField,
+    Tooltip
 } from "@material-ui/core";
-import EditIcon from "@material-ui/icons/Edit";
 import {fetcher} from "../../utils";
+import Loading from "@/components/Loading";
+import AddIcon from "@material-ui/icons/Add";
 
 const useStyles = makeStyles((theme) => ({
-    title: {
-        overflow: "hidden",
-        display: "-webkit-box",
-        "-webkit-line-clamp": 2,
-        "-webkit-box-orient": "vertical",
-    },
-    body: {
-        overflow: "hidden",
-        display: "-webkit-box",
-        "-webkit-line-clamp": 4,
-        "-webkit-box-orient": "vertical",
+    fixed: {
+        /*display: 'inline-flex',*/
+        //position: '-moz-initial',//a la derecha
+        position: 'fixed', //a la izquierda...
+        bottom: theme.spacing(2),
+        right: theme.spacing(2),
     },
 }));
 
+const CreateFestival = () => {
 
-const FestivalUpdateForm = () => {
     const classes = useStyles();
-    const router = useRouter();
-    const {id} = router.query;
     const { register, handleSubmit } = useForm();
-    const {error, mutate} = useSWR(`/festivals/${id}`, fetcher);
     const [open, setOpen] = React.useState(false);
+    const {data: festival, error, mutate} = useSWR(`/festivals`, fetcher);
     // const fileInputRef = useRef();
 
     const onSubmit = async (data) => {
         console.log('data', data);
-        console.log("data", data.image);
+        console.log("imgen ", data.image[0]);
+
+        const newFestival = {
+            name: data.name,
+            description: data.description,
+            image: data.image[0],
+        };
+
+        const formData = new FormData();
+        formData.append("name", newFestival.name);
+        formData.append("description", newFestival.description);
+        formData.append("image", newFestival.image);
 
         try {
-            await Festival.update(id, {
-                ...data,
-                name: data.name,
-                description: data.description,
-                image: data.image,
-            });
-            mutate();
-            /*mutate(`/festivals/${data.id}`);*/
+            await Festival.create(formData);
+            mutate("/festivals");
+            // console.log("file", fileInputRef.current.files[0]);
         } catch (error) {
             if (error.response) {
                 // The request was made and the server responded with a status code
                 // that falls out of the range of 2xx
-                alert(error.response.message);
-                console.log(error.response);
+                // alert(error.response.message);
+                console.error(error.response);
             } else if (error.request) {
                 // The request was made but no response was received
                 // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
                 // http.ClientRequest in node.js
-                console.log(error.request);
+                console.error(error.request);
             } else {
                 // Something happened in setting up the request that triggered an Error
-                console.log("Error", error.message);
+                console.error("Error", error.message);
             }
-            console.log(error.config);
+            console.error(error.config);
         }
     };
 
@@ -81,38 +82,39 @@ const FestivalUpdateForm = () => {
         setOpen(false);
     };
 
+    if(error) return <div>"No se pudo crear el festival..."</div>;
+    if(!festival) return <Loading/>;
+
     return (
         <div>
-            <Button
-                variant="contained"
-                color="secondary"
-                startIcon={<EditIcon />}
-                onClick={handleClickOpen}
-            >
-                Editar
-            </Button>
+            <Tooltip title="Nuevo" aria-label="add" className={classes.fixed}>
+                <Fab  color="secondary" onClick={handleClickOpen} > {/*className={classes.fixed}*/}
+                    <AddIcon />
+                </Fab>
+            </Tooltip>
             <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
                 <form onSubmit={handleSubmit(onSubmit)}>
 
-                    <DialogTitle id="form-dialog-title">Editar Festival</DialogTitle>
+                    <DialogTitle id="form-dialog-title">InConcerto</DialogTitle>
                     <DialogContent>
                         <DialogContentText>
                             Por favor llena los siguientes campos:
                         </DialogContentText>
                         <TextField
                             //autoFocus
+                            // className={classes.title}
                             margin="dense"
                             id="name"
                             label="Nombre"
                             type="text"
-                            // value={}
                             {...register('name')}
                             fullWidth
                         />
                     </DialogContent>
                     <DialogContent>
                         <TextField
-                            // autoFocus
+                            //autoFocus
+                            // className={classes.body}
                             margin="dense"
                             id="description"
                             label="Descripción"
@@ -123,7 +125,6 @@ const FestivalUpdateForm = () => {
                             {...register('description')}
                             fullWidth
                         />
-
                     </DialogContent>
                     <DialogContentText>
                         <DialogContent>
@@ -131,7 +132,6 @@ const FestivalUpdateForm = () => {
                             <input
                                 name="image"
                                 type="file"
-                                // ref={register}
                                 {...register('image')}
                             />
                         </DialogContent>
@@ -141,40 +141,14 @@ const FestivalUpdateForm = () => {
                             Cancelar
                         </Button>
                         <Button onClick={handleClose} color="primary" type="submit">
-                            Listo
+                            Crear
                         </Button>
                     </DialogActions>
 
                 </form>
             </Dialog>
-
-            {/*<form onSubmit={handleSubmit(onSubmit)}>*/}
-            {/*    <div>*/}
-            {/*        <label htmlFor='name'>Nombre</label>*/}
-            {/*        <input type='text' id='name' {...register('name')} />*/}
-            {/*        /!*<p>{errors.name?.message}</p>*!/*/}
-            {/*    </div>*/}
-            {/*    <div>*/}
-            {/*        <label htmlFor='description'>Descripcion</label>*/}
-            {/*        <textarea  type='text' id='description' {...register('description')}  rows={5} cols={30} />*/}
-            {/*        /!*<p>{errors.description?.message}</p>*!/*/}
-            {/*    </div>*/}
-
-            {/*    <label>*/}
-            {/*        Cargar imagen:*/}
-            {/*        <input*/}
-            {/*            name="image"*/}
-            {/*            type="file"*/}
-            {/*            // ref={register}*/}
-            {/*            {...register('image')}*/}
-            {/*        />*/}
-            {/*    </label>*/}
-            {/*    <br />*/}
-            {/*    <button type="submit">Submit</button>*/}
-            {/*</form>*/}
-
         </div>
     );
 };
 
-export default FestivalUpdateForm;
+export default CreateFestival;

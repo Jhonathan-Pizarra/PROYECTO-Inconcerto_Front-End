@@ -1,15 +1,13 @@
-import withAuth from "@/hocs/withAuth";
 import {fetcher} from "../../utils";
 import useSWR from "swr";
 import Loading from "@/components/Loading";
-import {Accordion, AccordionDetails, AccordionSummary, Grid, Paper} from "@material-ui/core";
+import {Accordion, AccordionDetails, AccordionSummary} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import {useState} from "react";
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import UpdateCalendar from "@/components/calendars/UpdateCalendar";
 import DeleteCalendar from "@/components/calendars/DeleteCalendar";
-import {textAlign} from "@material-ui/system";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -32,10 +30,10 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-const ReadCalendar = () => {
+const ReadCalendars = () => {
 
-    const {data: calendars, error} = useSWR(`/calendars/${''}`, fetcher);
     const classes = useStyles();
+    const {data: calendars, error} = useSWR(`/calendars/${''}`, fetcher);
     const [expanded, setExpanded] = useState(false);
 
     const handleChange = (panel) => (event, isExpanded) => {
@@ -47,7 +45,6 @@ const ReadCalendar = () => {
 
     return (
         <div>
-
             {calendars.data.map(calendar => {
                 return(
                     <Accordion expanded={expanded === `${calendar.id}`}  key={calendar.id} onChange={handleChange(`${calendar.id}`)}>
@@ -81,4 +78,4 @@ const ReadCalendar = () => {
     )
 }
 
-export default ReadCalendar; //Colocar WithAuth Al terminar
+export default ReadCalendars;

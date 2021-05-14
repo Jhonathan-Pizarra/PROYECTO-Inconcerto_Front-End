@@ -1,15 +1,15 @@
-import withAuth from "@/hocs/withAuth";
 import {fetcher} from "../../utils";
 import useSWR from "swr";
 import Loading from "@/components/Loading";
-import {makeStyles, Tabs} from "@material-ui/core";
+import {Grid, makeStyles, Tabs} from "@material-ui/core";
 import React from 'react';
 import PropTypes from 'prop-types';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
-import UpdateResourcesForm from "@/components/resources/UpdateResourcesForm";
-import DeleteResourceForm from "@/components/resources/DeleteResourcesForm";
+import UpdateResource from "@/components/resources/UpdateResource";
+import DeleteResource from "@/components/resources/DeleteResource";
+import CreateResource from "@/components/resources/CreateResource";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -57,10 +57,10 @@ function a11yProps(index) {
     };
 }
 
-const ResourcesReadForm = () => {
+const ReadResources = () => {
 
-    const {data: resources, error} = useSWR(`/resources/${''}`, fetcher);
     const classes = useStyles();
+    const {data: resources, error} = useSWR(`/resources/${''}`, fetcher);
     const [value, setValue] = React.useState(0);
 
     const handleChange = (event, newValue) => {
@@ -72,6 +72,7 @@ const ResourcesReadForm = () => {
 
     return (
         <div>
+            <CreateResource/>
             <h1>Recursos/Necesidades InConcerto</h1>
             <div className={classes.root}>
                 <Tabs
@@ -97,9 +98,14 @@ const ResourcesReadForm = () => {
                                 <br/>
                                 <p>Cantidad: {resource.quantity === 0 ? "No aplica": resource.quantity}</p>
                                 <br/>
-                                <br/>
-                                <UpdateResourcesForm id={resource.id} />
-                                <DeleteResourceForm id={resource.id} />
+                                <Grid container spacing={2}>
+                                    <Grid item xs={2}>
+                                        <UpdateResource id={resource.id} />
+                                    </Grid>
+                                    <Grid item xs={2}>
+                                        <DeleteResource id={resource.id} />
+                                    </Grid>
+                                </Grid>
                             </TabPanel>
                         </div>
 
@@ -110,4 +116,4 @@ const ResourcesReadForm = () => {
     )
 }
 
-export default ResourcesReadForm;
+export default ReadResources;

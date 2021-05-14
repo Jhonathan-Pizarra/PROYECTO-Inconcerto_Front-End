@@ -1,42 +1,30 @@
 import React, {useState} from "react";
 import {useForm} from "react-hook-form";
-import {Artist} from "@/lib/artists";
-import useSWR, {mutate} from "swr";
+import useSWR from "swr";
 import {
-    Button, CardActions, Checkbox,
+    Button,
+    Checkbox,
     Dialog,
     DialogActions,
     DialogContent,
     DialogContentText,
-    DialogTitle, Fab, FormControlLabel, Grid, InputLabel, Link,
-    makeStyles, Select,
-    TextField, Tooltip
+    DialogTitle,
+    FormControlLabel,
+    TextField
 } from "@material-ui/core";
 import {fetcher} from "../../utils";
-import AddIcon from "@material-ui/icons/Add";
 import Loading from "@/components/Loading";
-import {useRouter} from "next/router";
 import EditIcon from "@material-ui/icons/Edit";
-import IconButton from "@material-ui/core/IconButton";
-import {Concert} from "@/lib/concerts";
 import {PlaceConcert} from "@/lib/concert_places";
-import Routes from "@/constants/routes";
 
-const useStyles = makeStyles((theme) => ({
-    edit:{
-        color: "#FAC800",
-    },
-}));
-
-//Este {id} lo recibe desde el componente donde lo llamemos, en este caso sería: <UpdateArtistForm id={artist.id}/>
+//Este {id} lo recibe desde el componente donde lo llamemos, en este caso sería: <UpdateConcertPlace id={place.id}/>
 
 const UpdateConcertPlace = ({id}) => {
-    const classes = useStyles();
-    const { register, handleSubmit } = useForm();
-    const [open, setOpen] = useState(false);
-    const {data: place, mutate, error} = useSWR(`/places/${id}`, fetcher);
-    const [checkedPermission, setCheckedPermission] = useState(true);
 
+    const {data: place, mutate, error} = useSWR(`/places/${id}`, fetcher);
+    const { register, handleSubmit } = useForm();
+    const [checkedPermission, setCheckedPermission] = useState(true);
+    const [open, setOpen] = useState(false);
 
     const onSubmit = async (data) => {
         console.log('data', data);
@@ -76,7 +64,7 @@ const UpdateConcertPlace = ({id}) => {
     };
 
 
-    if(error) return <div>"Recarga la página para continuar..."</div>;
+    if(error) return <div>"No se puede editar el lugar..."</div>;
     if(!place) return <Loading/>;
 
     return (

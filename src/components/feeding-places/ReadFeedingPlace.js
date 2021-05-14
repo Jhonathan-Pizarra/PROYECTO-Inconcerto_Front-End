@@ -1,15 +1,13 @@
-import withAuth from "@/hocs/withAuth";
 import {fetcher} from "../../utils";
 import useSWR from "swr";
 import Loading from "@/components/Loading";
 import {makeStyles} from "@material-ui/core/styles";
 import {Box, Button, Card, CardActions, CardContent, Grid, Link, Typography} from "@material-ui/core";
 import Routes from "@/constants/routes";
-import UpdateConcertPlace from "@/components/concert-places/UpdateConcertPlace";
-import DeleteConcertPlace from "@/components/concert-places/DeleteConcertPlace";
 import React from "react";
 import UpdateFeedingPlace from "@/components/feeding-places/UpdateFeedingPlace";
 import DeleteFeedingPlace from "@/components/feeding-places/DeleteFeedingPlace";
+import CreateFeedingPlace from "@/components/feeding-places/CreateFeedingPlace";
 
 const useStyles = makeStyles({
     root: {
@@ -55,18 +53,16 @@ const useStyles = makeStyles({
 
 const ReadFeedingPlace = () => {
 
-    const {data: fplaces, error} = useSWR(`/feeding_places/${''}`, fetcher);
     const classes = useStyles();
+    const {data: fplaces, error} = useSWR(`/feeding_places/${''}`, fetcher);
 
     if(error) return <p>No se pudieron cargar los lugares...</p>;
     if (!fplaces) return <Loading/>;
 
     return (
-        // Ver artists index si quieres hacer una tabla
-        // Ver festivals index si quieres hacer cards
-        // Ver essays index si quieres hacer lists
-        // Ver resources index si quieres hacer en tabs
+
         <div>
+            <CreateFeedingPlace/>
             <Grid container className={classes.root} spacing={3} direction='row' justify='flex-start'>
                 {fplaces.data.map(fplace => {
                     return(
@@ -111,19 +107,6 @@ const ReadFeedingPlace = () => {
                                                     </Link>
                                                 </Grid>
                                             </Typography>
-
-                                            {/*<Grid*/}
-                                            {/*    container*/}
-                                            {/*    direction="row"*/}
-                                            {/*    justify="flex-end"*/}
-                                            {/*    alignItems="center"*/}
-                                            {/*>*/}
-                                            {/*    <Link href={`${Routes.PLACES}/${place.id}`} style={{textAlign: "center"}}>*/}
-                                            {/*        <Button size="small" color="primary">*/}
-                                            {/*            Ver más*/}
-                                            {/*        </Button>*/}
-                                            {/*    </Link>*/}
-                                            {/*</Grid>*/}
                                             <br/>
                                         </CardContent>
                                     </div>
@@ -134,16 +117,8 @@ const ReadFeedingPlace = () => {
                                     <CardActions >
 
                                         <UpdateFeedingPlace id={fplace.id}/>
-                                        {/*<UpdateConcertPlace id={place.id}/>*/}
-
                                         <DeleteFeedingPlace  id={fplace.id}/>
-                                        {/*<DeleteConcertPlace id={place.id}/>*/}
 
-                                        {/*<Link href={`${Routes.PLACES}/${place.id}`}>*/}
-                                        {/*    <Button size="small" color="primary">*/}
-                                        {/*        Eliminar*/}
-                                        {/*    </Button>*/}
-                                        {/*</Link>*/}
                                     </CardActions>
                                 </Grid>
                             </div>
@@ -152,19 +127,8 @@ const ReadFeedingPlace = () => {
                 })}
             </Grid>
 
-            {/*{essays.data.map(essay => {*/}
-            {/*    return(*/}
-            {/*        <div key={essay.id}>*/}
-            {/*            <a>*/}
-            {/*                <p>Name: {essay.name}</p>*/}
-            {/*                <p>Fecha: {essay.dateEssay}</p>*/}
-            {/*                <br/>*/}
-            {/*            </a>*/}
-            {/*        </div>*/}
-            {/*    )*/}
-            {/*})}*/}
         </div>
     )
 }
 
-export default ReadFeedingPlace;//Colocar WithAuth Al terminar
+export default ReadFeedingPlace;

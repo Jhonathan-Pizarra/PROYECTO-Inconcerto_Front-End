@@ -2,14 +2,11 @@ import useSWR from "swr";
 import {useRouter} from "next/router";
 import Loading from "@/components/Loading";
 import {fetcher} from "../../utils";
-import withAuth from "@/hocs/withAuth";
-import {Artist} from "@/lib/artists";
 import Routes from "@/constants/routes";
 import DeleteIcon from "@material-ui/icons/Delete";
-import {Button, makeStyles} from "@material-ui/core";
+import {makeStyles} from "@material-ui/core";
 import React from "react";
 import IconButton from "@material-ui/core/IconButton";
-import EditIcon from "@material-ui/icons/Edit";
 import {Lodging} from "@/lib/lodgings";
 
 const useStyles = makeStyles((theme) => ({
@@ -19,8 +16,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const DeleteLodging = ({id}) => {
-    const router = useRouter();
+
     const classes = useStyles();
+    const router = useRouter();
     const {data: lodging, error, mutate} = useSWR(`/lodgings`, fetcher);
 
     const handleDelete = async () => {

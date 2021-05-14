@@ -1,4 +1,3 @@
-import withAuth from "@/hocs/withAuth";
 import {fetcher} from "../../utils";
 import useSWR from "swr";
 import Loading from "@/components/Loading";
@@ -18,10 +17,9 @@ import Link from "next/link";
 import Routes from "@/constants/routes";
 import IconButton from "@material-ui/core/IconButton";
 import FindInPageIcon from "@material-ui/icons/FindInPage";
-import UpdateArtistForm from "@/components/artists/UpdateArtistForm";
-import DeleteArtistForm from "@/components/artists/DeleteArtistForm";
 import UpdateLodging from "@/components/lodgings/UpdateLodging";
 import DeleteLodging from "@/components/lodgings/DeleteLodging";
+import CreateLodging from "@/components/lodgings/CreateLodging";
 
 const useStyles = makeStyles((theme) => ({
     detail:{
@@ -49,10 +47,10 @@ const useStyles = makeStyles((theme) => ({
 
 const ReadLodging = () => {
 
+    const classes = useStyles();
     const {data: lodgings, error} = useSWR(`/lodgings/${''}`, fetcher);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
-    const classes = useStyles();
 
     if(error) return <p>No se pudieron cargar los hospedajes...</p>;
     if (!lodgings) return <Loading/>;
@@ -67,11 +65,8 @@ const ReadLodging = () => {
     };
 
     return (
-        // Ver artists index si quieres hacer una tabla
-        // Ver festivals index si quieres hacer cards
-        // Ver essays index si quieres hacer lists
-        // Ver resources index si quieres hacer en tabs
         <div>
+            <CreateLodging/>
             <TableContainer component={Paper}>
                 <Table size="small" aria-label="a dense table">
                     <TableHead className={classes.head}>
@@ -107,11 +102,9 @@ const ReadLodging = () => {
                                         </td>
                                         <td>
                                             <UpdateLodging id={lodging.id}/>
-                                            {/*<UpdateArtistForm id={artist.id} />*/}
                                         </td>
                                         <td>
                                             <DeleteLodging id={lodging.id}/>
-                                            {/*<DeleteArtistForm id={artist.id} />*/}
                                         </td>
                                     </TableCell>
                                 </TableRow>
@@ -135,4 +128,4 @@ const ReadLodging = () => {
     )
 }
 
-export default ReadLodging;//Colocar WithAuth Al terminar
+export default ReadLodging;

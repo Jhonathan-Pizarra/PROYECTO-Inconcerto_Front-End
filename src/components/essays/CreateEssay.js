@@ -1,80 +1,82 @@
 import React, {useState} from "react";
 import {useForm} from "react-hook-form";
-import {Festival} from "@/lib/festivals";
-import useSWR, {mutate} from "swr";
+import useSWR from "swr";
 import {
     Button,
     Dialog,
     DialogActions,
     DialogContent,
     DialogContentText,
-    DialogTitle, Fab, InputLabel,
-    makeStyles, Select,
-    TextField, Tooltip
+    DialogTitle,
+    Fab,
+    InputLabel,
+    makeStyles,
+    Select,
+    TextField,
+    Tooltip
 } from "@material-ui/core";
 import {fetcher} from "../../utils";
 import AddIcon from "@material-ui/icons/Add";
 import {Essay} from "@/lib/essays";
 import Loading from "@/components/Loading";
-import {Concert} from "@/lib/concerts";
-import {useRouter} from "next/router";
-import EditIcon from "@material-ui/icons/Edit";
 
 const useStyles = makeStyles((theme) => ({
-    title: {
-        overflow: "hidden",
-        display: "-webkit-box",
-        "-webkit-line-clamp": 2,
-        "-webkit-box-orient": "vertical",
-    },
-    body: {
-        overflow: "hidden",
-        display: "-webkit-box",
-        "-webkit-line-clamp": 4,
-        "-webkit-box-orient": "vertical",
+    fixed: {
+        position: 'fixed',
+        bottom: theme.spacing(2),
+        right: theme.spacing(3),
     },
 }));
 
 
-const EssayUpdateForm = () => {
+const CreateEssay  = () => {
     const classes = useStyles();
-    const router = useRouter();
-    const {id} = router.query;
-    const { register, handleSubmit } = useForm();
-    const [open, setOpen] = useState(false);
-    const {error, mutate} = useSWR(`/essays/${id}`, fetcher);
+    const {data: essay, error, mutate} = useSWR(`/essays`, fetcher);
     const {data: festivals} = useSWR(`/festivals`, fetcher);
+    const { register, handleSubmit } = useForm();
     const [state, setState] = useState(null);
+    const [open, setOpen] = useState(false);
 
     const onSubmit = async (data) => {
         console.log('data', data);
 
+        const newEssay = {
+            name: data.name,
+            dateEssay: data.dateEssay,
+            place: data.place,
+            festival_id: data.festival_id,
+        };
+
+        const formData = new FormData();
+        formData.append("name", newEssay.name);
+        formData.append("dateEssay", newEssay.dateEssay);
+        formData.append("place", newEssay.place);
+        formData.append("festival_id", newEssay.festival_id);
+
         try {
-            await Essay.update(id, {
-                ...data,
-                name: data.name,
-                dateEssay: data.dateEssay,
-                place: data.place,
-                festival_id: data.festival_id,
-            });
-            mutate();
+            await Essay.create(formData);
+            mutate("/essays");
         } catch (error) {
             if (error.response) {
                 // The request was made and the server responded with a status code
                 // that falls out of the range of 2xx
-                alert(error.response.message);
-                console.log(error.response);
+                // alert(error.response.message);
+                console.error(error.response);
             } else if (error.request) {
                 // The request was made but no response was received
                 // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
                 // http.ClientRequest in node.js
-                console.log(error.request);
+                console.error(error.request);
             } else {
                 // Something happened in setting up the request that triggered an Error
-                console.log("Error", error.message);
+                console.error("Error", error.message);
             }
-            console.log(error.config);
+            console.error(error.config);
         }
+    };
+
+    const handleChangeSelection = () => {
+        setState({state});
     };
 
     const handleClickOpen = () => {
@@ -85,24 +87,18 @@ const EssayUpdateForm = () => {
         setOpen(false);
     };
 
-    const handleChangeSelection = () => {
-        setState({state});
-    };
-
     if(error) return <div>"No se obtuvo el ensayo..."</div>;
+    if(!essay) return <Loading/>;
     if(!festivals) return <Loading/>;
 
     return (
         <div>
 
-            <Button
-                variant="contained"
-                color="secondary"
-                startIcon={<EditIcon />}
-                onClick={handleClickOpen}
-            >
-                Editar
-            </Button>
+            <Tooltip title="Nuevo" aria-label="add" className={classes.fixed}>
+                <Fab  color="secondary" onClick={handleClickOpen} > {/*className={classes.fixed}*/}
+                    <AddIcon />
+                </Fab>
+            </Tooltip>
 
             <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
                 <form onSubmit={handleSubmit(onSubmit)}>
@@ -178,4 +174,4 @@ const EssayUpdateForm = () => {
     );
 };
 
-export default EssayUpdateForm;
+export default CreateEssay;

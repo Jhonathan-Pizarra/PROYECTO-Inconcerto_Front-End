@@ -18,7 +18,6 @@ import IconsMenu from "./NavigationIcons";
 
 const drawerWidth = 250;
 const mainMenuItems = [
-
     {
         text: "Inicio",
         to: Routes.HOME,
@@ -72,7 +71,7 @@ const mainMenuItems = [
         to: Routes.ACTIVITIES,
     },
     {
-        text: "Sobre nosotros",
+        text: "About",
         to: Routes.ABOUT,
     },
 ];
@@ -204,18 +203,6 @@ export default function MainMenu(props) {
             </List>
             <Divider />
             <p className={classes.h3}> © 2020 - InConcerto.</p>
-            {/*<IconsMenu />*/}
-
-            {/*<List>*/}
-            {/*  {["All mail", "Trash", "Spam"].map((text, index) => (*/}
-            {/*    <ListItem button key={text}>*/}
-            {/*      <ListItemIcon>*/}
-            {/*        {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}*/}
-            {/*      </ListItemIcon>*/}
-            {/*      <ListItemText primary={text} />*/}
-            {/*    </ListItem>*/}
-            {/*  ))}*/}
-            {/*</List>*/}
         </Drawer>
     );
 

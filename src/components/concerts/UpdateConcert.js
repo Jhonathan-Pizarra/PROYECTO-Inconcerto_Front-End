@@ -1,120 +1,85 @@
-import React, {useState} from "react";
-import {useForm} from "react-hook-form";
-import {Concert} from "@/lib/concerts";
-import useSWR, {mutate} from "swr";
+import {useRouter} from "next/router";
 import {
-    Button, Checkbox,
+    Button,
+    Checkbox,
     Dialog,
     DialogActions,
     DialogContent,
     DialogContentText,
-    DialogTitle, FormControlLabel, InputLabel,
-    makeStyles, MenuItem, Select,
+    DialogTitle,
+    FormControlLabel,
+    InputLabel,
+    Select,
     TextField
 } from "@material-ui/core";
+import EditIcon from "@material-ui/icons/Edit";
 import {fetcher} from "../../utils";
+import {Concert} from "@/lib/concerts";
+import React, {useState} from "react";
+import {useForm} from "react-hook-form";
+import useSWR from "swr";
 import Loading from "@/components/Loading";
 
-const useStyles = makeStyles((theme) => ({
-    title: {
-        overflow: "hidden",
-        display: "-webkit-box",
-        "-webkit-line-clamp": 2,
-        "-webkit-box-orient": "vertical",
-    },
-    body: {
-        overflow: "hidden",
-        display: "-webkit-box",
-        "-webkit-line-clamp": 4,
-        "-webkit-box-orient": "vertical",
-    },
-}));
 
+const UpdateConcert = () => {
 
-const ConcertCreateForm = () => {
-    const classes = useStyles();
-    const { register, handleSubmit } = useForm();
-    const [open, setOpen] = useState(false);
-    const {error, mutate} = useSWR(`/concerts`, fetcher);
-    //const [checkedFree, setCheckedFree] = useState(null);
-    const [checkedF, setCheckedF] = useState(true);
-    //const [checkedInsi, setCheckedInsi] = useState(true);
-    const [checkedI, setCheckedI] = useState(true);
+    const router = useRouter();
+    const {id} = router.query;
+    const {data: concert, error, mutate} = useSWR(`/concerts/${id}`, fetcher);
     const {data: festivals} = useSWR(`/festivals`, fetcher);
     const {data: places} = useSWR(`/places`, fetcher);
+    const { register, handleSubmit } = useForm();
+    const [checkedFree, setFree] = useState(true);
+    const [checkedInsi, setInsi] = useState(true);
     const [state, setState] = useState(null);
+    const [open, setOpen] = useState(false);
+    // const fileInputRef = useRef();
 
-    // const handleChangeSelection = (event) => {
-    //     const name = event.target.value;
-    //     setState({...state, [name]: event.target.value});
-    // };
+    const onSubmit = async (data) => {
+        console.log('data', data);
+
+        try {
+            await Concert.update(id, {
+                ...data,
+                name: data.name,
+                dateConcert: data.dateConcert,
+                duration: data.duration,
+                free: data.free,
+                insitu: data.insitu,
+                place_id: data.place_id,
+                festival_id: data.festival_id,
+            });
+            mutate();
+            /*mutate(`/festivals/${data.id}`);*/
+        } catch (error) {
+            if (error.response) {
+                // The request was made and the server responded with a status code
+                // that falls out of the range of 2xx
+                alert(error.response.message);
+                console.log(error.response);
+            } else if (error.request) {
+                // The request was made but no response was received
+                // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+                // http.ClientRequest in node.js
+                console.log(error.request);
+            } else {
+                // Something happened in setting up the request that triggered an Error
+                console.log("Error", error.message);
+            }
+            console.log(error.config);
+        }
+    };
 
     const handleChangeSelection = () => {
         setState({state});
     };
 
-    const blindFree = (event) => {
-        setCheckedF(event.target.checked);
+    const handleCheckFree = (event) => {
+        setFree(event.target.checked);
     };
 
-    const blindInsi = (event) => {
-        setCheckedI(event.target.checked);
-    };
-
-  /*  const handleChangeInsi = () => {
-        /!*setCheckedInsi(event.target.checked);*!/
-        setCheckedInsi({checkedInsi});
-    };
-*/
-
-    /* const handleChangeFree = () => {
-        /!*setCheckedFree(event.target.checked);*!/
-        setCheckedFree({checkedFree});
-    };*/
-
-    const onSubmit = async (data) => {
-        console.log('data del form:', data);
-
-        const newFestival = {
-            name: data.name,
-            dateConcert: data.dateConcert,
-            duration: data.duration,
-            free: data.free,
-            insitu: data.insitu,
-            place_id: data.place_id,
-            festival_id: data.festival_id,
-        };
-
-        const formData = new FormData();
-        formData.append("name", newFestival.name);
-        formData.append("dateConcert", newFestival.dateConcert);
-        formData.append("duration", newFestival.duration);
-        formData.append("free", newFestival.free);
-        formData.append("insitu", newFestival.insitu);
-        formData.append("place_id", newFestival.place_id);
-        formData.append("festival_id", newFestival.festival_id);
-
-        try {
-            await Concert.create(formData);
-            mutate("/concerts");
-            // console.log("file", fileInputRef.current.files[0]);
-        } catch (error) {
-            if (error.response) {
-                // The request was made and the server responded with a status code
-                // that falls out of the range of 2xx
-                // alert(error.response.message);
-                console.error(error.response);
-            } else if (error.request) {
-                // The request was made but no response was received
-                // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-                // http.ClientRequest in node.js
-                console.error(error.request);
-            } else {
-                // Something happened in setting up the request that triggered an Error
-                console.error("Error", error.message);
-            }
-            console.error(error.config);
-        }
+    const handleCheckInsi = (event) => {
+        setInsi(event.target.checked);
     };
 
     const handleClickOpen = () => {
@@ -125,21 +90,26 @@ const ConcertCreateForm = () => {
         setOpen(false);
     };
 
-
-
-    if(error) return <div>"No se obtuvo el concierto..."</div>;
-    if(!festivals) return <Loading/>;
-    if(!places) return <Loading/>;
+    if(error) return <div>"Recarga la página para continuar..."</div>;
+    if(!concert) return <Loading/>
+    if(!festivals) return <Loading/>
+    if(!places) return <Loading/>
 
     return (
         <div>
-            <Button variant="contained" color="secondary"  onClick={handleClickOpen}>
-                Nuevo Concierto
+            <Button
+                variant="contained"
+                color="secondary"
+                startIcon={<EditIcon />}
+                onClick={handleClickOpen}
+            >
+                Editar
             </Button>
+
             <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
                 <form onSubmit={handleSubmit(onSubmit)}>
 
-                    <DialogTitle id="form-dialog-title">InConcerto</DialogTitle>
+                    <DialogTitle id="form-dialog-title">Editar Concierto</DialogTitle>
                     <DialogContent>
                         <DialogContentText>
                             Por favor llena los siguientes campos:
@@ -185,28 +155,28 @@ const ConcertCreateForm = () => {
 
                     <DialogContent>
                         <FormControlLabel
-                            value={checkedF ? "1" : "0"}
+                            value={checkedFree ? "1" : "0"}
                             //onChange={handleChangeFree}
                             {...register('free')}
                             control={
                                 <Checkbox
                                     autoFocus={true}
-                                    checked={checkedF}
-                                    onChange={blindFree}
-                                    //onChange={function(event){ blindFree(checkedF); handleChangeFree()}}
+                                    checked={checkedFree}
+                                    onChange={handleCheckFree}
+                                    //onChange={function(event){ handleCheckFree(checkedFree); handleChangeFree()}}
                                 />}
                             label="Free"
                             labelPlacement="top"
                         />
 
                         <FormControlLabel
-                            value={checkedI ? "1" : "0"}
+                            value={checkedInsi ? "1" : "0"}
                             {...register('insitu')}
                             control={
                                 <Checkbox
                                     autoFocus={true}
-                                    checked={checkedI}
-                                    onChange={blindInsi}
+                                    checked={checkedInsi}
+                                    onChange={handleCheckInsi}
                                 />}
                             label="Insitu"
                             labelPlacement="top"
@@ -214,7 +184,6 @@ const ConcertCreateForm = () => {
 
 
                     </DialogContent>
-
 
                     <DialogContent>
                         <InputLabel htmlFor="outlined-age-native-simple">Festival</InputLabel>
@@ -247,20 +216,20 @@ const ConcertCreateForm = () => {
 
                     </DialogContent>
 
-
                     <DialogActions>
-                        <Button onClick={handleClose}  color="primary">
+                        <Button onClick={handleClose} color="primary">
                             Cancelar
                         </Button>
                         <Button onClick={handleClose} color="primary" type="submit">
-                            Crear
+                            Editar
                         </Button>
                     </DialogActions>
 
                 </form>
             </Dialog>
+
         </div>
     );
 };
 
-export default ConcertCreateForm;
+export default UpdateConcert;

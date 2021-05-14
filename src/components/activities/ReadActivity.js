@@ -1,4 +1,3 @@
-import withAuth from "@/hocs/withAuth";
 import {fetcher} from "../../utils";
 import useSWR from "swr";
 import Loading from "@/components/Loading";
@@ -8,8 +7,6 @@ import PropTypes from 'prop-types';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
-import UpdateResourcesForm from "@/components/resources/UpdateResourcesForm";
-import DeleteResourceForm from "@/components/resources/DeleteResourcesForm";
 import UpdateActivity from "@/components/activities/UpdateActivity";
 import DeleteActivity from "@/components/activities/DeleteActivity";
 
@@ -61,8 +58,8 @@ function a11yProps(index) {
 
 const ReadActivity = () => {
 
-    const {data: activities, error} = useSWR(`/activityfestivals/${''}`, fetcher);
     const classes = useStyles();
+    const {data: activities, error} = useSWR(`/activityfestivals/${''}`, fetcher);
     const [value, setValue] = React.useState(0);
 
     const handleChange = (event, newValue) => {
@@ -75,6 +72,7 @@ const ReadActivity = () => {
     return (
         <div>
             <h1>Tareas InConcerto</h1>
+
             <div className={classes.root}>
                 <Tabs
                     orientation="vertical"

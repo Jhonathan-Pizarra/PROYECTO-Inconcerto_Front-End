@@ -6,19 +6,22 @@ import Routes from "@/constants/routes";
 import DeleteIcon from "@material-ui/icons/Delete";
 import {Button} from "@material-ui/core";
 import React from "react";
-import {Activity} from "@/lib/activities";
+import {Essay} from "@/lib/essays";
 
-const DeleteActivity = ({id}) => {
+
+const DeleteEssay = () => {
 
     const router = useRouter();
-    const {data: activity, error} = useSWR(`/activityfestivals/${id}`, fetcher);
+    const {id} = router.query;
+    const {data: essay, error} = useSWR(`/essays/${id}`, fetcher);
 
     const handleDelete = async () => {
         try {
-            await Activity.delete(id);
-            router.push(Routes.ACTIVITIES);
+            await Essay.delete(id);
+            router.push(Routes.ESSAYS);
         } catch (error) {
             if (error.response) {
+                //alert(error.response.message);
                 console.log(error.response);
             } else if (error.request) {
                 console.log(error.request);
@@ -29,16 +32,17 @@ const DeleteActivity = ({id}) => {
         }
     };
 
-    if(error) return <div>"No se pudo borrar la actividad..."</div>;
-    if(!activity) return <Loading/>;
+    if(error) return <div>"No se pudo borrar el ensayo..."</div>;
+    if(!essay) return <Loading/>;
 
     return (
         <div>
             <Button
                 variant="contained"
                 color="secondary"
-                startIcon={<DeleteIcon />}
                 onClick={handleDelete}
+                // className={classes.button}
+                startIcon={<DeleteIcon />}
             >
                 Eliminar
             </Button>
@@ -47,4 +51,4 @@ const DeleteActivity = ({id}) => {
 
 };
 
-export default DeleteActivity;
+export default DeleteEssay;

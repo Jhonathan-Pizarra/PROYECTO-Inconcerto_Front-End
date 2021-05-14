@@ -1,7 +1,8 @@
 import React from "react";
 import {useForm} from "react-hook-form";
 import {Festival} from "@/lib/festivals";
-import useSWR, {mutate} from "swr";
+import useSWR from "swr";
+import {useRouter} from "next/router";
 import {
     Button,
     Dialog,
@@ -9,71 +10,51 @@ import {
     DialogContent,
     DialogContentText,
     DialogTitle,
-    makeStyles,
     TextField
 } from "@material-ui/core";
+import EditIcon from "@material-ui/icons/Edit";
 import {fetcher} from "../../utils";
-
-const useStyles = makeStyles((theme) => ({
-    title: {
-        overflow: "hidden",
-        display: "-webkit-box",
-        "-webkit-line-clamp": 2,
-        "-webkit-box-orient": "vertical",
-    },
-    body: {
-        overflow: "hidden",
-        display: "-webkit-box",
-        "-webkit-line-clamp": 4,
-        "-webkit-box-orient": "vertical",
-    },
-}));
+import Loading from "@/components/Loading";
 
 
-const FestivalCreateForm = () => {
-    const classes = useStyles();
+const UpdateFestival = () => {
+
+    const router = useRouter();
+    const {id} = router.query;
+    const {data: festival, error, mutate} = useSWR(`/festivals/${id}`, fetcher);
     const { register, handleSubmit } = useForm();
     const [open, setOpen] = React.useState(false);
-    const {error, mutate} = useSWR(`/festivals`, fetcher);
-
     // const fileInputRef = useRef();
 
     const onSubmit = async (data) => {
         console.log('data', data);
-        console.log("data", data.image[0]);
-        const newFestival = {
-            name: data.name,
-            description: data.description,
-            // category_id: 1,
-            image: data.image[0],
-        };
-
-        const formData = new FormData();
-        formData.append("name", newFestival.name);
-        formData.append("description", newFestival.description);
-        // formData.append("category_id", newFestival.category_id);
-        formData.append("image", newFestival.image);
+        console.log("imagen", data.image[0]);
 
         try {
-            await Festival.create(formData);
-            mutate("/festivals");
-            // console.log("file", fileInputRef.current.files[0]);
+            await Festival.update(id, {
+                ...data,
+                name: data.name,
+                description: data.description,
+                image: data.image[0],
+            });
+            mutate();
+            /*mutate(`/festivals/${data.id}`);*/
         } catch (error) {
             if (error.response) {
                 // The request was made and the server responded with a status code
                 // that falls out of the range of 2xx
-                // alert(error.response.message);
-                console.error(error.response);
+                alert(error.response.message);
+                console.log(error.response);
             } else if (error.request) {
                 // The request was made but no response was received
                 // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
                 // http.ClientRequest in node.js
-                console.error(error.request);
+                console.log(error.request);
             } else {
                 // Something happened in setting up the request that triggered an Error
-                console.error("Error", error.message);
+                console.log("Error", error.message);
             }
-            console.error(error.config);
+            console.log(error.config);
         }
     };
 
@@ -85,22 +66,29 @@ const FestivalCreateForm = () => {
         setOpen(false);
     };
 
+    if(error) return <div>"No se puede editar el festival..."</div>;
+    if(!festival) return <Loading/>
+
     return (
         <div>
-            <Button variant="contained" color="secondary"  onClick={handleClickOpen}>
-                Nuevo Festival
+            <Button
+                variant="contained"
+                color="secondary"
+                startIcon={<EditIcon />}
+                onClick={handleClickOpen}
+            >
+                Editar
             </Button>
+
             <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
                 <form onSubmit={handleSubmit(onSubmit)}>
-
-                    <DialogTitle id="form-dialog-title">InConcerto</DialogTitle>
+                    <DialogTitle id="form-dialog-title">Editar Festival</DialogTitle>
                     <DialogContent>
                         <DialogContentText>
                             Por favor llena los siguientes campos:
                         </DialogContentText>
                         <TextField
                             //autoFocus
-                            // className={classes.title}
                             margin="dense"
                             id="name"
                             label="Nombre"
@@ -111,8 +99,7 @@ const FestivalCreateForm = () => {
                     </DialogContent>
                     <DialogContent>
                         <TextField
-                            //autoFocus
-                            // className={classes.body}
+                            // autoFocus
                             margin="dense"
                             id="description"
                             label="Descripción"
@@ -123,17 +110,7 @@ const FestivalCreateForm = () => {
                             {...register('description')}
                             fullWidth
                         />
-                        {/*<TextareaAutosize*/}
-                        {/*    autoFocus*/}
-                        {/*    margin="dense"*/}
-                        {/*    id="description"*/}
-                        {/*    label="Descripción"*/}
-                        {/*    aria-label="minimum height"*/}
-                        {/*    rowsMin={5}*/}
-                        {/*    {...register('description')}*/}
-                        {/*    fullWidth*/}
-                        {/*    placeholder="Des cripcion"*/}
-                        {/*/>*/}
+
                     </DialogContent>
                     <DialogContentText>
                         <DialogContent>
@@ -151,14 +128,13 @@ const FestivalCreateForm = () => {
                             Cancelar
                         </Button>
                         <Button onClick={handleClose} color="primary" type="submit">
-                            Crear
+                            Editar
                         </Button>
                     </DialogActions>
-
                 </form>
             </Dialog>
         </div>
     );
 };
 
-export default FestivalCreateForm;
+export default UpdateFestival;

@@ -1,8 +1,7 @@
-import withAuth from "@/hocs/withAuth";
 import {fetcher} from "../../utils";
 import useSWR from "swr";
 import Loading from "@/components/Loading";
-import {Button, CardActions, Divider, Link, List, ListItem, ListItemText} from "@material-ui/core";
+import {Button, Link, List, ListItem, ListItemText} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import Routes from "@/constants/routes";
 import React from "react";
@@ -17,17 +16,14 @@ const useStyles = makeStyles((theme) => ({
 
 const ReadTransport = () => {
 
-    const {data: transports, error} = useSWR(`/transports/${''}`, fetcher);
     const classes = useStyles();
+    const {data: transports, error} = useSWR(`/transports/${''}`, fetcher);
 
     if(error) return <p>No se pudieron cargar los tranpsortes...</p>;
     if (!transports) return <Loading/>;
 
     return (
-        // Ver artists index si quieres hacer una tabla
-        // Ver festivals index si quieres hacer cards
-        // Ver essays index si quieres hacer lists
-        // Ver resources index si quieres hacer en tabs
+
         <div>
             <List component="nav" className={classes.root} aria-label="mailbox folders">
                 {transports.data.map(transport => {
@@ -42,7 +38,7 @@ const ReadTransport = () => {
                                 </Link>
                             </ListItem>
                         </div>
-                    )
+                    );
                 })}
             </List>
 
@@ -50,4 +46,4 @@ const ReadTransport = () => {
     )
 }
 
-export default ReadTransport;//Colocar WithAuth Al terminar
+export default ReadTransport;

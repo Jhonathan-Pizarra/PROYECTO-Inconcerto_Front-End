@@ -2,24 +2,16 @@ import useSWR from "swr";
 import {useRouter} from "next/router";
 import Loading from "@/components/Loading";
 import {fetcher} from "../../utils";
-import withAuth from "@/hocs/withAuth";
-import {Resource, Resources} from "@/lib/resources";
+import {Resource} from "@/lib/resources";
 import Routes from "@/constants/routes";
 import DeleteIcon from "@material-ui/icons/Delete";
-import {Button, makeStyles} from "@material-ui/core";
+import {Button} from "@material-ui/core";
 import React from "react";
-import IconButton from "@material-ui/core/IconButton";
-import EditIcon from "@material-ui/icons/Edit";
 
-const useStyles = makeStyles((theme) => ({
-    delete: {
-        color: "#f50057",
-    },
-}));
 
-const DeleteResourceForm = ({id}) => {
+const DeleteResource = ({id}) => {
+
     const router = useRouter();
-    const classes = useStyles();
     const {data: resource, error} = useSWR(`/resources/${id}`, fetcher);
 
     const handleDelete = async () => {
@@ -53,12 +45,9 @@ const DeleteResourceForm = ({id}) => {
             >
                 Eliminar
             </Button>
-            {/*<IconButton aria-label="eliminar"  className={classes.delete} size="small" onClick={handleDelete} >*/}
-            {/*    <DeleteIcon />*/}
-            {/*</IconButton>*/}
         </div>
     );
 
 };
 
-export default DeleteResourceForm;
+export default DeleteResource;

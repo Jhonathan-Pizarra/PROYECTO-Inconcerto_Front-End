@@ -1,61 +1,85 @@
 import React, {useState} from "react";
 import {useForm} from "react-hook-form";
 import {Artist} from "@/lib/artists";
-import useSWR, {mutate} from "swr";
+import useSWR from "swr";
 import {
-    Button, Checkbox,
+    Button,
+    Checkbox,
     Dialog,
     DialogActions,
     DialogContent,
     DialogContentText,
-    DialogTitle, Fab, FormControlLabel, Grid, InputLabel,
-    makeStyles, Select,
-    TextField, Tooltip
+    DialogTitle,
+    Fab,
+    FormControlLabel,
+    Grid,
+    InputLabel,
+    makeStyles,
+    Select,
+    TextField,
+    Tooltip
 } from "@material-ui/core";
 import {fetcher} from "../../utils";
 import AddIcon from "@material-ui/icons/Add";
 import Loading from "@/components/Loading";
-import {useRouter} from "next/router";
-import EditIcon from "@material-ui/icons/Edit";
-import IconButton from "@material-ui/core/IconButton";
-import {Concert} from "@/lib/concerts";
 
 const useStyles = makeStyles((theme) => ({
-    edit:{
-        color: "#FAC800",
+    fixed: {
+        /*display: 'inline-flex',*/
+        //position: '-moz-initial',//a la derecha
+        position: 'fixed', //a la izquierda...
+        bottom: theme.spacing(2),
+        right: theme.spacing(2),
     },
 }));
 
-const UpdateArtistForm = ({id}) => {
+const CreateArtist = () => {
 
     const classes = useStyles();
+    const {data: artists, mutate, error} = useSWR(`/artists`, fetcher);
     const { register, handleSubmit } = useForm();
-    const [open, setOpen] = useState(false);
-    const { data: artist, mutate, error } = useSWR(`/artists/${id}`, fetcher);
-    const [foodGroup, setfoodGroup] = useState(null);
     const [checkedPassage, setCheckedPassage] = useState(true);
+    const [foodGroup, setfoodGroup] = useState(null);
+    const [open, setOpen] = useState(false);
+
 
     const onSubmit = async (data) => {
         console.log('data', data);
 
+        const newArtist = {
+            ciOrPassport: data.ciOrPassport,
+            artisticOrGroupName: data.artisticOrGroupName,
+            name: data.name,
+            lastName: data.lastName,
+            nationality: data.nationality,
+            mail: data.mail,
+            phone: data.phone,
+            passage: data.passage,
+            instruments: data.instruments,
+            emergencyPhone: data.emergencyPhone,
+            emergencyMail: data.emergencyMail,
+            foodGroup: data.foodGroup,
+            observation: data.observation,
+        };
+
+        const formData = new FormData();
+        formData.append("ciOrPassport", newArtist.ciOrPassport);
+        formData.append("artisticOrGroupName", newArtist.artisticOrGroupName);
+        formData.append("name", newArtist.name);
+        formData.append("lastName", newArtist.lastName);
+        formData.append("nationality", newArtist.nationality);
+        formData.append("mail", newArtist.mail);
+        formData.append("phone", newArtist.phone);
+        formData.append("passage", newArtist.passage);
+        formData.append("instruments", newArtist.instruments);
+        formData.append("emergencyPhone", newArtist.emergencyPhone);
+        formData.append("emergencyMail", newArtist.emergencyMail);
+        formData.append("foodGroup", newArtist.foodGroup);
+        formData.append("observation", newArtist.observation);
+
         try {
-            await Artist.update(id, {
-                ...data,
-                ciOrPassport: data.ciOrPassport,
-                artisticOrGroupName: data.artisticOrGroupName,
-                name: data.name,
-                lastName: data.lastName,
-                nationality: data.nationality,
-                mail: data.mail,
-                phone: data.phone,
-                passage: data.passage,
-                instruments: data.instruments,
-                emergencyPhone: data.emergencyPhone,
-                emergencyMail: data.emergencyMail,
-                foodGroup: data.foodGroup,
-                observation: data.observation,
-            });
-            mutate();
+            await Artist.create(formData);
+            mutate("/artists");
         } catch (error) {
             if (error.response) {
                 // The request was made and the server responded with a status code
@@ -91,21 +115,23 @@ const UpdateArtistForm = ({id}) => {
         setfoodGroup({foodGroup});
     };
 
+
     if(error) return <div>"Recarga la página para continuar..."</div>;
-    if(!artist) return <Loading/>;
+    if(!artists) return <Loading/>;
 
     return (
         <div>
 
-            <IconButton aria-label="editar"  className={classes.edit} size="small" onClick={handleClickOpen} >
-                <EditIcon />
-            </IconButton>
+            <Tooltip title="Nuevo" aria-label="add" className={classes.fixed}>
+                <Fab  color="secondary" onClick={handleClickOpen} > {/*className={classes.fixed}*/}
+                    <AddIcon />
+                </Fab>
+            </Tooltip>
 
             <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
                 <form onSubmit={handleSubmit(onSubmit)}>
 
                     <DialogTitle id="form-dialog-title">InConcerto</DialogTitle>
-
                     <DialogContent>
                         <DialogContentText>
                             Por favor llena los siguientes campos:
@@ -114,7 +140,6 @@ const UpdateArtistForm = ({id}) => {
                             margin="dense"
                             id="standard-number"
                             label="Cédula o Pasaporte"
-                            value={artist.ciOrPassport}
                             type="number"
                             {...register('ciOrPassport')}
                             fullWidth
@@ -129,7 +154,6 @@ const UpdateArtistForm = ({id}) => {
                             fullWidth
                         />
                     </DialogContent>
-
                     <DialogContent>
                         <DialogContentText>
                             Datos personales:
@@ -145,6 +169,15 @@ const UpdateArtistForm = ({id}) => {
                                     {...register('name')}
                                     fullWidth
                                 />
+                                {/*<TextField*/}
+                                {/*    style={{paddingRight: 10}}*/}
+                                {/*    margin="dense"*/}
+                                {/*    id="outlined-basic"*/}
+                                {/*    label="Lol"*/}
+                                {/*    type="text"*/}
+                                {/*    {...register('lastName')}*/}
+                                {/*    fullWidth*/}
+                                {/*/>*/}
                             </Grid>
                             <Grid item xs={12} sm={6} md={6} lg={6}>
                                 <TextField
@@ -155,6 +188,14 @@ const UpdateArtistForm = ({id}) => {
                                     type="text"
                                     {...register('lastName')}
                                 />
+                                {/*<TextField*/}
+                                {/*    style={{paddingRight: 10, marginLeft:10}}*/}
+                                {/*    margin="dense"*/}
+                                {/*    id="outlined-basic"*/}
+                                {/*    label="XD"*/}
+                                {/*    type="text"*/}
+                                {/*    {...register('lastName')}*/}
+                                {/*/>*/}
                             </Grid>
                         </Grid>
                         <Grid container spacing={0}>
@@ -171,6 +212,7 @@ const UpdateArtistForm = ({id}) => {
                             <Grid item xs sm={6} md={6} lg={6}>
                                 <TextField
                                     style={{paddingRight: 10, marginLeft:10}}
+                                    //style={{marginLeft: 10}}
                                     margin="dense"
                                     id="standard-number"
                                     label="Teléfono"
@@ -197,7 +239,6 @@ const UpdateArtistForm = ({id}) => {
                             {...register('passage')}
                             control={
                                 <Checkbox
-                                    color="primary"
                                     autoFocus={true}
                                     checked={checkedPassage}
                                     onChange={handleCheckPassage}
@@ -258,9 +299,10 @@ const UpdateArtistForm = ({id}) => {
                             {...register("foodGroup")}
                         >
                             <option aria-label="None" value="" />
-                            <option value={"Vegetariano"}>Vegetariano</option>
                             <option value={"Vegano"}>Vegano</option>
+                            <option value={"Vegetariano"}>Vegetariano</option>
                             <option value={"Omnivoro"}>Onminivoro</option>
+                            <option value={"Crudista"}>Crudista</option>
                         </Select>
                     </DialogContent>
 
@@ -283,7 +325,7 @@ const UpdateArtistForm = ({id}) => {
                             Cancelar
                         </Button>
                         <Button onClick={handleClose} color="primary" type="submit">
-                            Editar
+                            Crear
                         </Button>
                     </DialogActions>
                 </form>
@@ -292,4 +334,4 @@ const UpdateArtistForm = ({id}) => {
     );
 };
 
-export default UpdateArtistForm;
+export default CreateArtist;

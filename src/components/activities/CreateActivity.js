@@ -1,6 +1,5 @@
 import React, {useState} from "react";
 import {useForm} from "react-hook-form";
-import {Festival} from "@/lib/festivals";
 import useSWR, {mutate} from "swr";
 import {
     Button,
@@ -8,15 +7,17 @@ import {
     DialogActions,
     DialogContent,
     DialogContentText,
-    DialogTitle, Fab, Grid, InputLabel,
-    makeStyles, Select,
-    TextField, Tooltip
+    DialogTitle,
+    Fab,
+    InputLabel,
+    makeStyles,
+    Select,
+    TextField,
+    Tooltip
 } from "@material-ui/core";
 import {fetcher} from "../../utils";
 import AddIcon from "@material-ui/icons/Add";
-import {Essay} from "@/lib/essays";
 import Loading from "@/components/Loading";
-import {Resource} from "@/lib/resources";
 import {Activity} from "@/lib/activities";
 
 const useStyles = makeStyles((theme) => ({
@@ -30,14 +31,15 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const CreateActivity = () => {
+
     const classes = useStyles();
-    const { register, handleSubmit } = useForm();
-    const [open, setOpen] = useState(false);
     const {data: activities, error} = useSWR(`/activityfestivals/${''}`, fetcher);
     const {data: festivals} = useSWR(`/festivals`, fetcher);
+    const {data: users} = useSWR(`/users`, fetcher);
+    const { register, handleSubmit } = useForm();
     const [state, setState] = useState(null);
     const [stateUser, setUser] = useState(null);
-    const {data: users} = useSWR(`/users/${''}`, fetcher);
+    const [open, setOpen] = useState(false);
 
     const onSubmit = async (data) => {
         console.log('data', data);
@@ -98,7 +100,7 @@ const CreateActivity = () => {
     return (
         <div>
 
-            <Tooltip title="Add" aria-label="add" className={classes.fixed}>
+            <Tooltip title="Nuevo" aria-label="add" className={classes.fixed}>
                 <Fab  color="secondary" onClick={handleClickOpen} > {/*className={classes.fixed}*/}
                     <AddIcon />
                 </Fab>

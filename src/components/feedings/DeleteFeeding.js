@@ -2,14 +2,11 @@ import useSWR from "swr";
 import {useRouter} from "next/router";
 import Loading from "@/components/Loading";
 import {fetcher} from "../../utils";
-import withAuth from "@/hocs/withAuth";
-import {Artist} from "@/lib/artists";
 import Routes from "@/constants/routes";
 import DeleteIcon from "@material-ui/icons/Delete";
-import {Button, makeStyles} from "@material-ui/core";
+import {makeStyles} from "@material-ui/core";
 import React from "react";
 import IconButton from "@material-ui/core/IconButton";
-import EditIcon from "@material-ui/icons/Edit";
 import {Feeding} from "@/lib/feedings";
 
 const useStyles = makeStyles((theme) => ({

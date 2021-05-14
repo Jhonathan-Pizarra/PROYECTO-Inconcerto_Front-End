@@ -6,6 +6,7 @@ import withAuth from "@/hocs/withAuth";
 
 
 const FeedingPlaceID = () =>{
+
     const router = useRouter();
     const {id} = router.query;
     const {data: fplace, error} = useSWR(`/feeding_places/${id}`, fetcher);

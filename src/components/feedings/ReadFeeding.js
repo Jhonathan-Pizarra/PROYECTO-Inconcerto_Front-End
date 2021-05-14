@@ -1,4 +1,3 @@
-import withAuth from "@/hocs/withAuth";
 import {fetcher} from "../../utils";
 import useSWR from "swr";
 import Loading from "@/components/Loading";
@@ -18,10 +17,9 @@ import Link from "next/link";
 import Routes from "@/constants/routes";
 import IconButton from "@material-ui/core/IconButton";
 import FindInPageIcon from "@material-ui/icons/FindInPage";
-import UpdateLodging from "@/components/lodgings/UpdateLodging";
-import DeleteLodging from "@/components/lodgings/DeleteLodging";
 import UpdateFeeding from "@/components/feedings/UpdateFeeding";
 import DeleteFeeding from "@/components/feedings/DeleteFeeding";
+import CreateFeeding from "@/components/feedings/CreateFeeding";
 
 const useStyles = makeStyles((theme) => ({
     detail:{
@@ -49,10 +47,10 @@ const useStyles = makeStyles((theme) => ({
 
 const ReadFeeding = () => {
 
-    const {data: feedings, error} = useSWR(`/feedings`, fetcher);
+    const classes = useStyles();
+    const {data: feedings, error} = useSWR(`/feedings/${''}`, fetcher);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
-    const classes = useStyles();
 
     if(error) return <p>No se pudieron cargar los cuadros alimenticios...</p>;
     if (!feedings) return <Loading/>;
@@ -67,11 +65,8 @@ const ReadFeeding = () => {
     };
 
     return (
-        // Ver artists index si quieres hacer una tabla
-        // Ver festivals index si quieres hacer cards
-        // Ver essays index si quieres hacer lists
-        // Ver resources index si quieres hacer en tabs
         <div>
+            <CreateFeeding/>
             <TableContainer component={Paper}>
                 <Table size="small" aria-label="a dense table">
                     <TableHead className={classes.head}>
@@ -134,4 +129,4 @@ const ReadFeeding = () => {
     )
 }
 
-export default ReadFeeding;//Colocar WithAuth Al terminar
+export default ReadFeeding;

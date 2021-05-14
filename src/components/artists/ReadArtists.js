@@ -1,24 +1,25 @@
 import {fetcher} from "../../utils";
 import useSWR from "swr";
 import Loading from "@/components/Loading";
-import DeleteIcon from "@material-ui/icons/Delete";
 import IconButton from "@material-ui/core/IconButton";
-import EditIcon from "@material-ui/icons/Edit";
 import FindInPageIcon from "@material-ui/icons/FindInPage";
 import Link from "next/link";
 import {
-    makeStyles, Paper, Table,
+    makeStyles,
+    Paper,
+    Table,
     TableBody,
     TableCell,
     TableContainer,
     TableHead,
     TablePagination,
-    TableRow, withStyles
+    TableRow
 } from "@material-ui/core";
 import React, {useState} from "react";
 import Routes from "@/constants/routes";
-import UpdateArtistForm from "@/components/artists/UpdateArtistForm";
-import DeleteArtistForm from "@/components/artists/DeleteArtistForm";
+import UpdateArtist from "@/components/artists/UpdateArtist";
+import DeleteArtist from "@/components/artists/DeleteArtist";
+import CreateArtist from "@/components/artists/CreateArtist";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -45,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const ReadArtistasForm = () => {
+const ReadArtists = () => {
 
     const {data: artists, error} = useSWR(`/artists/${''}`, fetcher);
     const [page, setPage] = useState(0);
@@ -66,6 +67,7 @@ const ReadArtistasForm = () => {
 
     return (
         <div>
+            <CreateArtist/>
             <TableContainer component={Paper}>
                     <Table size="small" aria-label="a dense table">
                         <TableHead className={classes.head}>
@@ -126,10 +128,10 @@ const ReadArtistasForm = () => {
                                                 </Link>
                                             </td>
                                             <td>
-                                                <UpdateArtistForm id={artist.id} />
+                                                <UpdateArtist id={artist.id} />
                                             </td>
                                             <td>
-                                                <DeleteArtistForm id={artist.id} />
+                                                <DeleteArtist id={artist.id} />
                                             </td>
                                         </TableCell>
                                     </TableRow>
@@ -152,4 +154,4 @@ const ReadArtistasForm = () => {
     )
 }
 
-export default ReadArtistasForm;
+export default ReadArtists;

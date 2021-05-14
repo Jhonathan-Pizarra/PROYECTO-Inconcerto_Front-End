@@ -1,44 +1,35 @@
 import React, {useState} from "react";
 import {useForm} from "react-hook-form";
-import {Artist} from "@/lib/artists";
-import useSWR, {mutate} from "swr";
+import useSWR from "swr";
 import {
-    Button, Checkbox,
+    Button,
+    Checkbox,
     Dialog,
     DialogActions,
     DialogContent,
     DialogContentText,
-    DialogTitle, Fab, FormControlLabel, Grid, InputAdornment, InputLabel,
-    makeStyles, Select,
-    TextField, Tooltip
+    DialogTitle,
+    FormControlLabel,
+    InputAdornment,
+    InputLabel,
+    Select,
+    TextField
 } from "@material-ui/core";
 import {fetcher} from "../../utils";
-import AddIcon from "@material-ui/icons/Add";
 import Loading from "@/components/Loading";
-import {useRouter} from "next/router";
 import EditIcon from "@material-ui/icons/Edit";
-import IconButton from "@material-ui/core/IconButton";
-import {Concert} from "@/lib/concerts";
 import {Transport} from "@/lib/transports";
 
-const useStyles = makeStyles((theme) => ({
-    edit:{
-        color: "#FAC800",
-    },
-}));
 
-//Este {id} lo recibe desde el componente donde lo llamemos, en este caso sería: <UpdateArtistForm id={artist.id}/>
-
+//Este {id} lo recibe desde el componente donde lo llamemos
 const UpdateTransport = ({id}) => {
-    const classes = useStyles();
-    const { register, handleSubmit } = useForm();
-    const [open, setOpen] = useState(false);
+
     const {data: transport, mutate, error} = useSWR(`/transports/${id}`, fetcher);
+    const {data: calendars} = useSWR(`/calendars`, fetcher);
+    const { register, handleSubmit } = useForm();
     const [disponibility, setDisponibility] = useState(true);
     const [state, setState] = useState(null);
-    const {data: calendars} = useSWR(`/calendars`, fetcher);
-
-
+    const [open, setOpen] = useState(false);
 
     const onSubmit = async (data) => {
         console.log('data', data);
@@ -89,7 +80,6 @@ const UpdateTransport = ({id}) => {
 
     return (
         <div>
-
             <Button
                 variant="contained"
                 color="secondary"
@@ -98,7 +88,6 @@ const UpdateTransport = ({id}) => {
             >
                 Editar
             </Button>
-
 
             <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
                 <form onSubmit={handleSubmit(onSubmit)}>

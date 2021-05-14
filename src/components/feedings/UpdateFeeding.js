@@ -1,24 +1,22 @@
 import React, {useState} from "react";
 import {useForm} from "react-hook-form";
-import {Artist} from "@/lib/artists";
-import useSWR, {mutate} from "swr";
+import useSWR from "swr";
 import {
-    Button, Checkbox,
+    Button,
     Dialog,
     DialogActions,
     DialogContent,
     DialogContentText,
-    DialogTitle, Fab, FormControlLabel, Grid, InputLabel,
-    makeStyles, Select,
-    TextField, Tooltip
+    DialogTitle,
+    InputLabel,
+    makeStyles,
+    Select,
+    TextField
 } from "@material-ui/core";
 import {fetcher} from "../../utils";
-import AddIcon from "@material-ui/icons/Add";
 import Loading from "@/components/Loading";
-import {useRouter} from "next/router";
 import EditIcon from "@material-ui/icons/Edit";
 import IconButton from "@material-ui/core/IconButton";
-import {Concert} from "@/lib/concerts";
 import {Feeding} from "@/lib/feedings";
 
 const useStyles = makeStyles((theme) => ({
@@ -27,20 +25,19 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-//Este {id} lo recibe desde el componente donde lo llamemos, en este caso sería: <UpdateArtistForm id={artist.id}/>
-
+//Este {id} lo recibe desde el componente donde lo llamemos
 const UpdateFeeding = ({id}) => {
+
     const classes = useStyles();
+    const {data: feedings, error, mutate} = useSWR(`/feedings`, fetcher);
+    const {data: fplaces} = useSWR(`/feeding_places`, fetcher);
+    const {data: artists} = useSWR(`/artists`, fetcher);
+    const {data: users} = useSWR(`/users`, fetcher);
     const { register, handleSubmit } = useForm();
-    const [open, setOpen] = useState(false);
-    const {data: feedings, error, mutate} = useSWR(`/feedings/${''}`, fetcher);
     const [statePlace, setPlace] = useState(null);
     const [stateArtist, setArtist] = useState(null);
     const [stateUser, setUser] = useState(null);
-    const {data: fplaces} = useSWR(`/feeding_places/${''}`, fetcher);
-    const {data: artists} = useSWR(`/artists/${''}`, fetcher);
-    const {data: users} = useSWR(`/users/${''}`, fetcher);
-
+    const [open, setOpen] = useState(false);
 
     const onSubmit = async (data) => {
         console.log('data', data);
@@ -101,7 +98,6 @@ const UpdateFeeding = ({id}) => {
             <IconButton aria-label="editar"  className={classes.edit} size="small" onClick={handleClickOpen} >
                 <EditIcon />
             </IconButton>
-
 
             <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
                 <form onSubmit={handleSubmit(onSubmit)}>

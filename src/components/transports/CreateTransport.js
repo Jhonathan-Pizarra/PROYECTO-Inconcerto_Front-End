@@ -1,20 +1,25 @@
 import React, {useState} from "react";
 import {useForm} from "react-hook-form";
-import {Festival} from "@/lib/festivals";
-import useSWR, {mutate} from "swr";
+import useSWR from "swr";
 import {
-    Button, Checkbox,
+    Button,
+    Checkbox,
     Dialog,
     DialogActions,
     DialogContent,
     DialogContentText,
-    DialogTitle, Fab, FormControlLabel, InputAdornment, InputLabel,
-    makeStyles, Select,
-    TextField, Tooltip
+    DialogTitle,
+    Fab,
+    FormControlLabel,
+    InputAdornment,
+    InputLabel,
+    makeStyles,
+    Select,
+    TextField,
+    Tooltip
 } from "@material-ui/core";
 import {fetcher} from "../../utils";
 import AddIcon from "@material-ui/icons/Add";
-import {Essay} from "@/lib/essays";
 import Loading from "@/components/Loading";
 import {Transport} from "@/lib/transports";
 
@@ -27,11 +32,6 @@ const useStyles = makeStyles((theme) => ({
         right: theme.spacing(2),
     },
 }));
-
-
-// Establecer los values={} acorde al campo que correspindan **
-// Si tiene checkbox, selectos y así, copiar sus funciones handle del create **
-// Si tiene checkbox, selectos y así, copiar sus variables consts del create **
 
 
 const CreateTransport = () => {
@@ -102,7 +102,7 @@ const CreateTransport = () => {
     return (
         <div>
 
-            <Tooltip title="Add" aria-label="add" className={classes.fixed}>
+            <Tooltip title="Nuevo" aria-label="add" className={classes.fixed}>
                 <Fab  color="secondary" onClick={handleClickOpen} > {/*className={classes.fixed}*/}
                     <AddIcon />
                 </Fab>

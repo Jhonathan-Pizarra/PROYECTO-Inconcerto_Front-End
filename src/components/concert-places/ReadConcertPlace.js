@@ -1,15 +1,13 @@
-import withAuth from "@/hocs/withAuth";
 import {fetcher} from "../../utils";
 import useSWR from "swr";
 import Loading from "@/components/Loading";
-import FestivalCreateForm from "@/components/festivals/FestivalCreateForm";
-import BackToTop from "@/components/BackToTop";
-import {Box, Button, Card, CardActions, CardContent, CardMedia, Grid, Link, Typography} from "@material-ui/core";
+import {Box, Button, Card, CardActions, CardContent, Grid, Link, Typography} from "@material-ui/core";
 import Routes from "@/constants/routes";
 import React from "react";
-import { makeStyles } from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import UpdateConcertPlace from "@/components/concert-places/UpdateConcertPlace";
 import DeleteConcertPlace from "@/components/concert-places/DeleteConcertPlace";
+import CreateConcertPlace from "@/components/concert-places/CreateConcertPlace";
 
 
 const useStyles = makeStyles({
@@ -56,9 +54,8 @@ const useStyles = makeStyles({
 
 const ReadConcertPlace = () => {
 
-    const {data: places, error} = useSWR(`/places/${''}`, fetcher);
     const classes = useStyles();
-    const bull = <span className={classes.bullet}>•</span>;
+    const {data: places, error} = useSWR(`/places/${''}`, fetcher);
 
     if(error) return <p>No se pudieron cargar los lugares...</p>;
     if (!places) return <Loading/>;
@@ -66,6 +63,7 @@ const ReadConcertPlace = () => {
     return (
         <div>
             {/*<BackToTop/>*/}
+            <CreateConcertPlace/>
             <Grid container className={classes.root} spacing={3} direction='row' justify='flex-start'>
                 {places.data.map(place => {
                     return(
@@ -133,16 +131,8 @@ const ReadConcertPlace = () => {
                             <div className={classes.details}>
                                 <Grid container>
                                     <CardActions >
-
                                         <UpdateConcertPlace id={place.id}/>
-
                                         <DeleteConcertPlace id={place.id}/>
-
-                                        {/*<Link href={`${Routes.PLACES}/${place.id}`}>*/}
-                                        {/*    <Button size="small" color="primary">*/}
-                                        {/*        Eliminar*/}
-                                        {/*    </Button>*/}
-                                        {/*</Link>*/}
                                     </CardActions>
                                 </Grid>
                             </div>
@@ -151,7 +141,7 @@ const ReadConcertPlace = () => {
                 })}
             </Grid>
         </div>
-    )
+    );
 }
 
 export default ReadConcertPlace; //Colocar WithAuth Al terminar

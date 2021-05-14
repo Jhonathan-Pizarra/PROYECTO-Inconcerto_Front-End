@@ -1,20 +1,22 @@
 import React, {useState} from "react";
 import {useForm} from "react-hook-form";
-import {Festival} from "@/lib/festivals";
-import useSWR, {mutate} from "swr";
+import useSWR from "swr";
 import {
-    Button, Checkbox,
+    Button,
+    Checkbox,
     Dialog,
     DialogActions,
     DialogContent,
     DialogContentText,
-    DialogTitle, Fab, FormControlLabel, InputLabel,
-    makeStyles, Select,
-    TextField, Tooltip
+    DialogTitle,
+    Fab,
+    FormControlLabel,
+    makeStyles,
+    TextField,
+    Tooltip
 } from "@material-ui/core";
 import {fetcher} from "../../utils";
 import AddIcon from "@material-ui/icons/Add";
-import {Essay} from "@/lib/essays";
 import Loading from "@/components/Loading";
 import {FeedingPlace} from "@/lib/feeding_places";
 
@@ -29,17 +31,13 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-// Establecer los values={} acorde al campo que correspindan **
-// Si tiene checkbox, selectos y así, copiar sus funciones handle del create **
-// Si tiene checkbox, selectos y así, copiar sus variables consts del create **
-
-
 const CreateFeedingPlace = () => {
+
     const classes = useStyles();
-    const { register, handleSubmit } = useForm();
-    const [open, setOpen] = React.useState(false);
     const {data: fplace, error, mutate} = useSWR(`/feeding_places`, fetcher);
+    const { register, handleSubmit } = useForm();
     const [checkedPermission, setCheckedPermission] = useState(true);
+    const [open, setOpen] = React.useState(false);
 
     const onSubmit = async (data) => {
         console.log('data', data);
@@ -84,13 +82,13 @@ const CreateFeedingPlace = () => {
         setCheckedPermission(event.target.checked);
     };
 
-    if(error) return <div>"No se obtuvo el lugar..."</div>;
+    if(error) return <div>"No se pudo crear el lugar..."</div>;
     if(!fplace) return <Loading/>;
 
     return (
         <div>
 
-            <Tooltip title="Add" aria-label="add" className={classes.fixed}>
+            <Tooltip title="Nuevo" aria-label="add" className={classes.fixed}>
                 <Fab  color="secondary" onClick={handleClickOpen} > {/*className={classes.fixed}*/}
                     <AddIcon />
                 </Fab>

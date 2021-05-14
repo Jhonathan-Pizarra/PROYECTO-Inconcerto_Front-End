@@ -1,20 +1,22 @@
 import React, {useState} from "react";
 import {useForm} from "react-hook-form";
-import {Festival} from "@/lib/festivals";
-import useSWR, {mutate} from "swr";
+import useSWR from "swr";
 import {
     Button,
     Dialog,
     DialogActions,
     DialogContent,
     DialogContentText,
-    DialogTitle, Fab, InputLabel,
-    makeStyles, Select,
-    TextField, Tooltip
+    DialogTitle,
+    Fab,
+    InputLabel,
+    makeStyles,
+    Select,
+    TextField,
+    Tooltip
 } from "@material-ui/core";
 import {fetcher} from "../../utils";
 import AddIcon from "@material-ui/icons/Add";
-import {Essay} from "@/lib/essays";
 import Loading from "@/components/Loading";
 import {Feeding} from "@/lib/feedings";
 
@@ -30,16 +32,17 @@ const useStyles = makeStyles((theme) => ({
 
 
 const CreateFeeding = () => {
+
     const classes = useStyles();
+    const {data: feedings, error, mutate} = useSWR(`/feedings`, fetcher);
+    const {data: fplaces} = useSWR(`/feeding_places`, fetcher);
+    const {data: artists} = useSWR(`/artists`, fetcher);
+    const {data: users} = useSWR(`/users`, fetcher);
     const { register, handleSubmit } = useForm();
-    const [open, setOpen] = React.useState(false);
-    const {data: feedings, error, mutate} = useSWR(`/feedings/${''}`, fetcher);
     const [statePlace, setPlace] = useState(null);
     const [stateArtist, setArtist] = useState(null);
     const [stateUser, setUser] = useState(null);
-    const {data: fplaces} = useSWR(`/feeding_places/${''}`, fetcher);
-    const {data: artists} = useSWR(`/artists/${''}`, fetcher);
-    const {data: users} = useSWR(`/users/${''}`, fetcher);
+    const [open, setOpen] = useState(false);
 
 
     const onSubmit = async (data) => {
@@ -109,7 +112,7 @@ const CreateFeeding = () => {
     return (
         <div>
 
-            <Tooltip title="Add" aria-label="add" className={classes.fixed}>
+            <Tooltip title="Nuevo" aria-label="add" className={classes.fixed}>
                 <Fab  color="secondary" onClick={handleClickOpen} > {/*className={classes.fixed}*/}
                     <AddIcon />
                 </Fab>

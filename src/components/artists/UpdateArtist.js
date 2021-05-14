@@ -1,77 +1,65 @@
 import React, {useState} from "react";
 import {useForm} from "react-hook-form";
 import {Artist} from "@/lib/artists";
-import useSWR, {mutate} from "swr";
+import useSWR from "swr";
 import {
-    Button, Checkbox,
+    Button,
+    Checkbox,
     Dialog,
     DialogActions,
     DialogContent,
     DialogContentText,
-    DialogTitle, Fab, FormControlLabel, Grid, InputLabel,
-    makeStyles, Select,
-    TextField, Tooltip
+    DialogTitle,
+    FormControlLabel,
+    Grid,
+    InputLabel,
+    makeStyles,
+    Select,
+    TextField
 } from "@material-ui/core";
 import {fetcher} from "../../utils";
-import AddIcon from "@material-ui/icons/Add";
 import Loading from "@/components/Loading";
+import EditIcon from "@material-ui/icons/Edit";
+import IconButton from "@material-ui/core/IconButton";
 
 const useStyles = makeStyles((theme) => ({
-    fixed: {
-        /*display: 'inline-flex',*/
-        //position: '-moz-initial',//a la derecha
-        position: 'fixed', //a la izquierda...
-        bottom: theme.spacing(2),
-        right: theme.spacing(2),
+    edit:{
+        color: "#FAC800",
     },
 }));
 
-const CreateArtistForm = () => {
-    const classes = useStyles();
-    const { register, handleSubmit } = useForm();
-    const [open, setOpen] = useState(false);
-    const {data: artists, mutate, error} = useSWR(`/artists`, fetcher);
-    const [foodGroup, setfoodGroup] = useState(null);
-    const [checkedPassage, setCheckedPassage] = useState(true);
+//Este {id} lo recibe desde el componente donde lo llamemos, en este caso sería: <UpdateArtistForm id={artist.id}/>
 
+const UpdateArtist = ({id}) => {
+
+    const classes = useStyles();
+    const { data: artist, mutate, error } = useSWR(`/artists/${id}`, fetcher);
+    const { register, handleSubmit } = useForm();
+    const [checkedPassage, setCheckedPassage] = useState(true);
+    const [foodGroup, setfoodGroup] = useState(null);
+    const [open, setOpen] = useState(false);
 
     const onSubmit = async (data) => {
         console.log('data', data);
 
-        const newArtist = {
-            ciOrPassport: data.ciOrPassport,
-            artisticOrGroupName: data.artisticOrGroupName,
-            name: data.name,
-            lastName: data.lastName,
-            nationality: data.nationality,
-            mail: data.mail,
-            phone: data.phone,
-            passage: data.passage,
-            instruments: data.instruments,
-            emergencyPhone: data.emergencyPhone,
-            emergencyMail: data.emergencyMail,
-            foodGroup: data.foodGroup,
-            observation: data.observation,
-        };
-
-        const formData = new FormData();
-        formData.append("ciOrPassport", newArtist.ciOrPassport);
-        formData.append("artisticOrGroupName", newArtist.artisticOrGroupName);
-        formData.append("name", newArtist.name);
-        formData.append("lastName", newArtist.lastName);
-        formData.append("nationality", newArtist.nationality);
-        formData.append("mail", newArtist.mail);
-        formData.append("phone", newArtist.phone);
-        formData.append("passage", newArtist.passage);
-        formData.append("instruments", newArtist.instruments);
-        formData.append("emergencyPhone", newArtist.emergencyPhone);
-        formData.append("emergencyMail", newArtist.emergencyMail);
-        formData.append("foodGroup", newArtist.foodGroup);
-        formData.append("observation", newArtist.observation);
-
         try {
-            await Artist.create(formData);
-            mutate("/artists");
+            await Artist.update(id, {
+                ...data,
+                ciOrPassport: data.ciOrPassport,
+                artisticOrGroupName: data.artisticOrGroupName,
+                name: data.name,
+                lastName: data.lastName,
+                nationality: data.nationality,
+                mail: data.mail,
+                phone: data.phone,
+                passage: data.passage,
+                instruments: data.instruments,
+                emergencyPhone: data.emergencyPhone,
+                emergencyMail: data.emergencyMail,
+                foodGroup: data.foodGroup,
+                observation: data.observation,
+            });
+            mutate();
         } catch (error) {
             if (error.response) {
                 // The request was made and the server responded with a status code
@@ -107,23 +95,21 @@ const CreateArtistForm = () => {
         setfoodGroup({foodGroup});
     };
 
-
-    if(error) return <div>"Recarga la página para continuar..."</div>;
-    if(!artists) return <Loading/>;
+    if(error) return <div>"No se pudo editar el artista..."</div>;
+    if(!artist) return <Loading/>;
 
     return (
         <div>
 
-            <Tooltip title="Add" aria-label="add" className={classes.fixed}>
-                <Fab  color="secondary" onClick={handleClickOpen} > {/*className={classes.fixed}*/}
-                    <AddIcon />
-                </Fab>
-            </Tooltip>
+            <IconButton aria-label="editar"  className={classes.edit} size="small" onClick={handleClickOpen} >
+                <EditIcon />
+            </IconButton>
 
             <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
                 <form onSubmit={handleSubmit(onSubmit)}>
 
                     <DialogTitle id="form-dialog-title">InConcerto</DialogTitle>
+
                     <DialogContent>
                         <DialogContentText>
                             Por favor llena los siguientes campos:
@@ -132,6 +118,7 @@ const CreateArtistForm = () => {
                             margin="dense"
                             id="standard-number"
                             label="Cédula o Pasaporte"
+                            value={artist.ciOrPassport}
                             type="number"
                             {...register('ciOrPassport')}
                             fullWidth
@@ -146,6 +133,7 @@ const CreateArtistForm = () => {
                             fullWidth
                         />
                     </DialogContent>
+
                     <DialogContent>
                         <DialogContentText>
                             Datos personales:
@@ -161,15 +149,6 @@ const CreateArtistForm = () => {
                                     {...register('name')}
                                     fullWidth
                                 />
-                                {/*<TextField*/}
-                                {/*    style={{paddingRight: 10}}*/}
-                                {/*    margin="dense"*/}
-                                {/*    id="outlined-basic"*/}
-                                {/*    label="Lol"*/}
-                                {/*    type="text"*/}
-                                {/*    {...register('lastName')}*/}
-                                {/*    fullWidth*/}
-                                {/*/>*/}
                             </Grid>
                             <Grid item xs={12} sm={6} md={6} lg={6}>
                                 <TextField
@@ -180,14 +159,6 @@ const CreateArtistForm = () => {
                                     type="text"
                                     {...register('lastName')}
                                 />
-                                {/*<TextField*/}
-                                {/*    style={{paddingRight: 10, marginLeft:10}}*/}
-                                {/*    margin="dense"*/}
-                                {/*    id="outlined-basic"*/}
-                                {/*    label="XD"*/}
-                                {/*    type="text"*/}
-                                {/*    {...register('lastName')}*/}
-                                {/*/>*/}
                             </Grid>
                         </Grid>
                         <Grid container spacing={0}>
@@ -204,7 +175,6 @@ const CreateArtistForm = () => {
                             <Grid item xs sm={6} md={6} lg={6}>
                                 <TextField
                                     style={{paddingRight: 10, marginLeft:10}}
-                                    //style={{marginLeft: 10}}
                                     margin="dense"
                                     id="standard-number"
                                     label="Teléfono"
@@ -223,21 +193,6 @@ const CreateArtistForm = () => {
                                 fullWidth
                             />
                         </Grid>
-
-                        {/*<TextField*/}
-                        {/*    margin="dense"*/}
-                        {/*    id="outlined-basic"*/}
-                        {/*    label="Nombre"*/}
-                        {/*    type="text"*/}
-                        {/*    {...register('name')}*/}
-                        {/*/>*/}
-                        {/*<TextField*/}
-                        {/*    margin="dense"*/}
-                        {/*    id="outlined-basic"*/}
-                        {/*    label="Apellido"*/}
-                        {/*    type="text"*/}
-                        {/*    {...register('lastName')}*/}
-                        {/*/>*/}
                     </DialogContent>
 
                     <DialogContent style={{textAlign: 'center'}}>
@@ -246,6 +201,7 @@ const CreateArtistForm = () => {
                             {...register('passage')}
                             control={
                                 <Checkbox
+                                    color="primary"
                                     autoFocus={true}
                                     checked={checkedPassage}
                                     onChange={handleCheckPassage}
@@ -331,7 +287,7 @@ const CreateArtistForm = () => {
                             Cancelar
                         </Button>
                         <Button onClick={handleClose} color="primary" type="submit">
-                            Crear
+                            Editar
                         </Button>
                     </DialogActions>
                 </form>
@@ -340,4 +296,4 @@ const CreateArtistForm = () => {
     );
 };
 
-export default CreateArtistForm;
+export default UpdateArtist;

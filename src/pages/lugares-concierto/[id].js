@@ -8,6 +8,7 @@ import DeleteConcertPlace from "@/components/concert-places/DeleteConcertPlace";
 
 
 const PlaceConcertsID= () =>{
+
     const router = useRouter();
     const {id} = router.query;
     const {data: place, error} = useSWR(`/places/${id}`, fetcher);

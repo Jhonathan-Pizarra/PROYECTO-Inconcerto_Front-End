@@ -6,10 +6,10 @@ import withAuth from "@/hocs/withAuth";
 
 
 const ArtistasID= () =>{
+
     const router = useRouter();
     const {id} = router.query;
     const {data: artist, error} = useSWR(`/artists/${id}`, fetcher);
-
 
     if(error) return <div>"No se obtuvo el Artista"</div>;
     if(!artist) return <Loading/>;

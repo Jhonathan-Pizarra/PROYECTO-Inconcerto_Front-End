@@ -1,11 +1,5 @@
 import withAuth from "@/hocs/withAuth";
-import {fetcher} from "../../utils";
-import useSWR from "swr";
-import Loading from "@/components/Loading";
-import ReadArtistForm from "@/components/artists/ReadArtistForm";
-import CreateArtistForm from "@/components/artists/CreateArtistForm";
-import ReadResourcesForm from "@/components/resources/ReadResourcesForm";
-import CreateResourceForm from "@/components/resources/CreateResourcesForm";
+import ReadResources from "@/components/resources/ReadResources";
 
 
 const Recursos = () => {
@@ -14,8 +8,7 @@ const Recursos = () => {
         <div>
 
             <div className="container">
-                <ReadResourcesForm/>
-                <CreateResourceForm/>
+                <ReadResources/>
             </div>
         </div>
     )
