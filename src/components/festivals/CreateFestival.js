@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import {useForm} from "react-hook-form";
 import {Festival} from "@/lib/festivals";
 import useSWR from "swr";
@@ -17,6 +17,15 @@ import {
 import {fetcher} from "../../utils";
 import Loading from "@/components/Loading";
 import AddIcon from "@material-ui/icons/Add";
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from "yup";
+import translateMessage from "@/constants/messages";
+
+const schema = yup.object().shape({
+    name: yup.string().required("Este campo es necesario..."),
+    description: yup.string().required("Este campo es necesario..."),
+    //image: yup.required(),
+});
 
 const useStyles = makeStyles((theme) => ({
     fixed: {
@@ -31,8 +40,10 @@ const useStyles = makeStyles((theme) => ({
 const CreateFestival = () => {
 
     const classes = useStyles();
-    const { register, handleSubmit } = useForm();
-    const [open, setOpen] = React.useState(false);
+    const { register, handleSubmit, reset, formState:{ errors } } = useForm({
+        resolver: yupResolver(schema)
+    });
+    const [open, setOpen] = useState(false);
     const {data: festival, error, mutate} = useSWR(`/festivals`, fetcher);
     // const fileInputRef = useRef();
 
@@ -59,7 +70,8 @@ const CreateFestival = () => {
             if (error.response) {
                 // The request was made and the server responded with a status code
                 // that falls out of the range of 2xx
-                // alert(error.response.message);
+                //alert(error.response.data.message);
+                //alert(translateMessage(error.response.data.message));
                 console.error(error.response);
             } else if (error.request) {
                 // The request was made but no response was received
@@ -72,6 +84,7 @@ const CreateFestival = () => {
             }
             console.error(error.config);
         }
+        reset(); //Limpiar los imput después del submit
     };
 
     const handleClickOpen = () => {
@@ -96,6 +109,7 @@ const CreateFestival = () => {
                 <form onSubmit={handleSubmit(onSubmit)}>
 
                     <DialogTitle id="form-dialog-title">InConcerto</DialogTitle>
+
                     <DialogContent>
                         <DialogContentText>
                             Por favor llena los siguientes campos:
@@ -110,7 +124,11 @@ const CreateFestival = () => {
                             {...register('name')}
                             fullWidth
                         />
+                        <DialogContentText color="secondary">
+                            {errors.name?.message}
+                        </DialogContentText>
                     </DialogContent>
+
                     <DialogContent>
                         <TextField
                             //autoFocus
@@ -125,7 +143,11 @@ const CreateFestival = () => {
                             {...register('description')}
                             fullWidth
                         />
+                        <DialogContentText color="secondary">
+                            {errors.description?.message}
+                        </DialogContentText>
                     </DialogContent>
+
                     <DialogContentText>
                         <DialogContent>
                             Cargar imagen:
@@ -136,6 +158,7 @@ const CreateFestival = () => {
                             />
                         </DialogContent>
                     </DialogContentText>
+
                     <DialogActions>
                         <Button onClick={handleClose} color="primary">
                             Cancelar
