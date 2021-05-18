@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {useForm} from "react-hook-form";
 import {Festival} from "@/lib/festivals";
 import useSWR from "swr";
@@ -9,7 +9,7 @@ import {
     DialogContent,
     DialogContentText,
     DialogTitle,
-    Fab,
+    Fab, Grid,
     makeStyles,
     TextField,
     Tooltip
@@ -17,6 +17,7 @@ import {
 import {fetcher} from "../../utils";
 import Loading from "@/components/Loading";
 import AddIcon from "@material-ui/icons/Add";
+import CloseIcon from '@material-ui/icons/Close';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
 import translateMessage from "@/constants/messages";
@@ -35,6 +36,10 @@ const useStyles = makeStyles((theme) => ({
         bottom: theme.spacing(2),
         right: theme.spacing(2),
     },
+    cancel: {
+        position: 'fixed', //a la izquierda...
+
+    },
 }));
 
 const CreateFestival = () => {
@@ -43,11 +48,12 @@ const CreateFestival = () => {
     const { register, handleSubmit, reset, formState:{ errors } } = useForm({
         resolver: yupResolver(schema)
     });
-    const [open, setOpen] = useState(false);
+    const [modal, setModal] = useState(false);
     const {data: festival, error, mutate} = useSWR(`/festivals`, fetcher);
     // const fileInputRef = useRef();
 
     const onSubmit = async (data) => {
+
         console.log('data', data);
         console.log("imgen ", data.image[0]);
 
@@ -71,7 +77,17 @@ const CreateFestival = () => {
                 // The request was made and the server responded with a status code
                 // that falls out of the range of 2xx
                 //alert(error.response.data.message);
-                //alert(translateMessage(error.response.data.message));
+                alert(translateMessage(error.response.data.message));
+                // alert(translateMessage(error.response.data.message));
+                // if (error.response.data.errors.name) {
+                //     alert(translateMessage(error.response.data.errors.name));
+                // } else if (error.response.data.errors.description) {
+                //     alert(translateMessage(error.response.data.errors.description));
+                // } else if(error.response.data.errors.image[0]) {
+                //     alert(translateMessage(error.response.data.errors.image[0]));
+                // } else if(error.response.data.errors.image[1]) {
+                //     alert(translateMessage(error.response.data.errors.image[1]));
+                // }
                 console.error(error.response);
             } else if (error.request) {
                 // The request was made but no response was received
@@ -84,15 +100,21 @@ const CreateFestival = () => {
             }
             console.error(error.config);
         }
+
         reset(); //Limpiar los imput después del submit
     };
 
-    const handleClickOpen = () => {
-        setOpen(true);
+    const handleOpen = () => {
+        reset();
+        setModal(true);
     };
 
-    const handleClose = () => {
-        setOpen(false);
+    const handleClose =  () => {
+        setModal(false);
+    };
+
+    const handleValidate = () =>{
+        setTimeout(handleClose,500000);
     };
 
     if(error) return <div>"No se pudo crear el festival..."</div>;
@@ -101,11 +123,24 @@ const CreateFestival = () => {
     return (
         <div>
             <Tooltip title="Nuevo" aria-label="add" className={classes.fixed}>
-                <Fab  color="secondary" onClick={handleClickOpen} > {/*className={classes.fixed}*/}
+                <Fab  color="secondary" onClick={handleOpen} > {/*className={classes.fixed}*/}
                     <AddIcon />
                 </Fab>
             </Tooltip>
-            <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+            <Dialog open={modal} onClose={handleClose} aria-labelledby="form-dialog-title" >
+
+                <Grid
+                    container
+                    direction="row"
+                    justify="flex-end"
+                    alignItems="flex-start"
+                >
+                    <Button onClick={handleClose} color="secondary" className={classes.cancel}>
+                        <CloseIcon/>
+                    </Button>
+                </Grid>
+
+
                 <form onSubmit={handleSubmit(onSubmit)}>
 
                     <DialogTitle id="form-dialog-title">InConcerto</DialogTitle>
@@ -121,6 +156,7 @@ const CreateFestival = () => {
                             id="name"
                             label="Nombre"
                             type="text"
+                            value={festival.name}
                             {...register('name')}
                             fullWidth
                         />
@@ -140,6 +176,7 @@ const CreateFestival = () => {
                             rows={3}
                             rowsMax={6}
                             type="text"
+                            value={festival.description}
                             {...register('description')}
                             fullWidth
                         />
@@ -163,7 +200,8 @@ const CreateFestival = () => {
                         <Button onClick={handleClose} color="primary">
                             Cancelar
                         </Button>
-                        <Button onClick={handleClose} color="primary" type="submit">
+
+                        <Button type="submit" onClick={handleValidate} color="primary">
                             Crear
                         </Button>
                     </DialogActions>
