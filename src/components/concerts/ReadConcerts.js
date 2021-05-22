@@ -131,7 +131,8 @@ const ReadConcerts = () => {
                 <TablePagination
                     rowsPerPageOptions={[5, 10, 25]}
                     component="div"
-                    count={concerts.meta.total}
+                    //count={concerts.meta.total}
+                    count = {concerts.data.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     onChangePage={handleChangePage}
