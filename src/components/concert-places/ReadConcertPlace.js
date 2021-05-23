@@ -103,7 +103,7 @@ const ReadConcertPlace = () => {
                                                 >
                                                     <Link href={`${Routes.PLACES}/${place.id}`} style={{textAlign: "center"}}>
                                                         <Button size="small" color="primary">
-                                                            Ver más
+                                                            Detalle
                                                         </Button>
                                                     </Link>
                                                 </Grid>

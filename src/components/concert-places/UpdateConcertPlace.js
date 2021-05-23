@@ -18,11 +18,10 @@ import EditIcon from "@material-ui/icons/Edit";
 import {PlaceConcert} from "@/lib/concert_places";
 
 //Este {id} lo recibe desde el componente donde lo llamemos, en este caso sería: <UpdateConcertPlace id={place.id}/>
-
 const UpdateConcertPlace = ({id}) => {
 
     const {data: place, mutate, error} = useSWR(`/places/${id}`, fetcher);
-    const { register, handleSubmit } = useForm();
+    const { register, handleSubmit, reset } = useForm();
     const [checkedPermission, setCheckedPermission] = useState(true);
     const [open, setOpen] = useState(false);
 
@@ -32,11 +31,11 @@ const UpdateConcertPlace = ({id}) => {
         try {
             await PlaceConcert.update(id, {
                 ...data,
-                name: data.name,
-                address: data.address,
+                name: ((data.name) === "") ? `Vacío (${place.id})` : data.name,
+                address: ((data.address) === "") ? `Vacío (${place.id})` : data.address,
                 permit: data.permit,
-                aforo: data.aforo,
-                description: data.description,
+                aforo: (((data.aforo) === "") || ((data.aforo) <= 0) ) ? '1' : data.aforo,
+                description: ((data.description) === "") ? `Vacío (${place.id})` : data.description,
             });
             mutate();
         } catch (error) {
@@ -49,6 +48,7 @@ const UpdateConcertPlace = ({id}) => {
             }
             console.error(error.config);
         }
+        reset();
     };
 
     const handleClickOpen = () => {
@@ -124,7 +124,7 @@ const UpdateConcertPlace = ({id}) => {
                                 type="number"
                                 defaultValue={place.aforo}
                                 {...register('aforo')}
-                                helperText="(Déjelo en 0 si no aplica)"
+                                //helperText="(Déjelo en 0 si no aplica)"
                             />
                         </DialogContent>
 
@@ -139,6 +139,7 @@ const UpdateConcertPlace = ({id}) => {
                                         onChange={handleCheckPermission}
                                     />
                                 }
+                                //defaultValue={place.permit}
                                 label="Permiso"
                                 labelPlacement="top"
                             />
