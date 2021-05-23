@@ -1,7 +1,7 @@
 import {fetcher} from "../../utils";
 import useSWR from "swr";
 import Loading from "@/components/Loading";
-import {Grid, makeStyles, Tabs} from "@material-ui/core";
+import {Grid, makeStyles, Paper, Tabs} from "@material-ui/core";
 import React from 'react';
 import PropTypes from 'prop-types';
 import Tab from '@material-ui/core/Tab';
@@ -87,7 +87,7 @@ const ReadResources = () => {
                         return (
                             <Tab key={resource.id} label={resource.name} {...a11yProps(resource.id)} />
 
-                        )
+                        );
                     })}
                 </Tabs>
                 {resources.data.map(resource => {
@@ -98,22 +98,17 @@ const ReadResources = () => {
                                 <br/>
                                 <p>Cantidad: {resource.quantity === 0 ? "No aplica": resource.quantity}</p>
                                 <br/>
-                                <Grid container spacing={2}>
-                                    <Grid item xs={2}>
-                                        <UpdateResource id={resource.id} />
-                                    </Grid>
-                                    <Grid item xs={2}>
-                                        <DeleteResource id={resource.id} />
-                                    </Grid>
+                                <Grid container item xs>
+                                    <span style={{paddingRight: 10}}><UpdateResource id={resource.id} /></span>
+                                    <span style={{paddingLeft: 10}}><DeleteResource id={resource.id} /></span>
                                 </Grid>
                             </TabPanel>
                         </div>
-
-                    )
+                    );
                 })}
             </div>
         </div>
-    )
+    );
 }
 
 export default ReadResources;

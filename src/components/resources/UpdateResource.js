@@ -17,10 +17,9 @@ import {Resource} from "@/lib/resources";
 
 
 //Este {id} lo recibe desde el componente donde lo llamemos, en este caso sería: <UpdateResorce id={resource.id}/>
-
 const UpdateResource = ({id}) => {
 
-    const { register, handleSubmit } = useForm();
+    const { register, handleSubmit, reset } = useForm();
     const [open, setOpen] = useState(false);
     const {data: resource, mutate, error} = useSWR(`/resources/${id}`, fetcher);
 
@@ -30,11 +29,12 @@ const UpdateResource = ({id}) => {
         try {
             await Resource.update(id, {
                 ...data,
-                name: data.name,
-                quantity: data.quantity,
-                description: data.description,
+                name: ((data.name) === "") ? `Vacío (${resource.id})` : data.name,
+                quantity: (((data.quantity) === "") || ((data.quantity) < 0) ) ? '0' : data.quantity,
+                description: ((data.description) === "") ? `Sin descripción` : data.description,
             });
             mutate();
+            handleClose();
         } catch (error) {
             if (error.response) {
                 console.error(error.response);
@@ -45,9 +45,10 @@ const UpdateResource = ({id}) => {
             }
             console.error(error.config);
         }
+        reset();
     };
 
-    const handleClickOpen = () => {
+    const handleOpen = () => {
         setOpen(true);
     };
 
@@ -65,12 +66,12 @@ const UpdateResource = ({id}) => {
                 variant="contained"
                 color="secondary"
                 startIcon={<EditIcon />}
-                onClick={handleClickOpen}
+                onClick={handleOpen}
             >
                 Editar
             </Button>
 
-            {/*<IconButton aria-label="editar"  className={classes.edit} size="small" onClick={handleClickOpen} >*/}
+            {/*<IconButton aria-label="editar"  className={classes.edit} size="small" onClick={handleOpen} >*/}
             {/*    <EditIcon />*/}
             {/*</IconButton>*/}
 
@@ -83,24 +84,26 @@ const UpdateResource = ({id}) => {
                             Por favor llena los siguientes campos:
                         </DialogContentText>
                         <TextField
-                            margin="dense"
-                            id="standard-number"
-                            label="Cantidad"
-                            type="number"
-                            defaultValue={0}
-                            autoFocus
-                            {...register('quantity')}
-                        />
-                    </DialogContent>
-                    <DialogContent>
-                        <TextField
                             //autoFocus
                             margin="dense"
                             id="name"
                             label="Nombre"
+                            defaultValue={resource.name}
                             type="text"
                             {...register('name')}
                             fullWidth
+                        />
+                    </DialogContent>
+                    <DialogContent>
+                        <TextField
+                            margin="dense"
+                            id="standard-number"
+                            label="Cantidad"
+                            type="number"
+                            defaultValue={resource.quantity}
+                            //autoFocus
+                            {...register('quantity')}
+                            helperText="(0 si no aplica)"
                         />
                     </DialogContent>
 
@@ -109,6 +112,7 @@ const UpdateResource = ({id}) => {
                             margin="dense"
                             id="outlined-basic"
                             label="Observación"
+                            defaultValue={resource.description}
                             type="text"
                             multiline
                             rows={3}
