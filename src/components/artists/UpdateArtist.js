@@ -21,6 +21,8 @@ import {fetcher} from "../../utils";
 import Loading from "@/components/Loading";
 import EditIcon from "@material-ui/icons/Edit";
 import IconButton from "@material-ui/core/IconButton";
+import * as yup from "yup";
+import {yupResolver} from "@hookform/resolvers/yup";
 
 const useStyles = makeStyles((theme) => ({
     edit:{
@@ -28,13 +30,25 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-//Este {id} lo recibe desde el componente donde lo llamemos, en este caso sería: <UpdateArtistForm id={artist.id}/>
+const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
 
+const schema = yup.object().shape({
+    //ciOrPassport: yup.string().max(15, 'Has excedido el número dígitos permitidos').required("Este campo es necesario..."),
+    mail: yup.string().email('Ese e-mail no es válido...').notRequired(),
+    phone: yup.string().length(10, 'Se requieren 10 números').matches(phoneRegExp, 'Ése número no es válido').notRequired(),
+    emergencyPhone: yup.string().matches(phoneRegExp, 'Ése número no es válido').notRequired(),
+    emergencyMail: yup.string().email('Ese e-mail no es válido...').notRequired(),
+
+});
+
+//Este {id} lo recibe desde el componente donde lo llamemos, en este caso sería: <UpdateArtistForm id={artist.id}/>
 const UpdateArtist = ({id}) => {
 
     const classes = useStyles();
     const { data: artist, mutate, error } = useSWR(`/artists/${id}`, fetcher);
-    const { register, handleSubmit } = useForm();
+    const { register, handleSubmit, reset, formState:{ errors } } = useForm({
+        resolver: yupResolver(schema)
+    });
     const [checkedPassage, setCheckedPassage] = useState(true);
     const [foodGroup, setfoodGroup] = useState(null);
     const [open, setOpen] = useState(false);
@@ -46,25 +60,27 @@ const UpdateArtist = ({id}) => {
             await Artist.update(id, {
                 ...data,
                 ciOrPassport: data.ciOrPassport,
-                artisticOrGroupName: data.artisticOrGroupName,
-                name: data.name,
-                lastName: data.lastName,
-                nationality: data.nationality,
-                mail: data.mail,
+                artisticOrGroupName: ((data.artisticOrGroupName) === "") ? `Vacío (${artist.id})` : data.artisticOrGroupName,
+                name: ((data.name) === "") ? `Vacío (${artist.id})` : data.name,
+                lastName: ((data.lastName) === "") ? `Vacío (${artist.id})` : data.lastName,
+                nationality: ((data.nationality) === "") ? `Vacío (${artist.id})` : data.nationality,
+                mail: ((data.mail) === "") ? `vacío(${artist.id})@mail.com` : data.mail,
+                //mail: data.mail,
                 phone: data.phone,
                 passage: data.passage,
-                instruments: data.instruments,
+                instruments: ((data.instruments) === "") ? `Vacío (${artist.id})` : data.instruments,
                 emergencyPhone: data.emergencyPhone,
-                emergencyMail: data.emergencyMail,
+                emergencyMail: ((data.emergencyMail) === "") ? `vacío(${artist.id})@mail.com` : data.emergencyMail,
                 foodGroup: data.foodGroup,
-                observation: data.observation,
+                observation: ((data.observation) === "") ? `Vacío (${artist.id})` : data.observation,
             });
             mutate();
+            handleClose();
         } catch (error) {
             if (error.response) {
                 // The request was made and the server responded with a status code
                 // that falls out of the range of 2xx
-                // alert(error.response.message);
+                alert(error.response.message);
                 console.error(error.response);
             } else if (error.request) {
                 // The request was made but no response was received
@@ -77,9 +93,10 @@ const UpdateArtist = ({id}) => {
             }
             console.error(error.config);
         }
+        reset();
     };
 
-    const handleClickOpen = () => {
+    const handleOpen = () => {
         setOpen(true);
     };
 
@@ -95,13 +112,17 @@ const UpdateArtist = ({id}) => {
         setfoodGroup({foodGroup});
     };
 
+    const handleValidate = () =>{
+        setTimeout(handleClose,500000);
+    };
+
     if(error) return <div>"No se pudo editar el artista..."</div>;
     if(!artist) return <Loading/>;
 
     return (
         <div>
 
-            <IconButton aria-label="editar"  className={classes.edit} size="small" onClick={handleClickOpen} >
+            <IconButton aria-label="editar"  className={classes.edit} size="small" onClick={handleOpen} >
                 <EditIcon />
             </IconButton>
 
@@ -118,7 +139,7 @@ const UpdateArtist = ({id}) => {
                             margin="dense"
                             id="standard-number"
                             label="Cédula o Pasaporte"
-                            value={artist.ciOrPassport}
+                            defaultValue={artist.ciOrPassport}
                             type="number"
                             {...register('ciOrPassport')}
                             fullWidth
@@ -127,6 +148,7 @@ const UpdateArtist = ({id}) => {
                             margin="dense"
                             id="standard-helperTex"
                             label="Nombre artístico"
+                            defaultValue={artist.artisticOrGroupName}
                             type="text"
                             {...register('artisticOrGroupName')}
                             helperText="O la banda a la que pertenece"
@@ -145,6 +167,7 @@ const UpdateArtist = ({id}) => {
                                     margin="dense"
                                     id="outlined-basic"
                                     label="Nombre"
+                                    defaultValue={artist.name}
                                     type="text"
                                     {...register('name')}
                                     fullWidth
@@ -156,6 +179,7 @@ const UpdateArtist = ({id}) => {
                                     margin="dense"
                                     id="outlined-basic"
                                     label="Apellido"
+                                    defaultValue={artist.lastName}
                                     type="text"
                                     {...register('lastName')}
                                 />
@@ -168,6 +192,7 @@ const UpdateArtist = ({id}) => {
                                     margin="dense"
                                     id="outlined-basic"
                                     label="Nacionalidad"
+                                    defaultValue={artist.nationality}
                                     type="text"
                                     {...register('nationality')}
                                 />
@@ -178,9 +203,13 @@ const UpdateArtist = ({id}) => {
                                     margin="dense"
                                     id="standard-number"
                                     label="Teléfono"
+                                    defaultValue={artist.phone}
                                     type="number"
                                     {...register('phone')}
                                 />
+                                <DialogContentText color="secondary">
+                                    {errors.phone?.message}
+                                </DialogContentText>
                             </Grid>
                         </Grid>
                         <Grid container>
@@ -188,10 +217,14 @@ const UpdateArtist = ({id}) => {
                                 margin="dense"
                                 id="outlined-basic"
                                 label="E-mail"
+                                defaultValue={artist.mail}
                                 type="text"
                                 {...register('mail')}
                                 fullWidth
                             />
+                            <DialogContentText color="secondary">
+                                {errors.mail?.message}
+                            </DialogContentText>
                         </Grid>
                     </DialogContent>
 
@@ -215,6 +248,7 @@ const UpdateArtist = ({id}) => {
                             margin="dense"
                             id="outlined-basic"
                             label="Violín, Guitarra, Piano..."
+                            defaultValue={artist.instruments}
                             type="text"
                             multiline
                             rows={3}
@@ -233,10 +267,14 @@ const UpdateArtist = ({id}) => {
                                     margin="dense"
                                     id="standard-number"
                                     label="Teléfono Emergencia"
+                                    defaultValue={artist.emergencyPhone}
                                     type="number"
                                     {...register('emergencyPhone')}
                                     fullWidth
                                 />
+                                <DialogContentText color="secondary">
+                                    {errors.emergencyPhone?.message}
+                                </DialogContentText>
                             </Grid>
                             <Grid item xs sm={6} md={6} lg={6}>
                                 <TextField
@@ -244,10 +282,14 @@ const UpdateArtist = ({id}) => {
                                     margin="dense"
                                     id="outlined-basic"
                                     label="E-mail Emergencia"
+                                    defaultValue={artist.emergencyMail}
                                     type="text"
                                     {...register('emergencyMail')}
                                     fullWidth
                                 />
+                                <DialogContentText color="secondary">
+                                    {errors.emergencyMail?.message}
+                                </DialogContentText>
                             </Grid>
                         </Grid>
                     </DialogContent>
@@ -257,14 +299,14 @@ const UpdateArtist = ({id}) => {
                         <Select
                             fullWidth
                             native
-                            value={foodGroup}
+                            defaultValue={artist.foodGroup}
                             onChange={handleChangeSelection}
                             {...register("foodGroup")}
                         >
-                            <option aria-label="None" value="" />
-                            <option value={"Vegetariano"}>Vegetariano</option>
                             <option value={"Vegano"}>Vegano</option>
+                            <option value={"Vegetariano"}>Vegetariano</option>
                             <option value={"Omnivoro"}>Onminivoro</option>
+                            <option value={"Crudista"}>Crudista</option>
                         </Select>
                     </DialogContent>
 
@@ -273,6 +315,7 @@ const UpdateArtist = ({id}) => {
                             margin="dense"
                             id="outlined-basic"
                             label="Observación"
+                            defaultValue={artist.observation}
                             type="text"
                             multiline
                             rows={3}
@@ -286,7 +329,7 @@ const UpdateArtist = ({id}) => {
                         <Button onClick={handleClose} color="primary">
                             Cancelar
                         </Button>
-                        <Button onClick={handleClose} color="primary" type="submit">
+                        <Button onClick={handleValidate} color="primary" type="submit">
                             Editar
                         </Button>
                     </DialogActions>
