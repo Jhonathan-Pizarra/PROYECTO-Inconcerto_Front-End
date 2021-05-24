@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const DeleteArtistForm = ({id}) => {
+const DeleteFeeding = ({id}) => {
     const router = useRouter();
     const classes = useStyles();
     const {data: feedings, error} = useSWR(`/feedings/${''}`, fetcher);
@@ -49,4 +49,4 @@ const DeleteArtistForm = ({id}) => {
 
 };
 
-export default DeleteArtistForm;
+export default DeleteFeeding;

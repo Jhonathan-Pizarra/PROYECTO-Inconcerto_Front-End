@@ -19,6 +19,15 @@ import {fetcher} from "../../utils";
 import AddIcon from "@material-ui/icons/Add";
 import Loading from "@/components/Loading";
 import {Feeding} from "@/lib/feedings";
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from "yup";
+
+const schema = yup.object().shape({
+    date: yup.string().required("Debes escoger una fecha"),
+    food: yup.string().required("Este campo es necesario..."),
+    quantityLunchs: yup.number().typeError('Debes escribir un número').positive('La cantidad no es válida').min(1, 'Capacidad mínima es 1').required("Este campo es necesario..."),
+    observation: yup.string().required("Este campo es necesario.."),
+});
 
 const useStyles = makeStyles((theme) => ({
     fixed: {
@@ -38,7 +47,9 @@ const CreateFeeding = () => {
     const {data: fplaces} = useSWR(`/feeding_places`, fetcher);
     const {data: artists} = useSWR(`/artists`, fetcher);
     const {data: users} = useSWR(`/users`, fetcher);
-    const { register, handleSubmit } = useForm();
+    const { register, handleSubmit, reset, formState:{ errors } } = useForm({
+        resolver: yupResolver(schema)
+    });
     const [statePlace, setPlace] = useState(null);
     const [stateArtist, setArtist] = useState(null);
     const [stateUser, setUser] = useState(null);
@@ -70,6 +81,7 @@ const CreateFeeding = () => {
         try {
             await Feeding.create(formData);
             mutate("/feedings");
+            handleClose();
         } catch (error) {
             if (error.response) {
                 console.error(error.response);
@@ -80,9 +92,11 @@ const CreateFeeding = () => {
             }
             console.error(error.config);
         }
+        reset();
     };
 
     const handleClickOpen = () => {
+        reset();
         setOpen(true);
     };
 
@@ -102,6 +116,9 @@ const CreateFeeding = () => {
         setUser({stateUser});
     };
 
+    const handleValidate = () =>{
+        setTimeout(handleClose,500000);
+    };
 
     if(error) return <div>"No se obtuvo el cuadro de alimentación..."</div>;
     if(!feedings) return <Loading/>;
@@ -126,19 +143,20 @@ const CreateFeeding = () => {
                         <DialogContentText>
                             Por favor llena los siguientes campos:
                         </DialogContentText>
-                        <DialogContent>
-                            <TextField
-                                id="datetime-local"
-                                label="Fecha"
-                                type="datetime-local"
-                                defaultValue="2017-05-24T10:30"
-                                margin="dense"
-                                //className={classes.textField}
-                                {...register('date')}
-                                fullWidth
-                            />
-                        </DialogContent>
 
+                        <TextField
+                            id="datetime-local"
+                            label="Fecha"
+                            type="datetime-local"
+                            defaultValue="2017-05-24T10:30"
+                            margin="dense"
+                            //className={classes.textField}
+                            {...register('date')}
+                            fullWidth
+                        />
+                        <DialogContentText color="secondary">
+                            {errors.date?.message}
+                        </DialogContentText>
                     </DialogContent>
 
                     <DialogContent>
@@ -150,6 +168,9 @@ const CreateFeeding = () => {
                             {...register('food')}
                             fullWidth
                         />
+                        <DialogContentText color="secondary">
+                            {errors.food?.message}
+                        </DialogContentText>
                     </DialogContent>
 
                     <DialogContent>
@@ -158,10 +179,13 @@ const CreateFeeding = () => {
                             id="standard-number"
                             label="Cantidad"
                             type="number"
-                            defaultValue={0}
+                            //defaultValue={0}
                             {...register('quantityLunchs')}
-                            helperText="(Déjelo en 0 si no aplica)"
+                            //helperText="(Déjelo en 0 si no aplica)"
                         />
+                        <DialogContentText color="secondary">
+                            {errors.quantityLunchs?.message}
+                        </DialogContentText>
                     </DialogContent>
 
                     <DialogContent>
@@ -173,12 +197,16 @@ const CreateFeeding = () => {
                             {...register('observation')}
                             fullWidth
                         />
+                        <DialogContentText color="secondary">
+                            {errors.observation?.message}
+                        </DialogContentText>
                     </DialogContent>
 
                     <DialogContent>
                         <InputLabel htmlFor="outlined-age-native-simple">Lugar</InputLabel>
                         <Select
                             fullWidth
+                            autoFocus
                             native
                             value={statePlace}
                             onChange={handleChangePlace}
@@ -191,9 +219,10 @@ const CreateFeeding = () => {
                     </DialogContent>
 
                     <DialogContent>
-                        <InputLabel htmlFor="outlined-age-native-simple">Artista</InputLabel>
+                        <InputLabel htmlFor="outlined-age-native-simple">Comensal</InputLabel>
                         <Select
                             fullWidth
+                            autoFocus
                             native
                             value={stateArtist}
                             onChange={handleChangeArtist}
@@ -209,6 +238,7 @@ const CreateFeeding = () => {
                         <InputLabel htmlFor="outlined-age-native-simple">Responasble</InputLabel>
                         <Select
                             fullWidth
+                            autoFocus
                             native
                             value={stateUser}
                             onChange={handleChangeUser}
@@ -225,7 +255,7 @@ const CreateFeeding = () => {
                         <Button onClick={handleClose} color="primary">
                             Cancelar
                         </Button>
-                        <Button onClick={handleClose} color="primary" type="submit">
+                        <Button onClick={handleValidate} color="primary" type="submit">
                             Crear
                         </Button>
                     </DialogActions>
