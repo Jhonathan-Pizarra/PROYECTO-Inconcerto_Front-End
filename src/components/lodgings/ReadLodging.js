@@ -116,7 +116,7 @@ const ReadLodging = () => {
                 <TablePagination
                     rowsPerPageOptions={[5, 10, 25]}
                     component="div"
-                    count={lodgings.meta.total}
+                    count={lodgings.data.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     onChangePage={handleChangePage}

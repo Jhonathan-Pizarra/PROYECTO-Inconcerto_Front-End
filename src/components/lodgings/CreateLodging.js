@@ -17,6 +17,17 @@ import {fetcher} from "../../utils";
 import AddIcon from "@material-ui/icons/Add";
 import Loading from "@/components/Loading";
 import {Lodging} from "@/lib/lodgings";
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from "yup";
+
+const schema = yup.object().shape({
+    name: yup.string().required("Este campo es necesario..."),
+    type: yup.string().required("Este campo es necesario..."),
+    description: yup.string().required("Este campo es necesario..."),
+    observation: yup.string().required("Este campo es necesario..."),
+    checkIn: yup.string().required("Debes escoger una fecha..."),
+    checkOut: yup.string().required("Debes escoger una fecha..."),
+});
 
 const useStyles = makeStyles((theme) => ({
     fixed: {
@@ -33,8 +44,13 @@ const CreateLodging = () => {
 
     const classes = useStyles();
     const {data: lodging, error, mutate} = useSWR(`/lodgings`, fetcher);
-    const { register, handleSubmit } = useForm();
+    const { register, handleSubmit, reset, formState:{ errors } } = useForm({
+        resolver: yupResolver(schema)
+    });
     const [open, setOpen] = React.useState(false);
+
+    if(error) return <div>"No se obtuvo el hospedaje..."</div>;
+    if(!lodging) return <Loading/>;
 
     const onSubmit = async (data) => {
         console.log('data', data);
@@ -59,6 +75,7 @@ const CreateLodging = () => {
         try {
             await Lodging.create(formData);
             mutate("/lodgings");
+            handleClose();
         } catch (error) {
             if (error.response) {
                 console.error(error.response);
@@ -69,9 +86,11 @@ const CreateLodging = () => {
             }
             console.error(error.config);
         }
+        reset();
     };
 
-    const handleClickOpen = () => {
+    const handleOpen = () => {
+        reset();
         setOpen(true);
     };
 
@@ -79,14 +98,15 @@ const CreateLodging = () => {
         setOpen(false);
     };
 
-    if(error) return <div>"No se obtuvo el hospedaje..."</div>;
-    if(!lodging) return <Loading/>;
+    const handleValidate = () =>{
+        setTimeout(handleClose,500000);
+    };
 
     return (
         <div>
 
             <Tooltip title="Nuevo" aria-label="add" className={classes.fixed}>
-                <Fab  color="secondary" onClick={handleClickOpen} > {/*className={classes.fixed}*/}
+                <Fab  color="secondary" onClick={handleOpen} > {/*className={classes.fixed}*/}
                     <AddIcon />
                 </Fab>
             </Tooltip>
@@ -107,6 +127,9 @@ const CreateLodging = () => {
                             {...register('name')}
                             fullWidth
                         />
+                        <DialogContentText color="secondary">
+                            {errors.name?.message}
+                        </DialogContentText>
                     </DialogContent>
 
                     <DialogContent>
@@ -118,6 +141,9 @@ const CreateLodging = () => {
                             {...register('type')}
                             fullWidth
                         />
+                        <DialogContentText color="secondary">
+                            {errors.type?.message}
+                        </DialogContentText>
                     </DialogContent>
 
                     <DialogContent>
@@ -132,6 +158,9 @@ const CreateLodging = () => {
                             {...register('description')}
                             fullWidth
                         />
+                        <DialogContentText color="secondary">
+                            {errors.description?.message}
+                        </DialogContentText>
                     </DialogContent>
 
                     <DialogContent>
@@ -146,6 +175,9 @@ const CreateLodging = () => {
                             {...register('observation')}
                             fullWidth
                         />
+                        <DialogContentText color="secondary">
+                            {errors.observation?.message}
+                        </DialogContentText>
                     </DialogContent>
 
                     <DialogContent>
@@ -160,6 +192,9 @@ const CreateLodging = () => {
                             //dateConcert
                             fullWidth
                         />
+                        <DialogContentText color="secondary">
+                            {errors.checkIn?.message}
+                        </DialogContentText>
                     </DialogContent>
 
                     <DialogContent>
@@ -174,13 +209,16 @@ const CreateLodging = () => {
                             //dateConcert
                             fullWidth
                         />
+                        <DialogContentText color="secondary">
+                            {errors.checkOut?.message}
+                        </DialogContentText>
                     </DialogContent>
 
                     <DialogActions>
                         <Button onClick={handleClose} color="primary">
                             Cancelar
                         </Button>
-                        <Button onClick={handleClose} color="primary" type="submit">
+                        <Button onClick={handleValidate} color="primary" type="submit">
                             Crear
                         </Button>
                     </DialogActions>
