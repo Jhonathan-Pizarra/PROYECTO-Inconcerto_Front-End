@@ -28,14 +28,26 @@ const useStyles = makeStyles((theme) => ({
 const UpdateActivity = ({id}) => {
 
     const classes = useStyles();
-    const {data: activities, error, mutate} = useSWR(`/activityfestivals/${''}`, fetcher);
+    const {data: activity, error, mutate} = useSWR(`/activityfestivals/${id}`, fetcher);
     const {data: festivals} = useSWR(`/festivals`, fetcher);
     const {data: users} = useSWR(`/users`, fetcher);
-    const { register, handleSubmit } = useForm();
+    const { register, handleSubmit, reset } = useForm();
     const [state, setState] = useState(null);
     const [stateUser, setUser] = useState(null);
     const [open, setOpen] = useState(false);
 
+    if(error) return <div>"Recarga la página para continuar..."</div>;
+    if(!activity) return <Loading/>;
+    if(!festivals) return <Loading/>;
+    if(!users) return <Loading/>;
+
+    var d = new Date(activity.date); ////Sun May 30 2021 00:18:00 GMT-0500 (hora de Ecuador)
+    var year = d.getFullYear();
+    var month = (d.getMonth()+1).toString().padStart(2, "0");
+    var day = d.getDate().toString().padStart(2, "0");
+    var hours = ('0'+d.getHours()).substr(-2);
+    var min = d.getMinutes().toString().padStart(2, "0");
+    const fulldate = year+'-'+month+'-'+day+'T'+hours+':'+min;
 
     const onSubmit = async (data) => {
         console.log('data', data);
@@ -43,10 +55,10 @@ const UpdateActivity = ({id}) => {
         try {
             await Activity.update(id, {
                 ...data,
-                name: data.name,
-                date: data.date,
-                description: data.description,
-                observation: data.observation,
+                name: ((data.name) === "") ? `Vacío (${activity.id})` : data.name,
+                date: ((data.date) === "") ? fulldate : data.date,
+                description: ((data.description) === "") ? `Vacío (${activity.id})` : data.description,
+                observation: ((data.observation) === "") ? `Vacío (${activity.id})` : data.observation,
                 festival_id: data.festival_id,
                 user_id: data.user_id,
             });
@@ -61,9 +73,10 @@ const UpdateActivity = ({id}) => {
             }
             console.error(error.config);
         }
+        reset();
     };
 
-    const handleClickOpen = () => {
+    const handleOpen = () => {
         setOpen(true);
     };
 
@@ -79,10 +92,7 @@ const UpdateActivity = ({id}) => {
         setUser({stateUser});
     };
 
-    if(error) return <div>"Recarga la página para continuar..."</div>;
-    if(!activities) return <Loading/>;
-    if(!festivals) return <Loading/>;
-    if(!users) return <Loading/>;
+
 
     return (
         <div>
@@ -91,7 +101,7 @@ const UpdateActivity = ({id}) => {
                 variant="contained"
                 color="secondary"
                 startIcon={<EditIcon />}
-                onClick={handleClickOpen}
+                onClick={handleOpen}
             >
                 Editar
             </Button>
@@ -109,6 +119,7 @@ const UpdateActivity = ({id}) => {
                             margin="dense"
                             id="name"
                             label="Nombre"
+                            defaultValue={activity.name}
                             type="text"
                             {...register('name')}
                             fullWidth
@@ -120,7 +131,7 @@ const UpdateActivity = ({id}) => {
                             id="datetime-local"
                             label="Fecha"
                             type="datetime-local"
-                            defaultValue="2017-05-24T10:30"
+                            defaultValue={fulldate}
                             margin="dense"
                             //className={classes.textField}
                             {...register('date')}
@@ -134,6 +145,7 @@ const UpdateActivity = ({id}) => {
                             margin="dense"
                             id="outlined-basic"
                             label="Descripcion"
+                            defaultValue={activity.description}
                             type="text"
                             multiline
                             rows={3}
@@ -148,6 +160,7 @@ const UpdateActivity = ({id}) => {
                             margin="dense"
                             id="outlined-basic"
                             label="Observación"
+                            defaultValue={activity.observation}
                             type="text"
                             multiline
                             rows={3}
