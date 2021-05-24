@@ -22,6 +22,18 @@ import {fetcher} from "../../utils";
 import AddIcon from "@material-ui/icons/Add";
 import Loading from "@/components/Loading";
 import {Transport} from "@/lib/transports";
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from "yup";
+
+const schema = yup.object().shape({
+    type: yup.string().required("Este campo es necesario..."),
+    //capacity: yup.string().required("Debes escoger una fecha..."),
+    capacity: yup.number().typeError('Debes escribir un número').positive('La cantidad no es válida').min(1, 'Capacidad mínima es 1').required("Este campo es necesario..."),
+    instruments_capacity: yup.number().typeError('Debes escribir un peso').positive('La cantidad no es válida').min(0.1, 'Capacidad mínima es 0.1 Kg').required("Este campo es necesario..."),
+    //disponibility: yup.string().required("Este campo es necesario..."),
+    licence_plate: yup.string().required("Este campo es necesario.."),
+    //calendar: yup.string().required("Debes escoger uno"),
+});
 
 const useStyles = makeStyles((theme) => ({
     fixed: {
@@ -36,12 +48,18 @@ const useStyles = makeStyles((theme) => ({
 
 const CreateTransport = () => {
     const classes = useStyles();
-    const { register, handleSubmit } = useForm();
+    const { register, handleSubmit, reset, formState:{ errors } } = useForm({
+        resolver: yupResolver(schema)
+    });
     const [open, setOpen] = React.useState(false);
     const {data: transport, error, mutate} = useSWR(`/transports`, fetcher);
     const [disponibility, setDisponibility] = useState(true);
     const [state, setState] = useState(null);
     const {data: calendars} = useSWR(`/calendars`, fetcher);
+
+    if(error) return <div>"No se obtuvo el transporte..."</div>;
+    if(!transport) return <Loading/>;
+    if(!calendars) return <Loading/>;
 
     const onSubmit = async (data) => {
         console.log('data', data);
@@ -66,6 +84,7 @@ const CreateTransport = () => {
         try {
             await Transport.create(formData);
             mutate("/transports");
+            handleClose();
         } catch (error) {
             if (error.response) {
                 console.error(error.response);
@@ -76,9 +95,11 @@ const CreateTransport = () => {
             }
             console.error(error.config);
         }
+        reset();
     };
 
-    const handleClickOpen = () => {
+    const handleOpen = () => {
+        reset();
         setOpen(true);
     };
 
@@ -94,16 +115,17 @@ const CreateTransport = () => {
         setState({state});
     };
 
+    const handleValidate = () =>{
+        setTimeout(handleClose,500000);
+    };
 
-    if(error) return <div>"No se obtuvo el transporte..."</div>;
-    if(!transport) return <Loading/>;
-    if(!calendars) return <Loading/>;
+
 
     return (
         <div>
 
             <Tooltip title="Nuevo" aria-label="add" className={classes.fixed}>
-                <Fab  color="secondary" onClick={handleClickOpen} > {/*className={classes.fixed}*/}
+                <Fab  color="secondary" onClick={handleOpen} > {/*className={classes.fixed}*/}
                     <AddIcon />
                 </Fab>
             </Tooltip>
@@ -124,6 +146,9 @@ const CreateTransport = () => {
                             {...register('type')}
                             fullWidth
                         />
+                        <DialogContentText color="secondary">
+                            {errors.type?.message}
+                        </DialogContentText>
                     </DialogContent>
 
                     <DialogContent>
@@ -136,6 +161,9 @@ const CreateTransport = () => {
                             {...register('capacity')}
                             helperText="(Déjelo en 0 si no aplica)"
                         />
+                        <DialogContentText color="secondary">
+                            {errors.capacity?.message}
+                        </DialogContentText>
                     </DialogContent>
 
                     <DialogContent>
@@ -148,6 +176,9 @@ const CreateTransport = () => {
                             variant="outlined"
                             {...register('instruments_capacity')}
                         />
+                        <DialogContentText color="secondary">
+                            {errors.instruments_capacity?.message}
+                        </DialogContentText>
                     </DialogContent>
 
                     <DialogContent>
@@ -175,11 +206,15 @@ const CreateTransport = () => {
                             {...register('licence_plate')}
                             fullWidth
                         />
+                        <DialogContentText color="secondary">
+                            {errors.licence_plate?.message}
+                        </DialogContentText>
                     </DialogContent>
 
                     <DialogContent>
                         <InputLabel htmlFor="outlined-age-native-simple">Calendario</InputLabel>
                         <Select
+                            autoFocus
                             fullWidth
                             native
                             value={state}
@@ -196,7 +231,7 @@ const CreateTransport = () => {
                         <Button onClick={handleClose} color="primary">
                             Cancelar
                         </Button>
-                        <Button onClick={handleClose} color="primary" type="submit">
+                        <Button onClick={handleValidate} color="primary" type="submit">
                             Crear
                         </Button>
                     </DialogActions>

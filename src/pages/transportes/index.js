@@ -9,7 +9,6 @@ const Transportes = () => {
         <div>
             <div className="container">
                 <ReadTransport/>
-                <CreateTransport/>
             </div>
         </div>
 
