@@ -37,11 +37,11 @@ const useStyles = makeStyles({
         flexDirection: 'unset',
         position: 'relative',
         top: -75,
-        left: 20
+        left: 15
     },
     cardDimension: {
         width: 240,
-        height: 420
+        height: 320
     },
     grow: {
         flexGrow: 1,
@@ -75,7 +75,7 @@ const ReadFeedingPlace = () => {
                                                 {fplace.name}
                                             </Typography>
                                             <Typography variant="subtitle1" color="textSecondary"  className={classes.direction}>
-                                                <p><b>Dirección:</b> {fplace.address}</p>
+                                                <p><b>Dirección:</b>&nbsp;{fplace.address}</p>
                                             </Typography>
                                             <Typography variant="subtitle1" color="textSecondary"  className={classes.body}>
                                                 <Grid
@@ -84,7 +84,7 @@ const ReadFeedingPlace = () => {
                                                     justify="flex-end"
                                                     alignItems="center"
                                                 >
-                                                    <b>Disponible:</b>{fplace.permit ? "Si" : "No" }
+                                                    <b>Disponible:</b>&nbsp;{fplace.permit ? "Si" : "No" }
                                                 </Grid>
                                                 <Grid
                                                     container
@@ -92,7 +92,7 @@ const ReadFeedingPlace = () => {
                                                     justify="flex-end"
                                                     alignItems="center"
                                                 >
-                                                    <b>Aforo:</b>{fplace.aforo}
+                                                    <b>Aforo:</b>&nbsp;{fplace.aforo}
                                                 </Grid>
                                                 <Grid
                                                     container

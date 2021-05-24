@@ -19,6 +19,14 @@ import {fetcher} from "../../utils";
 import AddIcon from "@material-ui/icons/Add";
 import Loading from "@/components/Loading";
 import {FeedingPlace} from "@/lib/feeding_places";
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from "yup";
+
+const schema = yup.object().shape({
+    name: yup.string().required("Este campo es necesario..."),
+    address: yup.string().required("Este campo es necesario..."),
+    aforo: yup.number().typeError('Debes escribir un número').positive('La cantidad no es válida').min(1, 'Capacidad mínima es 1').required("Este campo es necesario..."),
+});
 
 const useStyles = makeStyles((theme) => ({
     fixed: {
@@ -35,9 +43,14 @@ const CreateFeedingPlace = () => {
 
     const classes = useStyles();
     const {data: fplace, error, mutate} = useSWR(`/feeding_places`, fetcher);
-    const { register, handleSubmit } = useForm();
+    const { register, handleSubmit, reset, formState:{ errors } } = useForm({
+        resolver: yupResolver(schema)
+    });
     const [checkedPermission, setCheckedPermission] = useState(true);
     const [open, setOpen] = React.useState(false);
+
+    if(error) return <div>"No se pudo crear el lugar..."</div>;
+    if(!fplace) return <Loading/>;
 
     const onSubmit = async (data) => {
         console.log('data', data);
@@ -58,6 +71,7 @@ const CreateFeedingPlace = () => {
         try {
             await FeedingPlace.create(formData);
             mutate("/feeding_places");
+            handleClose();
         } catch (error) {
             if (error.response) {
                 console.error(error.response);
@@ -68,9 +82,11 @@ const CreateFeedingPlace = () => {
             }
             console.error(error.config);
         }
+        reset();
     };
 
-    const handleClickOpen = () => {
+    const handleOpen = () => {
+        reset();
         setOpen(true);
     };
 
@@ -82,14 +98,16 @@ const CreateFeedingPlace = () => {
         setCheckedPermission(event.target.checked);
     };
 
-    if(error) return <div>"No se pudo crear el lugar..."</div>;
-    if(!fplace) return <Loading/>;
+    const handleValidate = () =>{
+        setTimeout(handleClose,500000);
+    };
+
 
     return (
         <div>
 
             <Tooltip title="Nuevo" aria-label="add" className={classes.fixed}>
-                <Fab  color="secondary" onClick={handleClickOpen} > {/*className={classes.fixed}*/}
+                <Fab  color="secondary" onClick={handleOpen} > {/*className={classes.fixed}*/}
                     <AddIcon />
                 </Fab>
             </Tooltip>
@@ -110,6 +128,9 @@ const CreateFeedingPlace = () => {
                             {...register('name')}
                             fullWidth
                         />
+                        <DialogContentText color="secondary">
+                            {errors.name?.message}
+                        </DialogContentText>
                     </DialogContent>
 
                     <DialogContent>
@@ -126,6 +147,9 @@ const CreateFeedingPlace = () => {
                             {...register('address')}
                             fullWidth
                         />
+                        <DialogContentText color="secondary">
+                            {errors.address?.message}
+                        </DialogContentText>
                     </DialogContent>
 
                     <DialogContent style={{textAlign: 'center'}}>
@@ -150,17 +174,19 @@ const CreateFeedingPlace = () => {
                             id="aforo"
                             label="Aforo"
                             type="number"
-                            defaultValue={0}
                             {...register('aforo')}
-                            helperText="(Déjelo en 0 si no aplica)"
+                            //helperText="(Déjelo en 0 si no aplica)"
                         />
+                        <DialogContentText color="secondary">
+                            {errors.aforo?.message}
+                        </DialogContentText>
                     </DialogContent>
 
                     <DialogActions>
                         <Button onClick={handleClose} color="primary">
                             Cancelar
                         </Button>
-                        <Button onClick={handleClose} color="primary" type="submit">
+                        <Button onClick={handleValidate} color="primary" type="submit">
                             Crear
                         </Button>
                     </DialogActions>
