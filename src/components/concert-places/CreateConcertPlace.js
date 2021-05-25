@@ -19,6 +19,16 @@ import {fetcher} from "../../utils";
 import AddIcon from "@material-ui/icons/Add";
 import Loading from "@/components/Loading";
 import {PlaceConcert} from "@/lib/concert_places";
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from "yup";
+
+const schema = yup.object().shape({
+    name: yup.string().required("Este campo es necesario..."),
+    address: yup.string().required("Este campo es necesario..."),
+    //permit: yup.string().required("Este campo es necesario..."),
+    aforo: yup.number().typeError('Debes escribir un número').positive('Esa cantidad no es válida').min(1, 'Lo mínimo es 1').required("Este campo es necesario..."),
+    description: yup.string().required("Este campo es necesario..."),
+});
 
 const useStyles = makeStyles((theme) => ({
     fixed: {
@@ -35,7 +45,9 @@ const CreateConcertPlace = () => {
 
     const classes = useStyles();
     const {data: place, error, mutate} = useSWR(`/places`, fetcher);
-    const { register, handleSubmit } = useForm();
+    const { register, handleSubmit, reset, formState:{ errors } } = useForm({
+        resolver: yupResolver(schema)
+    });
     const [checkedPermission, setCheckedPermission] = useState(true);
     const [open, setOpen] = React.useState(false);
 
@@ -60,6 +72,7 @@ const CreateConcertPlace = () => {
         try {
             await PlaceConcert.create(formData);
             mutate("/places");
+            handleClose();
         } catch (error) {
             if (error.response) {
                 console.error(error.response);
@@ -70,9 +83,11 @@ const CreateConcertPlace = () => {
             }
             console.error(error.config);
         }
+        reset();
     };
 
-    const handleClickOpen = () => {
+    const handleOpen = () => {
+        reset();
         setOpen(true);
     };
 
@@ -84,6 +99,10 @@ const CreateConcertPlace = () => {
         setCheckedPermission(event.target.checked);
     };
 
+    const handleValidate = () =>{
+        setTimeout(handleClose,500000);
+    };
+
     if(error) return <div>"No se pudo crear el lugar del concierto..."</div>;
     if(!place) return <Loading/>;
 
@@ -91,7 +110,7 @@ const CreateConcertPlace = () => {
         <div>
 
             <Tooltip title="Nuevo" aria-label="add" className={classes.fixed}>
-                <Fab  color="secondary" onClick={handleClickOpen} > {/*className={classes.fixed}*/}
+                <Fab  color="secondary" onClick={handleOpen} > {/*className={classes.fixed}*/}
                     <AddIcon />
                 </Fab>
             </Tooltip>
@@ -114,6 +133,9 @@ const CreateConcertPlace = () => {
                             {...register('name')}
                             fullWidth
                         />
+                        <DialogContentText color="secondary">
+                            {errors.name?.message}
+                        </DialogContentText>
                     </DialogContent>
 
                     <DialogContent>
@@ -130,6 +152,9 @@ const CreateConcertPlace = () => {
                             {...register('address')}
                             fullWidth
                         />
+                        <DialogContentText color="secondary">
+                            {errors.address?.message}
+                        </DialogContentText>
                     </DialogContent>
 
                     <DialogContent>
@@ -140,8 +165,10 @@ const CreateConcertPlace = () => {
                             type="number"
                             defaultValue={0}
                             {...register('aforo')}
-                            helperText="(Déjelo en 0 si no aplica)"
                         />
+                        <DialogContentText color="secondary">
+                            {errors.aforo?.message}
+                        </DialogContentText>
                     </DialogContent>
 
                     <DialogContent style={{textAlign: 'center'}}>
@@ -174,13 +201,16 @@ const CreateConcertPlace = () => {
                             {...register('description')}
                             fullWidth
                         />
+                        <DialogContentText color="secondary">
+                            {errors.description?.message}
+                        </DialogContentText>
                     </DialogContent>
 
                     <DialogActions>
                         <Button onClick={handleClose} color="primary">
                             Cancelar
                         </Button>
-                        <Button onClick={handleClose} color="primary" type="submit">
+                        <Button onClick={handleValidate} color="primary" type="submit">
                             Crear
                         </Button>
                     </DialogActions>
