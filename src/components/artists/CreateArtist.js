@@ -22,6 +22,27 @@ import {
 import {fetcher} from "../../utils";
 import AddIcon from "@material-ui/icons/Add";
 import Loading from "@/components/Loading";
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from "yup";
+
+const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
+
+const schema = yup.object().shape({
+    ciOrPassport: yup.string().max(15, 'Has excedido el número dígitos permitidos').required("Este campo es necesario..."),
+    artisticOrGroupName: yup.string().required("Este campo es necesario..."),
+    name: yup.string().required("Este campo es necesario..."),
+    lastName: yup.string().required("Este campo es necesario..."),
+    nationality: yup.string().required("Este campo es necesario..."),
+    mail: yup.string().email('Ese e-mail no es válido...').required("Este campo es necesario..."),
+    phone: yup.string().length(10, 'Se requieren 10 números').matches(phoneRegExp, 'Ése número no es válido').required('Este campo es necesario...'),
+    //passage: yup.boolean().required(),
+    instruments: yup.string().required('Este campo es necesario'),
+    //emergencyPhone: yup.number('Debes escribir un número').positive('Números no válidos...').required('Este campo es necesario'),
+    emergencyPhone: yup.string().matches(phoneRegExp, 'Ése número no es válido').required('Este campo es necesario...'),
+    emergencyMail: yup.string().email('Ese e-mail no es válido...').required("Este campo es necesario..."),
+    //foodGroup: yup.string().required('Este campo es necesario...'),
+    observation: yup.string().required('Este campo es necesario...'),
+});
 
 const useStyles = makeStyles((theme) => ({
     fixed: {
@@ -37,7 +58,9 @@ const CreateArtist = () => {
 
     const classes = useStyles();
     const {data: artists, mutate, error} = useSWR(`/artists`, fetcher);
-    const { register, handleSubmit } = useForm();
+    const { register, handleSubmit, reset, formState:{ errors } } = useForm({
+        resolver: yupResolver(schema)
+    });
     const [checkedPassage, setCheckedPassage] = useState(true);
     const [foodGroup, setfoodGroup] = useState(null);
     const [open, setOpen] = useState(false);
@@ -80,11 +103,12 @@ const CreateArtist = () => {
         try {
             await Artist.create(formData);
             mutate("/artists");
+            handleClose();
         } catch (error) {
             if (error.response) {
                 // The request was made and the server responded with a status code
                 // that falls out of the range of 2xx
-                // alert(error.response.message);
+                alert(error.response.message);
                 console.error(error.response);
             } else if (error.request) {
                 // The request was made but no response was received
@@ -97,9 +121,11 @@ const CreateArtist = () => {
             }
             console.error(error.config);
         }
+        reset();
     };
 
-    const handleClickOpen = () => {
+    const handleOpen = () => {
+        reset();
         setOpen(true);
     };
 
@@ -115,6 +141,9 @@ const CreateArtist = () => {
         setfoodGroup({foodGroup});
     };
 
+    const handleValidate = () =>{
+        setTimeout(handleClose,500000);
+    };
 
     if(error) return <div>"Recarga la página para continuar..."</div>;
     if(!artists) return <Loading/>;
@@ -123,7 +152,7 @@ const CreateArtist = () => {
         <div>
 
             <Tooltip title="Nuevo" aria-label="add" className={classes.fixed}>
-                <Fab  color="secondary" onClick={handleClickOpen} > {/*className={classes.fixed}*/}
+                <Fab  color="secondary" onClick={handleOpen} > {/*className={classes.fixed}*/}
                     <AddIcon />
                 </Fab>
             </Tooltip>
@@ -144,6 +173,9 @@ const CreateArtist = () => {
                             {...register('ciOrPassport')}
                             fullWidth
                         />
+                        <DialogContentText color="secondary">
+                            {errors.ciOrPassport?.message}
+                        </DialogContentText>
                         <TextField
                             margin="dense"
                             id="standard-helperTex"
@@ -153,6 +185,9 @@ const CreateArtist = () => {
                             helperText="O la banda a la que pertenece"
                             fullWidth
                         />
+                        <DialogContentText color="secondary">
+                            {errors.artisticOrGroupName?.message}
+                        </DialogContentText>
                     </DialogContent>
                     <DialogContent>
                         <DialogContentText>
@@ -169,6 +204,9 @@ const CreateArtist = () => {
                                     {...register('name')}
                                     fullWidth
                                 />
+                                <DialogContentText color="secondary">
+                                    {errors.name?.message}
+                                </DialogContentText>
                                 {/*<TextField*/}
                                 {/*    style={{paddingRight: 10}}*/}
                                 {/*    margin="dense"*/}
@@ -188,6 +226,9 @@ const CreateArtist = () => {
                                     type="text"
                                     {...register('lastName')}
                                 />
+                                <DialogContentText color="secondary">
+                                    {errors.lastName?.message}
+                                </DialogContentText>
                                 {/*<TextField*/}
                                 {/*    style={{paddingRight: 10, marginLeft:10}}*/}
                                 {/*    margin="dense"*/}
@@ -208,6 +249,9 @@ const CreateArtist = () => {
                                     type="text"
                                     {...register('nationality')}
                                 />
+                                <DialogContentText color="secondary">
+                                    {errors.nationality?.message}
+                                </DialogContentText>
                             </Grid>
                             <Grid item xs sm={6} md={6} lg={6}>
                                 <TextField
@@ -219,6 +263,9 @@ const CreateArtist = () => {
                                     type="number"
                                     {...register('phone')}
                                 />
+                                <DialogContentText color="secondary">
+                                    {errors.phone?.message}
+                                </DialogContentText>
                             </Grid>
                         </Grid>
                         <Grid container>
@@ -230,12 +277,16 @@ const CreateArtist = () => {
                                 {...register('mail')}
                                 fullWidth
                             />
+                            <DialogContentText color="secondary">
+                                {errors.mail?.message}
+                            </DialogContentText>
                         </Grid>
                     </DialogContent>
 
                     <DialogContent style={{textAlign: 'center'}}>
                         <FormControlLabel
                             value={checkedPassage ? "1" : "0"}
+                            //value={checkedPassage}
                             {...register('passage')}
                             control={
                                 <Checkbox
@@ -247,6 +298,7 @@ const CreateArtist = () => {
                             label="Pasaje"
                             labelPlacement="top"
                         />
+
 
                         <TextField
                             margin="dense"
@@ -260,6 +312,9 @@ const CreateArtist = () => {
                             helperText="¿Qué instrumento toca...?"
                             fullWidth
                         />
+                        <DialogContentText color="secondary">
+                            {errors.instruments?.message}
+                        </DialogContentText>
                     </DialogContent>
 
                     <DialogContent>
@@ -274,6 +329,9 @@ const CreateArtist = () => {
                                     {...register('emergencyPhone')}
                                     fullWidth
                                 />
+                                <DialogContentText color="secondary">
+                                    {errors.emergencyPhone?.message}
+                                </DialogContentText>
                             </Grid>
                             <Grid item xs sm={6} md={6} lg={6}>
                                 <TextField
@@ -285,6 +343,9 @@ const CreateArtist = () => {
                                     {...register('emergencyMail')}
                                     fullWidth
                                 />
+                                <DialogContentText color="secondary">
+                                    {errors.emergencyMail?.message}
+                                </DialogContentText>
                             </Grid>
                         </Grid>
                     </DialogContent>
@@ -292,13 +353,15 @@ const CreateArtist = () => {
                     <DialogContent>
                         <InputLabel htmlFor="outlined-age-native-simple">Grupo Alimenticio</InputLabel>
                         <Select
+                            //autoFocus
                             fullWidth
                             native
+                            //defaultValue={"default"}
                             value={foodGroup}
                             onChange={handleChangeSelection}
                             {...register("foodGroup")}
                         >
-                            <option aria-label="None" value="" />
+                            {/*<option aria-label="None" value="" />*/}
                             <option value={"Vegano"}>Vegano</option>
                             <option value={"Vegetariano"}>Vegetariano</option>
                             <option value={"Omnivoro"}>Onminivoro</option>
@@ -318,13 +381,16 @@ const CreateArtist = () => {
                             {...register('observation')}
                             fullWidth
                         />
+                        <DialogContentText color="secondary">
+                            {errors.observation?.message}
+                        </DialogContentText>
                     </DialogContent>
 
                     <DialogActions>
                         <Button onClick={handleClose} color="primary">
                             Cancelar
                         </Button>
-                        <Button onClick={handleClose} color="primary" type="submit">
+                        <Button onClick={handleValidate} color="primary" type="submit">
                             Crear
                         </Button>
                     </DialogActions>

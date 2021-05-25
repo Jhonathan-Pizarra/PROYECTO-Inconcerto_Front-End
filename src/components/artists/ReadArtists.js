@@ -143,7 +143,8 @@ const ReadArtists = () => {
                     <TablePagination
                         rowsPerPageOptions={[5, 10, 25]}
                         component="div"
-                        count={artists.meta.total}
+                        //count={artists.meta.total}
+                        count = {artists.data.length}
                         rowsPerPage={rowsPerPage}
                         page={page}
                         onChangePage={handleChangePage}
