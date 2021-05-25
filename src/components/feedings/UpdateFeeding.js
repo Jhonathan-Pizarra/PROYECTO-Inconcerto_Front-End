@@ -29,15 +29,29 @@ const useStyles = makeStyles((theme) => ({
 const UpdateFeeding = ({id}) => {
 
     const classes = useStyles();
-    const {data: feedings, error, mutate} = useSWR(`/feedings`, fetcher);
+    const {data: feeding, error, mutate} = useSWR(`/feedings/${id}`, fetcher);
     const {data: fplaces} = useSWR(`/feeding_places`, fetcher);
     const {data: artists} = useSWR(`/artists`, fetcher);
     const {data: users} = useSWR(`/users`, fetcher);
-    const { register, handleSubmit } = useForm();
+    const { register, handleSubmit, reset } = useForm();
     const [statePlace, setPlace] = useState(null);
     const [stateArtist, setArtist] = useState(null);
     const [stateUser, setUser] = useState(null);
     const [open, setOpen] = useState(false);
+
+    if(error) return <div>"Recarga la página para continuar..."</div>;
+    if(!feeding) return <Loading/>;
+    if(!fplaces) return <Loading/>;
+    if(!artists) return <Loading/>;
+    if(!users) return <Loading/>;
+
+    var inFeed = new Date(feeding.date); ////Sun May 30 2021 00:18:00 GMT-0500 (hora de Ecuador)
+    var yearIn = inFeed.getFullYear();
+    var monthIn = (inFeed.getMonth()+1).toString().padStart(2, "0");
+    var dayIn = inFeed.getDate().toString().padStart(2, "0");
+    var hoursIn = ('0'+inFeed.getHours()).substr(-2);
+    var minIn = inFeed.getMinutes().toString().padStart(2, "0");
+    const dateIn = yearIn+'-'+monthIn+'-'+dayIn+'T'+hoursIn+':'+minIn;
 
     const onSubmit = async (data) => {
         console.log('data', data);
@@ -45,10 +59,10 @@ const UpdateFeeding = ({id}) => {
         try {
             await Feeding.update(id, {
                 ...data,
-                date: data.date,
-                food: data.food,
-                observation: data.observation,
-                quantityLunchs: data.quantityLunchs,
+                date:  ((data.date) === "") ? dateIn : data.date,
+                food: ((data.food) === "") ? `Vacío (${feeding.id})` : data.food,
+                observation: ((data.observation) === "") ? `Vacío (${feeding.id})` : data.observation,
+                quantityLunchs: (((data.quantityLunchs) === "") || ((data.quantityLunchs) <= 0) ) ? '1' : data.quantityLunchs,
                 user_id: data.user_id,
                 artist_id: data.artist_id,
                 place_id: data.place_id,
@@ -64,9 +78,10 @@ const UpdateFeeding = ({id}) => {
             }
             console.error(error.config);
         }
+        reset();
     };
 
-    const handleClickOpen = () => {
+    const handleOpen = () => {
         setOpen(true);
     };
 
@@ -86,16 +101,12 @@ const UpdateFeeding = ({id}) => {
         setUser({stateUser});
     };
 
-    if(error) return <div>"Recarga la página para continuar..."</div>;
-    if(!feedings) return <Loading/>;
-    if(!fplaces) return <Loading/>;
-    if(!artists) return <Loading/>;
-    if(!users) return <Loading/>;
+
 
     return (
         <div>
 
-            <IconButton aria-label="editar"  className={classes.edit} size="small" onClick={handleClickOpen} >
+            <IconButton aria-label="editar"  className={classes.edit} size="small" onClick={handleOpen} >
                 <EditIcon />
             </IconButton>
 
@@ -103,23 +114,21 @@ const UpdateFeeding = ({id}) => {
                 <form onSubmit={handleSubmit(onSubmit)}>
 
                     <DialogTitle id="form-dialog-title">InConcerto</DialogTitle>
-                    <DialogContent>
-                        <DialogContentText>
-                            Por favor llena los siguientes campos:
-                        </DialogContentText>
-                        <DialogContent>
-                            <TextField
-                                id="datetime-local"
-                                label="Fecha"
-                                type="datetime-local"
-                                defaultValue="2017-05-24T10:30"
-                                margin="dense"
-                                //className={classes.textField}
-                                {...register('date')}
-                                fullWidth
-                            />
-                        </DialogContent>
 
+                    <DialogContentText>
+                        Por favor llena los siguientes campos:
+                    </DialogContentText>
+                    <DialogContent>
+                        <TextField
+                            id="datetime-local"
+                            label="Fecha"
+                            type="datetime-local"
+                            defaultValue={dateIn}
+                            margin="dense"
+                            //className={classes.textField}
+                            {...register('date')}
+                            fullWidth
+                        />
                     </DialogContent>
 
                     <DialogContent>
@@ -127,6 +136,7 @@ const UpdateFeeding = ({id}) => {
                             margin="dense"
                             id="name"
                             label="Nombre"
+                            defaultValue={feeding.food}
                             type="text"
                             {...register('food')}
                             fullWidth
@@ -138,10 +148,10 @@ const UpdateFeeding = ({id}) => {
                             margin="dense"
                             id="standard-number"
                             label="Cantidad"
+                            defaultValue={feeding.quantityLunchs}
                             type="number"
-                            defaultValue={0}
                             {...register('quantityLunchs')}
-                            helperText="(Déjelo en 0 si no aplica)"
+                            //helperText="(Déjelo en 0 si no aplica)"
                         />
                     </DialogContent>
 
@@ -150,6 +160,7 @@ const UpdateFeeding = ({id}) => {
                             margin="dense"
                             id="name"
                             label="Observación"
+                            defaultValue={feeding.observation}
                             type="text"
                             {...register('observation')}
                             fullWidth
