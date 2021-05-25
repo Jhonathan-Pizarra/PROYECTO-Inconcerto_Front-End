@@ -19,14 +19,6 @@ import {fetcher} from "../../utils";
 import AddIcon from "@material-ui/icons/Add";
 import {Essay} from "@/lib/essays";
 import Loading from "@/components/Loading";
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from "yup";
-
-const schema = yup.object().shape({
-    name: yup.string().required("Este campo es necesario..."),
-    dateEssay: yup.string().required("Debes escoger una fecha"),
-    place: yup.string().required("Este campo es necesario..."),
-});
 
 const useStyles = makeStyles((theme) => ({
     fixed: {
@@ -36,14 +28,12 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const CreateEssay  = () => {
 
+const CreateEssay  = () => {
     const classes = useStyles();
     const {data: essay, error, mutate} = useSWR(`/essays`, fetcher);
     const {data: festivals} = useSWR(`/festivals`, fetcher);
-    const { register, handleSubmit, reset, formState:{ errors } } = useForm({
-        resolver: yupResolver(schema)
-    });
+    const { register, handleSubmit } = useForm();
     const [state, setState] = useState(null);
     const [open, setOpen] = useState(false);
 
@@ -66,7 +56,6 @@ const CreateEssay  = () => {
         try {
             await Essay.create(formData);
             mutate("/essays");
-            alert("Creado!");
         } catch (error) {
             if (error.response) {
                 // The request was made and the server responded with a status code
@@ -84,7 +73,6 @@ const CreateEssay  = () => {
             }
             console.error(error.config);
         }
-        reset(); //Limpiar los imput después del submit
     };
 
     const handleChangeSelection = () => {
@@ -92,16 +80,11 @@ const CreateEssay  = () => {
     };
 
     const handleClickOpen = () => {
-        reset();
         setOpen(true);
     };
 
     const handleClose = () => {
         setOpen(false);
-    };
-
-    const handleValidate = () =>{
-        setTimeout(handleClose,500000);
     };
 
     if(error) return <div>"No se obtuvo el ensayo..."</div>;
@@ -135,9 +118,6 @@ const CreateEssay  = () => {
                             {...register('name')}
                             fullWidth
                         />
-                        <DialogContentText color="secondary">
-                            {errors.name?.message}
-                        </DialogContentText>
                     </DialogContent>
                     <DialogContent>
                         <TextField
@@ -151,9 +131,6 @@ const CreateEssay  = () => {
                             //dateConcert
                             fullWidth
                         />
-                        <DialogContentText color="secondary">
-                            {errors.dateEssay?.message}
-                        </DialogContentText>
                     </DialogContent>
                     <DialogContent>
                         <TextField
@@ -166,9 +143,6 @@ const CreateEssay  = () => {
                             {...register('place')}
                             fullWidth
                         />
-                        <DialogContentText color="secondary">
-                            {errors.place?.message}
-                        </DialogContentText>
                     </DialogContent>
 
                     <DialogContent>
@@ -190,7 +164,7 @@ const CreateEssay  = () => {
                         <Button onClick={handleClose} color="primary">
                             Cancelar
                         </Button>
-                        <Button onClick={handleValidate} color="primary" type="submit">
+                        <Button onClick={handleClose} color="primary" type="submit">
                             Crear
                         </Button>
                     </DialogActions>
