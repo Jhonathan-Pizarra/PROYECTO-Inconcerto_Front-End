@@ -15,14 +15,24 @@ import {
 import EditIcon from "@material-ui/icons/Edit";
 import {fetcher} from "../../utils";
 import Loading from "@/components/Loading";
+import translateMessage from "@/constants/messages";
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from "yup";
 
+
+const schema = yup.object().shape({
+    name: yup.string().notRequired(),
+    description: yup.string().notRequired(),
+});
 
 const UpdateFestival = () => {
 
     const router = useRouter();
     const {id} = router.query;
     const {data: festival, error, mutate} = useSWR(`/festivals/${id}`, fetcher);
-    const { register, handleSubmit } = useForm();
+    const { register, handleSubmit, reset, formState:{ errors }  } = useForm({
+        resolver: yupResolver(schema)
+    });
     const [open, setOpen] = React.useState(false);
     // const fileInputRef = useRef();
 
@@ -33,8 +43,10 @@ const UpdateFestival = () => {
         try {
             await Festival.update(id, {
                 ...data,
-                name: data.name,
-                description: data.description,
+                name: ((data.name) === "") ? `Vacío (${festival.id})` : data.name,
+                description: ((data.description) === "") ? `Ninguna descripción` : data.description,
+                //name: data.name,
+                //description: data.description,
                 image: data.image[0],
             });
             mutate();
@@ -43,7 +55,8 @@ const UpdateFestival = () => {
             if (error.response) {
                 // The request was made and the server responded with a status code
                 // that falls out of the range of 2xx
-                alert(error.response.message);
+                //alert(error.response.message);
+                alert(translateMessage(error.response.data.message));
                 console.log(error.response);
             } else if (error.request) {
                 // The request was made but no response was received
@@ -56,9 +69,11 @@ const UpdateFestival = () => {
             }
             console.log(error.config);
         }
+        reset(); //Limpiar los imput después del submit
     };
 
     const handleClickOpen = () => {
+        //reset(); //Limpiar los imput antes de nada
         setOpen(true);
     };
 
@@ -82,7 +97,9 @@ const UpdateFestival = () => {
 
             <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
                 <form onSubmit={handleSubmit(onSubmit)}>
+
                     <DialogTitle id="form-dialog-title">Editar Festival</DialogTitle>
+
                     <DialogContent>
                         <DialogContentText>
                             Por favor llena los siguientes campos:
@@ -93,13 +110,18 @@ const UpdateFestival = () => {
                             id="name"
                             label="Nombre"
                             type="text"
+                            defaultValue={festival.name}
                             {...register('name')}
                             fullWidth
                         />
+                        <DialogContentText color="secondary">
+                            {errors.name?.message}
+                        </DialogContentText>
                     </DialogContent>
+
                     <DialogContent>
                         <TextField
-                            // autoFocus
+                            //autoFocus
                             margin="dense"
                             id="description"
                             label="Descripción"
@@ -107,11 +129,15 @@ const UpdateFestival = () => {
                             rows={3}
                             rowsMax={6}
                             type="text"
+                            defaultValue={festival.description}
                             {...register('description')}
                             fullWidth
                         />
-
+                        <DialogContentText color="secondary">
+                            {errors.description?.message}
+                        </DialogContentText>
                     </DialogContent>
+
                     <DialogContentText>
                         <DialogContent>
                             Cargar imagen:
