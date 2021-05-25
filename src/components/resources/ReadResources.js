@@ -1,114 +1,103 @@
 import {fetcher} from "../../utils";
 import useSWR from "swr";
 import Loading from "@/components/Loading";
-import {Grid, makeStyles, Paper, Tabs} from "@material-ui/core";
-import React from 'react';
-import PropTypes from 'prop-types';
-import Tab from '@material-ui/core/Tab';
-import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
+import {Accordion, AccordionDetails, AccordionSummary, Grid} from "@material-ui/core";
+import {makeStyles} from "@material-ui/core/styles";
+import Typography from "@material-ui/core/Typography";
+import {useState} from "react";
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import UpdateResource from "@/components/resources/UpdateResource";
 import DeleteResource from "@/components/resources/DeleteResource";
-import CreateResource from "@/components/resources/CreateResource";
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        flexGrow: 1,
-        backgroundColor: theme.palette.background.paper,
-        display: 'flex',
-        height: 300,
-        //height: 224,
+        width: '100%',
     },
-    tabs: {
-        borderRight: `1px solid ${theme.palette.divider}`,
+    heading: {
+        fontSize: theme.typography.pxToRem(15),
+        //flexBasis: '33.33%',
+        flexShrink: 0,
+    },
+    secondaryHeading: {
+        fontSize: theme.typography.pxToRem(15),
+        color: theme.palette.text.secondary,
     },
 }));
 
-function TabPanel(props) {
-    const { children, value, index, ...other } = props;
-
-    return (
-        <div
-            role="tabpanel"
-            hidden={value !== index}
-            id={`vertical-tabpanel-${index}`}
-            aria-labelledby={`vertical-tab-${index}`}
-            {...other}
-        >
-            {value === index && (
-                <Box p={3}>
-                    <Typography>{children}</Typography>
-                </Box>
-            )}
-        </div>
-    );
-}
-
-TabPanel.propTypes = {
-    children: PropTypes.node,
-    index: PropTypes.any.isRequired,
-    value: PropTypes.any.isRequired,
-};
-
-function a11yProps(index) {
-    return {
-        id: `vertical-tab-${index}`,
-        'aria-controls': `vertical-tabpanel-${index}`,
-    };
-}
 
 const ReadResources = () => {
 
     const classes = useStyles();
     const {data: resources, error} = useSWR(`/resources/${''}`, fetcher);
-    const [value, setValue] = React.useState(0);
+    const [expanded, setExpanded] = useState(false);
 
-    const handleChange = (event, newValue) => {
-        setValue(newValue);
+    if(error) return <p>No se pudieron cargar los recursos...</p>;
+    if (!resources) return <Loading/>;
+
+    const handleChange = (panel) => (event, isExpanded) => {
+        setExpanded(isExpanded ? panel : false);
     };
 
-    if (error) return <p>Recarga la página para continuar...</p>;
-    if (!resources) return <Loading/>;
 
     return (
         <div>
-            <CreateResource/>
-            <h1>Recursos/Necesidades InConcerto</h1>
-            <div className={classes.root}>
-                <Tabs
-                    orientation="vertical"
-                    variant="scrollable"
-                    value={value}
-                    onChange={handleChange}
-                    aria-label="Vertical tabs example"
-                    className={classes.tabs}
-                >
-                    {resources.data.map(resource => {
-                        return (
-                            <Tab key={resource.id} label={resource.name} {...a11yProps(resource.id)} />
-
-                        );
-                    })}
-                </Tabs>
-                {resources.data.map(resource => {
-                    return (
-                        <div>
-                            <TabPanel key={resource.id} value={value} index={(resource.id)-1}>
-                                <p>{resource.description}</p>
-                                <br/>
-                                <p>Cantidad: {resource.quantity === 0 ? "No aplica": resource.quantity}</p>
-                                <br/>
-                                <Grid container item xs>
-                                    <span style={{paddingRight: 10}}><UpdateResource id={resource.id} /></span>
-                                    <span style={{paddingLeft: 10}}><DeleteResource id={resource.id} /></span>
+            {resources.data.map(resource => {
+                return(
+                    <Accordion expanded={expanded === `${resource.id}`}  key={resource.id} onChange={handleChange(`${resource.id}`)}>
+                        <AccordionSummary
+                            expandIcon={<ExpandMoreIcon />}
+                            aria-controls="panel1bh-content"
+                            id="panel1bh-header"
+                        >
+                            <Grid
+                                container
+                                direction="row"
+                                justify="flex-start"
+                                alignItems="center"
+                            >
+                                <Grid container  item >
+                                    <Typography className={classes.heading}>{resource.name}</Typography>
                                 </Grid>
-                            </TabPanel>
-                        </div>
-                    );
-                })}
-            </div>
+                                <Grid container  item>
+                                    <Typography className={classes.secondaryHeading}><b>Cantidad:</b> {resource.quantity}&emsp;&emsp;&emsp;</Typography>
+                                </Grid>
+                            </Grid>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            <Grid
+                                container
+                                direction="row"
+                                justify="flex-start"
+                                alignItems="center"
+                            >
+                                <Grid container  item xs={6} sm={3}>
+                                    <Typography className={classes.secondaryHeading}><b>Descripción:&ensp;</b>{resource.description}</Typography>
+                                </Grid>
+                            </Grid>
+                        </AccordionDetails>
+
+                        <AccordionDetails>
+                            <Grid
+                                container
+                                direction="row"
+                                justify="flex-start"
+                                alignItems="center"
+                            >
+                                <Grid container item xs={7} sm={6}>
+                                    <span><UpdateResource id={resource.id}/></span>
+                                    <span style={{marginLeft:  10}}><DeleteResource id={resource.id}/></span>
+                                </Grid>
+
+                            </Grid>
+                            {/*<Typography className={classes.secondaryHeading}><b>Salida:&ensp;</b>{calendar.checkOut_Artist}&emsp;&emsp;&emsp;</Typography>*/}
+                            {/*<span style={{marginLeft: 150}}><UpdateCalendar id={calendar.id}/></span>*/}
+                            {/*<span style={{marginLeft:  5}}><DeleteCalendar id={calendar.id}/></span>*/}
+                        </AccordionDetails>
+                    </Accordion>
+                );
+            })}
         </div>
-    );
+    )
 }
 
 export default ReadResources;
