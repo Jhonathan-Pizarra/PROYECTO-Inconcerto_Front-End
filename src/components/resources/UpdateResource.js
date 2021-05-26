@@ -23,6 +23,9 @@ const UpdateResource = ({id}) => {
     const [open, setOpen] = useState(false);
     const {data: resource, mutate, error} = useSWR(`/resources/${id}`, fetcher);
 
+    if(error) return <div>"Recarga la página para continuar..."</div>;
+    if(!resource) return <Loading/>;
+
     const onSubmit = async (data) => {
         console.log('data', data);
 
@@ -55,9 +58,6 @@ const UpdateResource = ({id}) => {
     const handleClose = () => {
         setOpen(false);
     };
-
-    if(error) return <div>"Recarga la página para continuar..."</div>;
-    if(!resource) return <Loading/>;
 
     return (
         <div>

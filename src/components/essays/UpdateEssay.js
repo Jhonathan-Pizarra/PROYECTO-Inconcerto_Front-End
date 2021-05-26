@@ -28,12 +28,16 @@ const UpdateEssay = () => {
     const [state, setState] = useState(null);
     const [open, setOpen] = useState(false);
 
+    if(error) return <div>"No se pudo editar el ensayo..."</div>;
+    if(!essay) return <Loading/>;
+    if(!festivals) return <Loading/>;
+
     var d = new Date(essay.dateEssay); ////Sun May 30 2021 00:18:00 GMT-0500 (hora de Ecuador)
     var year = d.getFullYear();
     var month = (d.getMonth()+1).toString().padStart(2, "0");
     var day = d.getDate().toString().padStart(2, "0");
     var hours = ('0'+d.getHours()).substr(-2);
-    var min = d.getMinutes();
+    var min = d.getMinutes().toString().padStart(2, "0");
     const fulldate = year+'-'+month+'-'+day+'T'+hours+':'+min;
 
     const onSubmit = async (data) => {
@@ -69,7 +73,7 @@ const UpdateEssay = () => {
         reset(); //Limpiar los imput después del submit
     };
 
-    const handleClickOpen = () => {
+    const handleOpen = () => {
         setOpen(true);
     };
 
@@ -81,9 +85,6 @@ const UpdateEssay = () => {
         setState({state});
     };
 
-    if(error) return <div>"No se pudo editar el ensayo..."</div>;
-    if(!essay) return <Loading/>;
-    if(!festivals) return <Loading/>;
 
     return (
         <div>
@@ -92,7 +93,7 @@ const UpdateEssay = () => {
                 variant="contained"
                 color="secondary"
                 startIcon={<EditIcon />}
-                onClick={handleClickOpen}
+                onClick={handleOpen}
             >
                 Editar
             </Button>

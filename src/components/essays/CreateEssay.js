@@ -47,6 +47,10 @@ const CreateEssay  = () => {
     const [state, setState] = useState(null);
     const [open, setOpen] = useState(false);
 
+    if(error) return <div>"No se obtuvo el ensayo..."</div>;
+    if(!essay) return <Loading/>;
+    if(!festivals) return <Loading/>;
+
     const onSubmit = async (data) => {
         console.log('data', data);
 
@@ -66,7 +70,7 @@ const CreateEssay  = () => {
         try {
             await Essay.create(formData);
             mutate("/essays");
-            alert("Creado!");
+            handleClose();
         } catch (error) {
             if (error.response) {
                 // The request was made and the server responded with a status code
@@ -91,7 +95,7 @@ const CreateEssay  = () => {
         setState({state});
     };
 
-    const handleClickOpen = () => {
+    const handleOpen = () => {
         reset();
         setOpen(true);
     };
@@ -104,15 +108,11 @@ const CreateEssay  = () => {
         setTimeout(handleClose,500000);
     };
 
-    if(error) return <div>"No se obtuvo el ensayo..."</div>;
-    if(!essay) return <Loading/>;
-    if(!festivals) return <Loading/>;
-
     return (
         <div>
 
             <Tooltip title="Nuevo" aria-label="add" className={classes.fixed}>
-                <Fab  color="secondary" onClick={handleClickOpen} > {/*className={classes.fixed}*/}
+                <Fab  color="secondary" onClick={handleOpen} > {/*className={classes.fixed}*/}
                     <AddIcon />
                 </Fab>
             </Tooltip>

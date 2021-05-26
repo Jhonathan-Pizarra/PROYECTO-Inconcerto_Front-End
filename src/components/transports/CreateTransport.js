@@ -119,8 +119,6 @@ const CreateTransport = () => {
         setTimeout(handleClose,500000);
     };
 
-
-
     return (
         <div>
 

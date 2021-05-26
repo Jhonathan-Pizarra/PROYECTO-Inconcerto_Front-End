@@ -52,6 +52,11 @@ const CreateActivity = () => {
     const [stateUser, setUser] = useState(null);
     const [open, setOpen] = useState(false);
 
+    if(error) return <div>"No se obtuvo la actividad..."</div>;
+    if(!activities) return <Loading/>;
+    if(!festivals) return <Loading/>;
+    if(!users) return <Loading/>;
+
     const onSubmit = async (data) => {
         console.log('data', data);
 
@@ -109,11 +114,6 @@ const CreateActivity = () => {
     const handleValidate = () =>{
         setTimeout(handleClose,500000);
     };
-
-    if(error) return <div>"No se obtuvo la actividad..."</div>;
-    if(!activities) return <Loading/>;
-    if(!festivals) return <Loading/>;
-    if(!users) return <Loading/>;
 
     return (
         <div>

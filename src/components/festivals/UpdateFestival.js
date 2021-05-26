@@ -19,7 +19,6 @@ import translateMessage from "@/constants/messages";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
 
-
 const schema = yup.object().shape({
     name: yup.string().notRequired(),
     description: yup.string().notRequired(),
@@ -35,6 +34,9 @@ const UpdateFestival = () => {
     });
     const [open, setOpen] = React.useState(false);
     // const fileInputRef = useRef();
+
+    if(error) return <div>"No se puede editar el festival..."</div>;
+    if(!festival) return <Loading/>
 
     const onSubmit = async (data) => {
         console.log('data', data);
@@ -72,7 +74,7 @@ const UpdateFestival = () => {
         reset(); //Limpiar los imput después del submit
     };
 
-    const handleClickOpen = () => {
+    const handleOpen = () => {
         //reset(); //Limpiar los imput antes de nada
         setOpen(true);
     };
@@ -81,16 +83,13 @@ const UpdateFestival = () => {
         setOpen(false);
     };
 
-    if(error) return <div>"No se puede editar el festival..."</div>;
-    if(!festival) return <Loading/>
-
     return (
         <div>
             <Button
                 variant="contained"
                 color="secondary"
                 startIcon={<EditIcon />}
-                onClick={handleClickOpen}
+                onClick={handleOpen}
             >
                 Editar
             </Button>

@@ -62,7 +62,6 @@ const ReadConcertPlace = () => {
 
     return (
         <div>
-            {/*<BackToTop/>*/}
             <CreateConcertPlace/>
             <Grid container className={classes.root} spacing={3} direction='row' justify='flex-start'>
                 {places.data.map(place => {

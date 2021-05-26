@@ -39,6 +39,9 @@ const useStyles = makeStyles((theme) => ({
         bottom: theme.spacing(2),
         right: theme.spacing(2),
     },
+    checkbox: {
+      textAlign: "center",
+    },
 }));
 
 const CreateConcert = () => {
@@ -53,6 +56,11 @@ const CreateConcert = () => {
     const [checkedFree, setFree] = useState(true);
     const [state, setState] = useState(null);
     const [open, setOpen] = useState(false);
+
+    if(error) return <div>"No se obtuvo el concierto..."</div>;
+    if(!concert) return <Loading/>;
+    if(!festivals) return <Loading/>;
+    if(!places) return <Loading/>;
 
     const onSubmit = async (data) => {
         console.log('data del form:', data);
@@ -79,6 +87,7 @@ const CreateConcert = () => {
         try {
             await Concert.create(formData);
             mutate("/concerts");
+            handleClose();
             // console.log("file", fileInputRef.current.files[0]);
         } catch (error) {
             if (error.response) {
@@ -126,10 +135,7 @@ const CreateConcert = () => {
         setTimeout(handleClose,500000);
     };
 
-    if(error) return <div>"No se obtuvo el concierto..."</div>;
-    if(!concert) return <Loading/>;
-    if(!festivals) return <Loading/>;
-    if(!places) return <Loading/>;
+
 
     return (
         <div>
@@ -195,7 +201,7 @@ const CreateConcert = () => {
                         </DialogContentText>
                     </DialogContent>
 
-                    <DialogContent>
+                    <DialogContent className={classes.checkbox}>
                         <FormControlLabel
                             value={checkedFree ? "1" : "0"}
                             //onChange={handleChangeFree}

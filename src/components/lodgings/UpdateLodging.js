@@ -86,8 +86,6 @@ const UpdateLodging = ({id}) => {
     };
 
 
-
-
     return (
         <div>
 

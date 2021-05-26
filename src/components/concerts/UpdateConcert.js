@@ -172,7 +172,7 @@ const UpdateConcert = () => {
                         </DialogContentText>*/}
                     </DialogContent>
 
-                    <DialogContent>
+                    <DialogContent style={{textAlign: "center"}}>
                         <FormControlLabel
                             value={checkedFree ? "1" : "0"}
                             //onChange={handleChangeFree}

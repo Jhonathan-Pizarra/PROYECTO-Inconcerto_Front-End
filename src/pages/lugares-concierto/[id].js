@@ -9,6 +9,9 @@ import {CardActions, Grid, makeStyles, Paper} from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import Link from "next/link";
 import { Link as MuiLink } from "@material-ui/core";
+import UpdateConcert from "@/components/concerts/UpdateConcert";
+import DeleteConcert from "@/components/concerts/DeleteConcert";
+import React from "react";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -17,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
     paper: {
         padding: theme.spacing(2),
         margin: 'auto',
-        maxWidth: '20%',
+        maxWidth: '30%',
     },
 }));
 
@@ -49,7 +52,7 @@ const PlaceConcertsID= () =>{
                                     <Typography variant="body2" gutterBottom>
                                         <p><b>Dirección:</b> {place.address}</p>
                                     </Typography>
-                                    <Grid container spacing={3}>
+                                    <Grid container spacing={3}  justify="center" alignItems="center">
 
                                         <Grid item>
                                             <Typography variant="body2" color="textSecondary">
@@ -68,16 +71,23 @@ const PlaceConcertsID= () =>{
                                         <p><b>Descripción:</b> {place.description}</p>
                                     </Typography>
 
-                                </Grid>
-                                <Grid item>
-                                    <CardActions>
-                                        <MuiLink>
-                                            <UpdateConcertPlace id={place.id}/>
-                                        </MuiLink>
-                                        <MuiLink>
-                                            <DeleteConcertPlace id={place.id}/>
-                                        </MuiLink>
-                                    </CardActions>
+
+                                    <Grid container spacing={3}>
+                                        <Grid item container justify="center" alignItems="center">
+                                            <CardActions xs={12} sm={4} md={4} lg={3} xl={3} >
+                                                <MuiLink>
+                                                    <UpdateConcertPlace id={place.id}/>
+                                                </MuiLink>
+                                            </CardActions>
+                                            <CardActions xs={12} sm={4} md={4} lg={3} xl={3} >
+                                                <MuiLink>
+                                                    <DeleteConcertPlace id={place.id}/>
+                                                </MuiLink>
+                                            </CardActions>
+                                        </Grid>
+                                    </Grid>
+
+
                                 </Grid>
                             </Grid>
                         </Grid>

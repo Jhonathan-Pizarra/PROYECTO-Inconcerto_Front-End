@@ -55,6 +55,11 @@ const CreateFeeding = () => {
     const [stateUser, setUser] = useState(null);
     const [open, setOpen] = useState(false);
 
+    if(error) return <div>"No se obtuvo el cuadro de alimentación..."</div>;
+    if(!feedings) return <Loading/>;
+    if(!fplaces) return <Loading/>;
+    if(!artists) return <Loading/>;
+    if(!users) return <Loading/>;
 
     const onSubmit = async (data) => {
         console.log('data', data);
@@ -95,7 +100,7 @@ const CreateFeeding = () => {
         reset();
     };
 
-    const handleClickOpen = () => {
+    const handleOpen = () => {
         reset();
         setOpen(true);
     };
@@ -120,17 +125,11 @@ const CreateFeeding = () => {
         setTimeout(handleClose,500000);
     };
 
-    if(error) return <div>"No se obtuvo el cuadro de alimentación..."</div>;
-    if(!feedings) return <Loading/>;
-    if(!fplaces) return <Loading/>;
-    if(!artists) return <Loading/>;
-    if(!users) return <Loading/>;
-
     return (
         <div>
 
             <Tooltip title="Nuevo" aria-label="add" className={classes.fixed}>
-                <Fab  color="secondary" onClick={handleClickOpen} > {/*className={classes.fixed}*/}
+                <Fab  color="secondary" onClick={handleOpen} > {/*className={classes.fixed}*/}
                     <AddIcon />
                 </Fab>
             </Tooltip>

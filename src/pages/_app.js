@@ -4,6 +4,7 @@ import Navigation from "@/components/Navigation";
 import Head from "next/head";
 import {Container, CssBaseline, Grid, ThemeProvider} from "@material-ui/core";
 import theme from "@/styles/theme";
+import {Breadcrumbs} from "@/components/Breadcrumbs";
 
 
 function App({ Component, pageProps }) {
@@ -20,6 +21,7 @@ function App({ Component, pageProps }) {
               <ThemeProvider theme={theme}>
                   <CssBaseline />
                   <Navigation/>
+                  <Breadcrumbs/>
                   <Container maxWidth='lg'>
                       <Grid container spacing={2}>
                           <Grid item xs={12}>

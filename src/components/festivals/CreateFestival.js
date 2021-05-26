@@ -36,21 +36,23 @@ const useStyles = makeStyles((theme) => ({
         bottom: theme.spacing(2),
         right: theme.spacing(2),
     },
-    cancel: {
-        position: 'fixed', //a la izquierda...
-
-    },
+    // cancel: {
+    //     position: 'fixed', //a la izquierda...
+    // },
 }));
 
 const CreateFestival = () => {
 
     const classes = useStyles();
+    const {data: festival, error, mutate} = useSWR(`/festivals`, fetcher);
     const { register, handleSubmit, reset, formState:{ errors } } = useForm({
         resolver: yupResolver(schema)
     });
     const [modal, setModal] = useState(false);
-    const {data: festival, error, mutate} = useSWR(`/festivals`, fetcher);
     // const fileInputRef = useRef();
+
+    if(error) return <div>"No se pudo crear el festival..."</div>;
+    if(!festival) return <Loading/>;
 
     const onSubmit = async (data) => {
 
@@ -71,6 +73,7 @@ const CreateFestival = () => {
         try {
             await Festival.create(formData);
             mutate("/festivals");
+            handleClose();
             // console.log("file", fileInputRef.current.files[0]);
         } catch (error) {
             if (error.response) {
@@ -100,7 +103,6 @@ const CreateFestival = () => {
             }
             console.error(error.config);
         }
-
         reset(); //Limpiar los imput después del submit
     };
 
@@ -117,9 +119,6 @@ const CreateFestival = () => {
         setTimeout(handleClose,500000);
     };
 
-    if(error) return <div>"No se pudo crear el festival..."</div>;
-    if(!festival) return <Loading/>;
-
     return (
         <div>
             <Tooltip title="Nuevo" aria-label="add" className={classes.fixed}>
@@ -128,19 +127,16 @@ const CreateFestival = () => {
                 </Fab>
             </Tooltip>
             <Dialog open={modal} onClose={handleClose} aria-labelledby="form-dialog-title" >
-
-                <Grid
-                    container
-                    direction="row"
-                    justify="flex-end"
-                    alignItems="flex-start"
-                >
-                    <Button onClick={handleClose} color="secondary" className={classes.cancel}>
-                        <CloseIcon/>
-                    </Button>
-                </Grid>
-
-
+                {/*<Grid*/}
+                {/*    container*/}
+                {/*    direction="row"*/}
+                {/*    justify="flex-end"*/}
+                {/*    alignItems="flex-start"*/}
+                {/*>*/}
+                {/*    <Button onClick={handleClose} color="secondary" className={classes.cancel}>*/}
+                {/*        <CloseIcon/>*/}
+                {/*    </Button>*/}
+                {/*</Grid>*/}
                 <form onSubmit={handleSubmit(onSubmit)}>
 
                     <DialogTitle id="form-dialog-title">InConcerto</DialogTitle>
@@ -205,7 +201,6 @@ const CreateFestival = () => {
                             Crear
                         </Button>
                     </DialogActions>
-
                 </form>
             </Dialog>
         </div>

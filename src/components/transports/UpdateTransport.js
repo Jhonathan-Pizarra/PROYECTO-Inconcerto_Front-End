@@ -31,6 +31,10 @@ const UpdateTransport = ({id}) => {
     const [state, setState] = useState(null);
     const [open, setOpen] = useState(false);
 
+    if(error) return <div>"Recarga la página para continuar..."</div>;
+    if(!transport) return <Loading/>;
+    if(!calendars) return <Loading/>;
+
     const onSubmit = async (data) => {
         console.log('data', data);
 
@@ -74,11 +78,6 @@ const UpdateTransport = ({id}) => {
     const handleChangeSelection = () => {
         setState({state});
     };
-
-
-    if(error) return <div>"Recarga la página para continuar..."</div>;
-    if(!transport) return <Loading/>;
-    if(!calendars) return <Loading/>;
 
     return (
         <div>
@@ -134,7 +133,7 @@ const UpdateTransport = ({id}) => {
                         />
                     </DialogContent>
 
-                    <DialogContent>
+                    <DialogContent style={{textAlign: "center"}}>
                         <FormControlLabel
                             value={disponibility ? "1" : "0"}
                             //onChange={handleChangeFree}

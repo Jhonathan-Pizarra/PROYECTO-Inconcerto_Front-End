@@ -46,6 +46,9 @@ const CreateActivity = () => {
     });
     const [open, setOpen] = useState(false);
 
+    if(error) return <div>"No se obtuvo el calendario..."</div>;
+    if(!calendar) return <Loading/>;
+
     const onSubmit = async (data) => {
         console.log('data', data);
 
@@ -91,9 +94,6 @@ const CreateActivity = () => {
     const handleValidate = () =>{
         setTimeout(handleClose,500000);
     };
-
-    if(error) return <div>"No se obtuvo el calendario..."</div>;
-    if(!calendar) return <Loading/>;
 
     return (
         <div>

@@ -2,9 +2,11 @@ import {fetcher} from "../../utils";
 import useSWR from "swr";
 import Loading from "@/components/Loading";
 import {makeStyles} from "@material-ui/core/styles";
-import {Box, Button, Card, CardActions, CardContent, Grid, Link, Typography} from "@material-ui/core";
+import {Box, Button, Card, CardActions, CardContent, Grid, Typography} from "@material-ui/core";
 import Routes from "@/constants/routes";
 import React from "react";
+import Link from "next/link";
+import {Link as MuiLink} from "@material-ui/core";
 import UpdateFeedingPlace from "@/components/feeding-places/UpdateFeedingPlace";
 import DeleteFeedingPlace from "@/components/feeding-places/DeleteFeedingPlace";
 import CreateFeedingPlace from "@/components/feeding-places/CreateFeedingPlace";
@@ -100,11 +102,14 @@ const ReadFeedingPlace = () => {
                                                     justify="flex-end"
                                                     alignItems="center"
                                                 >
-                                                    <Link href={`${Routes.FEEDINGPLACES}/${fplace.id}`} style={{textAlign: "center"}}>
-                                                        <Button size="small" color="primary">
-                                                            Ver más
-                                                        </Button>
+                                                    <Link href={`${Routes.FEEDINGPLACES}/${fplace.id}`} passHref >
+                                                        <MuiLink>
+                                                            <Button size="small" color="primary">
+                                                                Ver más
+                                                            </Button>
+                                                        </MuiLink>
                                                     </Link>
+
                                                 </Grid>
                                             </Typography>
                                             <br/>

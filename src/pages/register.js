@@ -2,9 +2,19 @@ import React from "react";
 import {useForm} from "react-hook-form";
 import withAuth from "@/hocs/withAuth";
 import {useAuth} from "@/lib/auth";
+import {
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle, Paper,
+    TextField
+} from "@material-ui/core";
 
-const Register = () =>{
-    const { register, handleSubmit } = useForm();
+
+const Register = () => {
+    const { register, handleSubmit, reset } = useForm();
     const { register: newUser } = useAuth();
 
 
@@ -29,11 +39,81 @@ const Register = () =>{
             }
             console.log(error.config);
         }
+        reset();
     };
 
     return (
         <div>
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <Paper style={{width: 800}}>
+                <form onSubmit={handleSubmit(onSubmit)}>
+
+                    <DialogTitle id="form-dialog-title">InConcerto</DialogTitle>
+
+                    <DialogContent>
+                        <DialogContentText>
+                            Por favor llena los siguientes campos:
+                        </DialogContentText>
+                        <TextField
+                            //autoFocus
+                            // className={classes.title}
+                            margin="dense"
+                            id="name"
+                            label="Nombre"
+                            type="text"
+                            {...register('name')}
+                            fullWidth
+                        />
+                    </DialogContent>
+
+                    <DialogContent>
+                        <TextField
+                            //autoFocus
+                            // className={classes.title}
+                            margin="dense"
+                            id="email"
+                            label="Correo"
+                            type="text"
+                            {...register('email')}
+                            fullWidth
+                        />
+                    </DialogContent>
+
+                    <DialogContent>
+                        <TextField
+                            //autoFocus
+                            // className={classes.title}
+                            margin="dense"
+                            id="password"
+                            label="Contraseña"
+                            type="password"
+                            {...register('password')}
+                            fullWidth
+                        />
+                    </DialogContent>
+
+                    <DialogContent>
+                        <TextField
+                            //autoFocus
+                            // className={classes.title}
+                            margin="dense"
+                            id="password_confirmation"
+                            label="Confirmación"
+                            type="password"
+                            {...register('password_confirmation')}
+                            fullWidth
+                        />
+                    </DialogContent>
+
+
+                    <DialogActions>
+                        <Button type="submit" color="primary" variant="contained">
+                            Crear
+                        </Button>
+                    </DialogActions>
+                </form>
+            </Paper>
+
+          {/*  <form onSubmit={handleSubmit(onSubmit)}>
                 <div>
                     <label htmlFor='name'>Nombre</label>
                     <input type='text' id='name' {...register('name')} />
@@ -51,7 +131,7 @@ const Register = () =>{
                     <input type='password' id='password_confirmation' {...register('password_confirmation')}  />
                 </div>
                 <input type="submit"/>
-            </form>
+            </form>*/}
         </div>
     );
 

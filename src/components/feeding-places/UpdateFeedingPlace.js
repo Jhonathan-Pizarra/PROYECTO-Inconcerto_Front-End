@@ -26,6 +26,9 @@ const UpdateFeedingPlace = ({id}) => {
     const [checkedPermission, setCheckedPermission] = useState(true);
     const [open, setOpen] = useState(false);
 
+    if(error) return <div>"Recarga la página para continuar..."</div>;
+    if(!fplace) return <Loading/>;
+
     const onSubmit = async (data) => {
         console.log('data', data);
 
@@ -62,9 +65,6 @@ const UpdateFeedingPlace = ({id}) => {
     const handleCheckPermission = (event) => {
         setCheckedPermission(event.target.checked);
     };
-
-    if(error) return <div>"Recarga la página para continuar..."</div>;
-    if(!fplace) return <Loading/>;
 
     return (
         <div>

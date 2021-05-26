@@ -7,6 +7,7 @@ import {CardActions, Grid, Link as MuiLink, makeStyles, Paper, Typography} from 
 import Link from "next/link";
 import UpdateActivity from "@/components/activities/UpdateActivity";
 import DeleteActivity from "@/components/activities/DeleteActivity";
+import React from "react";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -26,7 +27,6 @@ const ActividadesID= () => {
     const {id} = router.query;
     const {data: activity, error} = useSWR(`/activityfestivals/${id}`, fetcher);
 
-
     if(error) return <div>"No se obtuvo el festival"</div>;
     if(!activity) return <Loading/>;
 
@@ -39,20 +39,20 @@ const ActividadesID= () => {
                         <Grid item xs={12} sm container>
                             <Grid item xs container direction="column" justify="center" alignItems="center" spacing={2}>
                                 <Grid item xs>
-                                    <Typography gutterBottom variant="subtitle1">
+                                    <Typography gutterBottom variant="subtitle1" style={{textAlign: 'center'}}>
                                         <h2>{activity.name}</h2>
                                     </Typography>
                                     <Typography variant="body2" gutterBottom>
-                                        <p>Fecha: {activity.date}</p>
+                                        <p><b>Fecha:</b> {activity.date}</p>
                                     </Typography>
                                     <Typography variant="body2" gutterBottom>
-                                        <p>Observación: {activity.observation}</p>
+                                        <p><b>Observación:</b> {activity.observation}</p>
                                     </Typography>
                                     <Typography variant="body2" gutterBottom>
-                                        <p>Descripción: {activity.description}</p>
+                                        <p><b>Descripción:</b> {activity.description}</p>
                                     </Typography>
                                     <Typography variant="body2" gutterBottom>
-                                        Festival:
+                                        <b>Festival:</b>&ensp;
                                         <Link href={activity.festival} passHref>
                                             <MuiLink>
                                                 Ver
@@ -61,7 +61,7 @@ const ActividadesID= () => {
                                     </Typography>
 
                                     <Typography variant="body2" gutterBottom>
-                                        Responsable:
+                                        <b>Responsable:</b>&ensp;
                                         <Link href={activity.user} passHref>
                                             <MuiLink>
                                                 Ver
@@ -69,18 +69,23 @@ const ActividadesID= () => {
                                         </Link>
                                     </Typography>
 
+                                    <Grid container spacing={3}>
+                                        <Grid item container justify="center" alignItems="center">
+                                            <CardActions xs={12} sm={4} md={4} lg={3} xl={3}>
+                                                <MuiLink>
+                                                    <UpdateActivity id={activity.id}/>
+                                                </MuiLink>
+                                            </CardActions>
+                                            <CardActions xs={12} sm={4} md={4} lg={3} xl={3}>
+                                                <MuiLink>
+                                                    <DeleteActivity id={activity.id}/>
+                                                </MuiLink>
+                                            </CardActions>
+                                        </Grid>
+                                    </Grid>
+
                                 </Grid>
 
-                                <Grid item>
-                                    <CardActions>
-                                        <MuiLink>
-                                            <UpdateActivity id={activity.id}/>
-                                        </MuiLink>
-                                        <MuiLink>
-                                            <DeleteActivity id={activity.id}/>
-                                        </MuiLink>
-                                    </CardActions>
-                                </Grid>
                             </Grid>
                         </Grid>
                     </Grid>

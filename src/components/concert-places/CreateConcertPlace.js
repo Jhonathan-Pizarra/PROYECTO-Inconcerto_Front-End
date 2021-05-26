@@ -51,6 +51,9 @@ const CreateConcertPlace = () => {
     const [checkedPermission, setCheckedPermission] = useState(true);
     const [open, setOpen] = React.useState(false);
 
+    if(error) return <div>"No se pudo crear el lugar del concierto..."</div>;
+    if(!place) return <Loading/>;
+
     const onSubmit = async (data) => {
         console.log('data', data);
 
@@ -103,8 +106,6 @@ const CreateConcertPlace = () => {
         setTimeout(handleClose,500000);
     };
 
-    if(error) return <div>"No se pudo crear el lugar del concierto..."</div>;
-    if(!place) return <Loading/>;
 
     return (
         <div>

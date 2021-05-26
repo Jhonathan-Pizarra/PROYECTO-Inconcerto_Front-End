@@ -25,6 +25,9 @@ const UpdateConcertPlace = ({id}) => {
     const [checkedPermission, setCheckedPermission] = useState(true);
     const [open, setOpen] = useState(false);
 
+    if(error) return <div>"No se puede editar el lugar..."</div>;
+    if(!place) return <Loading/>;
+
     const onSubmit = async (data) => {
         console.log('data', data);
 
@@ -51,7 +54,7 @@ const UpdateConcertPlace = ({id}) => {
         reset();
     };
 
-    const handleClickOpen = () => {
+    const handleOpen = () => {
         setOpen(true);
     };
 
@@ -63,17 +66,13 @@ const UpdateConcertPlace = ({id}) => {
         setCheckedPermission(event.target.checked);
     };
 
-
-    if(error) return <div>"No se puede editar el lugar..."</div>;
-    if(!place) return <Loading/>;
-
     return (
         <div>
                 <Button
                     variant="contained"
                     color="secondary"
                     startIcon={<EditIcon />}
-                    onClick={handleClickOpen}
+                    onClick={handleOpen}
                 >
                     Editar
                 </Button>

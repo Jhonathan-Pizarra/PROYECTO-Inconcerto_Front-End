@@ -8,6 +8,8 @@ import Link from "next/link";
 import UpdateEssay from "@/components/essays/UpdateEssay";
 import React from "react";
 import DeleteEssay from "@/components/essays/DeleteEssay";
+import UpdateConcert from "@/components/concerts/UpdateConcert";
+import DeleteConcert from "@/components/concerts/DeleteConcert";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -39,17 +41,17 @@ const EnsayosID = () => {
                         <Grid item xs={12} sm container>
                             <Grid item xs container direction="column" justify="center" alignItems="center" spacing={2}>
                                 <Grid item xs>
-                                    <Typography gutterBottom variant="subtitle1">
+                                    <Typography gutterBottom variant="subtitle1" style={{textAlign: 'center'}}>
                                         <h2>{essay.name}</h2>
                                     </Typography>
                                     <Typography variant="body2" gutterBottom>
-                                        <p>Fecha: {essay.dateEssay}</p>
+                                        <p><b>Fecha:</b> {essay.dateEssay}</p>
                                     </Typography>
                                     <Typography variant="body2" gutterBottom>
-                                        <p>Lugar: {essay.place}</p>
+                                        <p><b>Lugar:</b> {essay.place}</p>
                                     </Typography>
                                     <Typography variant="body2" gutterBottom>
-                                        Festival:
+                                        <b>Festival:</b>&nbsp;
                                         <Link href={essay.festival} passHref>
                                             <MuiLink>
                                                 Ver
@@ -57,18 +59,22 @@ const EnsayosID = () => {
                                         </Link>
                                     </Typography>
 
+                                    <Grid container spacing={3}>
 
-                                </Grid>
+                                        <Grid item container justify="center" alignItems="center">
+                                            <CardActions xs={12} sm={4} md={4} lg={3} xl={3} >
+                                                <MuiLink>
+                                                    <UpdateEssay/>
+                                                </MuiLink>
+                                            </CardActions>
+                                            <CardActions xs={12} sm={4} md={4} lg={3} xl={3} >
+                                                <MuiLink>
+                                                    <DeleteEssay/>
+                                                </MuiLink>
+                                            </CardActions>
+                                        </Grid>
 
-                                <Grid item>
-                                    <CardActions>
-                                        <MuiLink>
-                                            <UpdateEssay/>
-                                        </MuiLink>
-                                        <MuiLink>
-                                            <DeleteEssay/>
-                                        </MuiLink>
-                                    </CardActions>
+                                    </Grid>
                                 </Grid>
                             </Grid>
                         </Grid>

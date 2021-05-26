@@ -92,8 +92,6 @@ const UpdateActivity = ({id}) => {
         setUser({stateUser});
     };
 
-
-
     return (
         <div>
 

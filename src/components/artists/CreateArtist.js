@@ -159,8 +159,8 @@ const CreateArtist = () => {
 
             <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
                 <form onSubmit={handleSubmit(onSubmit)}>
-
                     <DialogTitle id="form-dialog-title">InConcerto</DialogTitle>
+
                     <DialogContent>
                         <DialogContentText>
                             Por favor llena los siguientes campos:
@@ -189,6 +189,7 @@ const CreateArtist = () => {
                             {errors.artisticOrGroupName?.message}
                         </DialogContentText>
                     </DialogContent>
+
                     <DialogContent>
                         <DialogContentText>
                             Datos personales:

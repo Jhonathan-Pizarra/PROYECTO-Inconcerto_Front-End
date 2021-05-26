@@ -2,6 +2,7 @@ import {fetcher} from "../../utils";
 import useSWR from "swr";
 import Loading from "@/components/Loading";
 import {
+    Button,
     makeStyles,
     Paper,
     Table,
@@ -51,6 +52,9 @@ const ReadConcerts = () => {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
 
+    if(error) return <p>No se pudieron cargar los conciertos...</p>;
+    if (!concerts) return <Loading/>;
+
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
@@ -59,9 +63,6 @@ const ReadConcerts = () => {
         setRowsPerPage(parseInt(event.target.value, 10));
         setPage(0);
     };
-
-    if(error) return <p>No se pudieron cargar los conciertos...</p>;
-    if (!concerts) return <Loading/>;
 
     return (
         <div>
@@ -112,12 +113,12 @@ const ReadConcerts = () => {
 
                                     <TableCell align="center">
                                         <Link href={`${Routes.CONCERTS}/${concert.id}`}>
-                                            {/*<Button size="small" color="primary">*/}
-                                            {/*    Ver más*/}
-                                            {/*</Button>*/}
-                                            <IconButton aria-label="delete"  size="small" className={classes.detail}>
+                                            <Button size="small" variant='contained' color="primary">
+                                                Ver
+                                            </Button>
+                                            {/*<IconButton aria-label="delete"  size="small" className={classes.detail}>
                                                 <FindInPageIcon />
-                                            </IconButton>
+                                            </IconButton>*/}
                                         </Link>
                                     </TableCell>
 

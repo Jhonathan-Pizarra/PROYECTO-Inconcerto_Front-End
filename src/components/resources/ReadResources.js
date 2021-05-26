@@ -8,6 +8,7 @@ import {useState} from "react";
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import UpdateResource from "@/components/resources/UpdateResource";
 import DeleteResource from "@/components/resources/DeleteResource";
+import CreateResource from "@/components/resources/CreateResource";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -41,6 +42,7 @@ const ReadResources = () => {
 
     return (
         <div>
+            <CreateResource/>
             {resources.data.map(resource => {
                 return(
                     <Accordion expanded={expanded === `${resource.id}`}  key={resource.id} onChange={handleChange(`${resource.id}`)}>
@@ -59,7 +61,7 @@ const ReadResources = () => {
                                     <Typography className={classes.heading}>{resource.name}</Typography>
                                 </Grid>
                                 <Grid container  item>
-                                    <Typography className={classes.secondaryHeading}><b>Cantidad:</b> {resource.quantity}&emsp;&emsp;&emsp;</Typography>
+                                    <Typography className={classes.secondaryHeading}><b>Cantidad:</b> {((resource.quantity) === 0) ? "No Aplica" : resource.quantity }&emsp;&emsp;&emsp;</Typography>
                                 </Grid>
                             </Grid>
                         </AccordionSummary>

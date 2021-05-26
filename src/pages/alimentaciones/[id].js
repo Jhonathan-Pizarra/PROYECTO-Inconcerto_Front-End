@@ -26,7 +26,6 @@ const AlimentacionID= () => {
     const {id} = router.query;
     const {data: feeding, error} = useSWR(`/feedings/${id}`, fetcher);
 
-
     if(error) return <div>"No se obtuvo el cuadro alimenticio"</div>;
     if(!feeding) return <Loading/>;
 
@@ -39,20 +38,20 @@ const AlimentacionID= () => {
                         <Grid item xs={12} sm container>
                             <Grid item xs container direction="column" justify="center" alignItems="center" spacing={2}>
                                 <Grid item xs>
-                                    <Typography gutterBottom variant="subtitle1">
+                                    <Typography gutterBottom variant="subtitle1" style={{textAlign: 'center'}}>
                                         <h2>{feeding.food}</h2>
                                     </Typography>
                                     <Typography variant="body2" gutterBottom>
-                                        <p>Fecha: {feeding.date}</p>
+                                        <p><b>Fecha:</b>&ensp;{feeding.date}</p>
                                     </Typography>
                                     <Typography variant="body2" gutterBottom>
-                                        <p>Observación: {feeding.observation}</p>
+                                        <p><b>Observación:</b>&ensp;{feeding.observation}</p>
                                     </Typography>
                                     <Typography variant="body2" gutterBottom>
-                                        <p>Cantidad: {feeding.quantityLunchs}</p>
+                                        <p><b>Cantidad:</b>&ensp;{feeding.quantityLunchs}</p>
                                     </Typography>
                                     <Typography variant="body2" gutterBottom>
-                                        Responsable:
+                                        <b>Responsable:</b>&ensp;
                                         <Link href={feeding.user} passHref>
                                             <MuiLink>
                                                 Ver
@@ -60,7 +59,7 @@ const AlimentacionID= () => {
                                         </Link>
                                     </Typography>
                                     <Typography variant="body2" gutterBottom>
-                                        Comensal:
+                                        <b>Comensal:</b>&ensp;
                                         <Link href={feeding.artist} passHref>
                                             <MuiLink>
                                                 Ver
@@ -68,7 +67,7 @@ const AlimentacionID= () => {
                                         </Link>
                                     </Typography>
                                     <Typography variant="body2" gutterBottom>
-                                        Responsable:
+                                        <b>Lugar:</b>&ensp;
                                         <Link href={feeding.place} passHref>
                                             <MuiLink>
                                                 Ver

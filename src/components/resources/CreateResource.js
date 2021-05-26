@@ -45,6 +45,9 @@ const CreateResource = () => {
     });
     const [open, setOpen] = React.useState(false);
 
+    if(error) return <div>"No se pudo crear el recurso..."</div>;
+    if(!resource) return <Loading/>;
+
     const onSubmit = async (data) => {
         console.log('data', data);
 
@@ -62,6 +65,7 @@ const CreateResource = () => {
         try {
             await Resource.create(formData);
             mutate("/resources");
+            handleClose();
         } catch (error) {
             if (error.response) {
                 console.error(error.response);
@@ -88,8 +92,6 @@ const CreateResource = () => {
         setTimeout(handleClose,500000);
     };
 
-    if(error) return <div>"No se pudo crear el recurso..."</div>;
-    if(!resource) return <Loading/>;
 
     return (
         <div>

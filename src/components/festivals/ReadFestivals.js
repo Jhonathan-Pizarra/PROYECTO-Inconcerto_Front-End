@@ -10,12 +10,13 @@ import {
     CardContent,
     CardMedia,
     Grid,
-    Link,
     makeStyles,
     Typography
 } from "@material-ui/core";
 import Routes from "@/constants/routes";
 import CreateFestival from "@/components/festivals/CreateFestival";
+import Link from "next/link";
+import {Link as MuiLink} from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -94,16 +95,18 @@ const ReadFestivals = () => {
                             <div className={classes.details}>
                                 <Grid container>
                                     <CardActions >
-                                        <Link href={`${Routes.FESTIVALS}/${festival.id}`}>
-                                            <Button size="small" color="primary">
-                                                Ver más
-                                            </Button>
+                                        <Link href={`${Routes.FESTIVALS}/${festival.id}`} passHref >
+                                            <MuiLink>
+                                                <Button size="small" color="primary">
+                                                    Ver más
+                                                </Button>
+                                            </MuiLink>
                                         </Link>
                                     </CardActions>
                                 </Grid>
                             </div>
                         </Grid>
-                    )
+                    );
                 })}
             </Grid>
         </div>

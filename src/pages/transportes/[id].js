@@ -9,6 +9,7 @@ import {Grid, Paper} from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import {CardActions, Link as MuiLink, makeStyles} from "@material-ui/core";
 import Link from "next/link";
+import React from "react";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -40,7 +41,7 @@ const TransportesID= () =>{
                         <Grid item xs={12} sm container>
                             <Grid item xs container direction="column" justify="center" alignItems="center" spacing={2}>
                                 <Grid item xs>
-                                    <Typography gutterBottom variant="subtitle1">
+                                    <Typography gutterBottom variant="subtitle1" style={{textAlign: 'center'}}>
                                         <h2>{transport.type}</h2>
                                     </Typography>
                                     <Typography variant="body2" gutterBottom>
@@ -56,7 +57,7 @@ const TransportesID= () =>{
                                         <p><b>Matrícula:</b> {transport.licence_plate}</p>
                                     </Typography>
                                     <Typography variant="body2" gutterBottom>
-                                        Calendario:
+                                        <b>Calendario:</b>&ensp;
                                         <Link href={transport.calendar} passHref>
                                             <MuiLink>
                                                 Ver
@@ -64,17 +65,22 @@ const TransportesID= () =>{
                                         </Link>
                                     </Typography>
 
-                                </Grid>
+                                    <Grid container spacing={3} >
+                                        <Grid item container justify="center" alignItems="center">
+                                            <CardActions xs={12} sm={4} md={4} lg={3} xl={3} >
+                                                <MuiLink>
+                                                    <UpdateTransport id={transport.id}/>
+                                                </MuiLink>
+                                            </CardActions>
+                                            <CardActions xs={12} sm={4} md={4} lg={3} xl={3} >
+                                                <MuiLink>
+                                                    <DeleteTransport id={transport.id}/>
+                                                </MuiLink>
+                                            </CardActions>
+                                        </Grid>
+                                    </Grid>
 
-                                <Grid item>
-                                    <CardActions>
-                                        <MuiLink>
-                                            <UpdateTransport id={transport.id}/>
-                                        </MuiLink>
-                                        <MuiLink>
-                                            <DeleteTransport id={transport.id}/>
-                                        </MuiLink>
-                                    </CardActions>
+
                                 </Grid>
                             </Grid>
                         </Grid>

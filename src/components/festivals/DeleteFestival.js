@@ -15,6 +15,9 @@ const DeleteFestival = () => {
     const {id} = router.query;
     const {data: festival, error} = useSWR(`/festivals/${id}`, fetcher);
 
+    if(error) return <div>"No se pudo borrar el festival..."</div>;
+    if(!festival) return <Loading/>;
+
     const handleDelete = async () => {
         try {
             await Festival.delete(id);
@@ -32,8 +35,6 @@ const DeleteFestival = () => {
         }
     };
 
-    if(error) return <div>"No se pudo borrar el festival..."</div>;
-    if(!festival) return <Loading/>;
 
     return (
         <div>

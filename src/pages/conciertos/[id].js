@@ -19,6 +19,9 @@ const useStyles = makeStyles((theme) => ({
         margin: 'auto',
         maxWidth: '30%',
     },
+    items: {
+        textAlign: "center",
+    },
 }));
 
 const ConciertosID = () => {
@@ -41,35 +44,31 @@ const ConciertosID = () => {
                         <Grid item xs={12} sm container>
                             <Grid item xs container direction="column" justify="center" alignItems="center" spacing={2}>
                                 <Grid item xs>
-                                    <Typography gutterBottom variant="subtitle1">
+                                    <Typography gutterBottom variant="subtitle1" style={{textAlign: 'center'}}>
                                         <h2>{concert.name}</h2>
                                     </Typography>
                                     <Typography variant="body2" gutterBottom>
-                                        <p>Fecha: {concert.dateConcert}</p>
+                                        <p><b>Fecha:</b>&ensp;{concert.dateConcert}</p>
                                     </Typography>
                                     <Typography variant="body2" gutterBottom>
-                                        <p>Hora: {concert.duration}</p>
+                                        <p><b>Hora:</b>&ensp;{concert.duration}</p>
                                     </Typography>
-
-                                    <Grid container spacing={3}>
-
+                                    <Grid container spacing={3} justify="center" alignItems="center">
                                         <Grid item>
                                             <Typography variant="body2" color="textSecondary">
-                                                Gratis: {((concert.free) === 0) ? "No" : "Si"}
+                                                <b>Gratis:</b> {((concert.free) === 0) ? "No" : "Si"}
                                             </Typography>
                                         </Grid>
-
                                         <Grid item>
                                             <Typography variant="body2" color="textSecondary">
-                                                InsiItu: {((concert.insitu) === 0) ? "No" : "Si"}
+                                                <b>InsiItu:</b> {((concert.insitu) === 0) ? "No" : "Si"}
                                             </Typography>
                                         </Grid>
-
                                     </Grid>
                                     <br/>
 
                                     <Typography variant="body2" gutterBottom>
-                                        Festival:
+                                        <b>Festival:</b>&ensp;
                                         <Link href={concert.festival} passHref>
                                             <MuiLink>
                                                 Ver
@@ -78,7 +77,7 @@ const ConciertosID = () => {
                                     </Typography>
 
                                     <Typography variant="body2" gutterBottom>
-                                        Lugar:
+                                        <b>Lugar:</b>&ensp;
                                         <Link href={concert.place} passHref>
                                             <MuiLink>
                                                 Ver
@@ -86,22 +85,31 @@ const ConciertosID = () => {
                                         </Link>
                                     </Typography>
 
-                                </Grid>
+                                    <Grid container spacing={3}>
+                                        <Grid item container justify="center" alignItems="center">
+                                            <CardActions xs={12} sm={4} md={4} lg={3} xl={3} >
+                                                <MuiLink>
+                                                    <UpdateConcert/>
+                                                </MuiLink>
+                                                {/*<MuiLink>
+                                                    <DeleteConcert/>
+                                                </MuiLink>*/}
+                                            </CardActions>
+                                            <CardActions xs={12} sm={4} md={4} lg={3} xl={3} >
+                                                {/*  <MuiLink>
+                                                    <UpdateConcert/>
+                                                </MuiLink>*/}
+                                                <MuiLink>
+                                                    <DeleteConcert/>
+                                                </MuiLink>
+                                            </CardActions>
+                                        </Grid>
+                                    </Grid>
 
-                                <Grid item>
-                                    <CardActions>
-                                        <MuiLink>
-                                            <UpdateConcert/>
-                                        </MuiLink>
-                                        <MuiLink>
-                                            <DeleteConcert/>
-                                        </MuiLink>
-                                    </CardActions>
                                 </Grid>
                             </Grid>
                         </Grid>
                     </Grid>
-
                 </Paper>
             </div>
         </div>

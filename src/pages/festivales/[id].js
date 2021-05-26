@@ -7,6 +7,7 @@ import {CardActions, CardMedia, Grid, Link, makeStyles, Paper, Typography} from 
 import React from "react";
 import UpdateFestival from "@/components/festivals/UpdateFestival";
 import DeleteFestival from "@/components/festivals/DeleteFestival";
+import {Breadcrumbs} from "@/components/Breadcrumbs";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -33,6 +34,7 @@ const FestivalID = () =>{
 
     return (
         <div>
+
             <h1>Detalle Festival</h1>
             <div>
 

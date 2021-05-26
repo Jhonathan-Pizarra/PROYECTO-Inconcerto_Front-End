@@ -101,8 +101,6 @@ const UpdateFeeding = ({id}) => {
         setUser({stateUser});
     };
 
-
-
     return (
         <div>
 
@@ -114,11 +112,10 @@ const UpdateFeeding = ({id}) => {
                 <form onSubmit={handleSubmit(onSubmit)}>
 
                     <DialogTitle id="form-dialog-title">InConcerto</DialogTitle>
-
-                    <DialogContentText>
-                        Por favor llena los siguientes campos:
-                    </DialogContentText>
                     <DialogContent>
+                        <DialogContentText>
+                            Por favor llena los siguientes campos:
+                        </DialogContentText>
                         <TextField
                             id="datetime-local"
                             label="Fecha"
@@ -151,6 +148,7 @@ const UpdateFeeding = ({id}) => {
                             defaultValue={feeding.quantityLunchs}
                             type="number"
                             {...register('quantityLunchs')}
+                            fullWidth
                             //helperText="(Déjelo en 0 si no aplica)"
                         />
                     </DialogContent>
