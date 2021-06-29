@@ -10,13 +10,13 @@ import {
     CardContent,
     CardMedia,
     Grid,
+    Link as MuiLink,
     makeStyles,
     Typography
 } from "@material-ui/core";
 import Routes from "@/constants/routes";
 import CreateFestival from "@/components/festivals/CreateFestival";
 import Link from "next/link";
-import {Link as MuiLink} from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
     root: {

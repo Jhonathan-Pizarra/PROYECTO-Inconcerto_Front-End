@@ -1,7 +1,18 @@
 import {fetcher} from "../../utils";
 import useSWR from "swr";
 import Loading from "@/components/Loading";
-import {Box, Button, Card, CardActions, CardContent, Grid, Link, Typography} from "@material-ui/core";
+import {
+    Box,
+    Button,
+    Card,
+    CardActions,
+    CardContent,
+    Grid,
+    Link as MuiLink,
+    ListItem,
+    Typography
+} from "@material-ui/core";
+import Link from "next/link";
 import Routes from "@/constants/routes";
 import React from "react";
 import {makeStyles} from '@material-ui/core/styles';
@@ -100,10 +111,12 @@ const ReadConcertPlace = () => {
                                                     justify="flex-end"
                                                     alignItems="center"
                                                 >
-                                                    <Link href={`${Routes.PLACES}/${place.id}`} style={{textAlign: "center"}}>
-                                                        <Button size="small" color="primary">
-                                                            Detalle
-                                                        </Button>
+                                                    <Link href={`${Routes.PLACES}/${place.id}`} style={{textAlign: "center"}} passHref >
+                                                        <MuiLink>
+                                                            <Button size="small" color="primary">
+                                                                Detalle
+                                                            </Button>
+                                                        </MuiLink>
                                                     </Link>
                                                 </Grid>
                                             </Typography>

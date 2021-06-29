@@ -16,7 +16,7 @@ import EditIcon from "@material-ui/icons/Edit";
 import {fetcher} from "../../utils";
 import Loading from "@/components/Loading";
 import translateMessage from "@/constants/messages";
-import { yupResolver } from '@hookform/resolvers/yup';
+import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from "yup";
 
 const schema = yup.object().shape({

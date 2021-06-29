@@ -6,7 +6,6 @@ import Routes from "@/constants/routes";
 import DeleteIcon from "@material-ui/icons/Delete";
 import {Button, makeStyles} from "@material-ui/core";
 import React from "react";
-import IconButton from "@material-ui/core/IconButton";
 import {Calendar} from "@/lib/calendars";
 
 const useStyles = makeStyles((theme) => ({

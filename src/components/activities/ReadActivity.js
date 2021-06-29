@@ -3,23 +3,18 @@ import useSWR from "swr";
 import Loading from "@/components/Loading";
 import {
     Avatar,
-    Button,
+    Button, CardActions,
     Divider,
     Grid,
-    Link,
+    Link as MuiLink,
     ListItem,
     ListItemAvatar,
     ListItemText,
-    makeStyles, Paper,
-    Tabs
+    makeStyles,
+    Paper
 } from "@material-ui/core";
+import Link from "next/link";
 import React from 'react';
-import PropTypes from 'prop-types';
-import Tab from '@material-ui/core/Tab';
-import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
-import UpdateActivity from "@/components/activities/UpdateActivity";
-import DeleteActivity from "@/components/activities/DeleteActivity";
 import CreateActivity from "@/components/activities/CreateActivity";
 import FormatListNumberedRtlIcon from '@material-ui/icons/FormatListNumberedRtl';
 import Routes from "@/constants/routes";
@@ -58,10 +53,12 @@ const ReadActivity = () => {
                                         </Avatar>
                                     </ListItemAvatar>
                                     <ListItemText primary={activity.name} secondary={activity.date} />
-                                    <Link href={`${Routes.ACTIVITIES}/${activity.id}`}>
-                                        <Button size="small" color="primary">
-                                            Ver Detalle
-                                        </Button>
+                                    <Link href={`${Routes.ACTIVITIES}/${activity.id}`} passHref >
+                                        <MuiLink>
+                                            <Button size="small" color="primary">
+                                                Ver Detalle
+                                            </Button>
+                                        </MuiLink>
                                     </Link>
                                 </ListItem>
                                 <Divider variant="inset" />

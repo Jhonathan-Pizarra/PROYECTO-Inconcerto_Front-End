@@ -6,9 +6,8 @@ import withAuth from "@/hocs/withAuth";
 import UpdateConcert from "@/components/concerts/UpdateConcert";
 import React from "react";
 import DeleteConcert from "@/components/concerts/DeleteConcert";
-import {CardActions, CardMedia, Grid, makeStyles, Paper, Typography} from "@material-ui/core";
+import {CardActions, Grid, Link as MuiLink, makeStyles, Paper, Typography} from "@material-ui/core";
 import Link from "next/link";
-import { Link as MuiLink } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
     root: {

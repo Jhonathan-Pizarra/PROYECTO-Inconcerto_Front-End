@@ -5,9 +5,8 @@ import {fetcher} from "../../utils";
 import withAuth from "@/hocs/withAuth";
 import UpdateTransport from "@/components/transports/UpdateTransport";
 import DeleteTransport from "@/components/transports/DeleteTransport";
-import {Grid, Paper} from "@material-ui/core";
+import {CardActions, Grid, Link as MuiLink, makeStyles, Paper} from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
-import {CardActions, Link as MuiLink, makeStyles} from "@material-ui/core";
 import Link from "next/link";
 import React from "react";
 

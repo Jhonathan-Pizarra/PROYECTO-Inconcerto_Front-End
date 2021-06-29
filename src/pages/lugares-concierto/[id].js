@@ -5,12 +5,8 @@ import {fetcher} from "../../utils";
 import withAuth from "@/hocs/withAuth";
 import UpdateConcertPlace from "@/components/concert-places/UpdateConcertPlace";
 import DeleteConcertPlace from "@/components/concert-places/DeleteConcertPlace";
-import {CardActions, Grid, makeStyles, Paper} from "@material-ui/core";
+import {CardActions, Grid, Link as MuiLink, makeStyles, Paper} from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
-import Link from "next/link";
-import { Link as MuiLink } from "@material-ui/core";
-import UpdateConcert from "@/components/concerts/UpdateConcert";
-import DeleteConcert from "@/components/concerts/DeleteConcert";
 import React from "react";
 
 const useStyles = makeStyles((theme) => ({

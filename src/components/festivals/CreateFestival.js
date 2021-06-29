@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import {useForm} from "react-hook-form";
 import {Festival} from "@/lib/festivals";
 import useSWR from "swr";
@@ -9,7 +9,7 @@ import {
     DialogContent,
     DialogContentText,
     DialogTitle,
-    Fab, Grid,
+    Fab,
     makeStyles,
     TextField,
     Tooltip
@@ -17,8 +17,7 @@ import {
 import {fetcher} from "../../utils";
 import Loading from "@/components/Loading";
 import AddIcon from "@material-ui/icons/Add";
-import CloseIcon from '@material-ui/icons/Close';
-import { yupResolver } from '@hookform/resolvers/yup';
+import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from "yup";
 import translateMessage from "@/constants/messages";
 

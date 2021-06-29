@@ -4,11 +4,11 @@ import withAuth from "@/hocs/withAuth";
 import {useAuth} from "@/lib/auth";
 import {
     Button,
-    Dialog,
     DialogActions,
     DialogContent,
     DialogContentText,
-    DialogTitle, Paper,
+    DialogTitle,
+    Paper,
     TextField
 } from "@material-ui/core";
 

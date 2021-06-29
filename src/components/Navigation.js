@@ -1,16 +1,21 @@
-import {useEffect, useRef, useState} from "react";
+import {useRef, useState} from "react";
 import Image from "next/image";
 import {makeStyles} from "@material-ui/core/styles";
 import Link from "next/link";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import {
-    Box, Button, ClickAwayListener,
+    Box,
+    Button,
+    ClickAwayListener,
     Divider,
-    Drawer, Grow,
+    Drawer,
+    Grow,
     Link as MuiLink,
     ListItem,
-    ListItemText, MenuList, Paper,
+    ListItemText,
+    MenuList,
+    Paper,
     Popper,
     useScrollTrigger
 } from "@material-ui/core";

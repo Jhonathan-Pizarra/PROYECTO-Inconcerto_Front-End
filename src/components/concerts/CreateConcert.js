@@ -22,7 +22,7 @@ import {fetcher} from "../../utils";
 import Loading from "@/components/Loading";
 import AddIcon from "@material-ui/icons/Add";
 import translateMessage from "@/constants/messages";
-import { yupResolver } from '@hookform/resolvers/yup';
+import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from "yup";
 
 const schema = yup.object().shape({

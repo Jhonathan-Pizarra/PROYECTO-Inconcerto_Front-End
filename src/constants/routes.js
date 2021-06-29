@@ -36,7 +36,7 @@ const privateRoutes = {
     //FEEDINGS_ID: "/alimentacion/:id",
     ACTIVITIES: "/actividades",
     //ACTIVITIES_ID: "/actividades/:id",
-
+    //FESTIVALCONCERTS: "festivales/:id/conciertos",
 };
 
 const Routes = {

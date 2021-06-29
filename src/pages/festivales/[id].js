@@ -7,7 +7,7 @@ import {CardActions, CardMedia, Grid, Link, makeStyles, Paper, Typography} from 
 import React from "react";
 import UpdateFestival from "@/components/festivals/UpdateFestival";
 import DeleteFestival from "@/components/festivals/DeleteFestival";
-import {Breadcrumbs} from "@/components/Breadcrumbs";
+import ReadFestivalConcerts from "@/components/festivals/concerts/ReadFestivalConcerts";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -64,8 +64,8 @@ const FestivalID = () =>{
                                     <Typography variant="body2" gutterBottom>
                                         <p>Descripcion: {festival.description}</p>
                                     </Typography>
-                                    <Typography variant="body2" color="textSecondary">
-                                        Conciertos: ...(Pendiente)                                    </Typography>
+                                    <ReadFestivalConcerts id={festival.id}/>
+                                    {/*<Typography variant="body2" color="textSecondary">Conciertos: ...(Pendiente)</Typography>*/}
                                 </Grid>
                                 <Grid item>
                                     <CardActions>

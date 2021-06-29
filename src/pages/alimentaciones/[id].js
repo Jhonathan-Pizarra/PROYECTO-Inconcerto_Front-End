@@ -3,10 +3,8 @@ import {useRouter} from "next/router";
 import Loading from "@/components/Loading";
 import {fetcher} from "../../utils";
 import withAuth from "@/hocs/withAuth";
-import UpdateFeeding from "@/components/feedings/UpdateFeeding";
-import {CardActions, Grid, Link as MuiLink, makeStyles, Paper, Typography} from "@material-ui/core";
+import {Grid, Link as MuiLink, makeStyles, Paper, Typography} from "@material-ui/core";
 import Link from "next/link";
-import DeleteFeeding from "@/components/feedings/DeleteFeeding";
 
 const useStyles = makeStyles((theme) => ({
     root: {

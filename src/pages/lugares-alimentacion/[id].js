@@ -3,10 +3,7 @@ import {useRouter} from "next/router";
 import Loading from "@/components/Loading";
 import {fetcher} from "../../utils";
 import withAuth from "@/hocs/withAuth";
-import {CardActions, Grid, Link as MuiLink, makeStyles, Paper, Typography} from "@material-ui/core";
-import Link from "next/link";
-import UpdateConcert from "@/components/concerts/UpdateConcert";
-import DeleteConcert from "@/components/concerts/DeleteConcert";
+import {Grid, makeStyles, Paper, Typography} from "@material-ui/core";
 import React from "react";
 
 

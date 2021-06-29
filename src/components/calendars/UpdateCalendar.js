@@ -14,7 +14,6 @@ import {
 import {fetcher} from "../../utils";
 import Loading from "@/components/Loading";
 import EditIcon from "@material-ui/icons/Edit";
-import IconButton from "@material-ui/core/IconButton";
 import {Calendar} from "@/lib/calendars";
 
 const useStyles = makeStyles((theme) => ({

@@ -8,8 +8,6 @@ import Link from "next/link";
 import UpdateEssay from "@/components/essays/UpdateEssay";
 import React from "react";
 import DeleteEssay from "@/components/essays/DeleteEssay";
-import UpdateConcert from "@/components/concerts/UpdateConcert";
-import DeleteConcert from "@/components/concerts/DeleteConcert";
 
 const useStyles = makeStyles((theme) => ({
     root: {

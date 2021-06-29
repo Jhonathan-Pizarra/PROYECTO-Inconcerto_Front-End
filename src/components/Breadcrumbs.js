@@ -1,12 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
+import React, {useEffect, useState} from 'react';
+import {useRouter} from 'next/router';
 import Link from 'next/link';
-import {Link as MuiLink} from "@material-ui/core";
-import {Grid, makeStyles} from "@material-ui/core";
+import {Link as MuiLink, makeStyles} from "@material-ui/core";
 import HomeIcon from "@material-ui/icons/Home";
-import ArrowRightIcon from '@material-ui/icons/ArrowRight';
-import HdrStrongIcon from '@material-ui/icons/HdrStrong';
-import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 
 const useStyles = makeStyles((theme) => ({
     root: {

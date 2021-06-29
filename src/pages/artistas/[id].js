@@ -3,7 +3,6 @@ import {useRouter} from "next/router";
 import Loading from "@/components/Loading";
 import {fetcher} from "../../utils";
 import withAuth from "@/hocs/withAuth";
-import Link from "next/link";
 import {Grid, makeStyles, Paper, Typography} from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
