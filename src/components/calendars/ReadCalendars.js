@@ -60,7 +60,7 @@ const ReadCalendars = () => {
                                 alignItems="center"
                             >
                                 <Grid container  item >
-                                    <Typography className={classes.heading}>Nombre(De cada artista)</Typography>
+                                    <Typography className={classes.heading}>{calendar.artist.map(artist => artist.name+" | ")}</Typography>
                                 </Grid>
                                 <Grid container  item>
                                     <Typography className={classes.secondaryHeading}><b>Entrada:</b> {calendar.checkIn_Artist}&emsp;&emsp;&emsp;</Typography>

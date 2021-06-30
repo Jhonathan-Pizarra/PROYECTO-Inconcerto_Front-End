@@ -145,7 +145,7 @@ const Footer = () => {
 
                         <Grid item xs={12} sm={4}>
                             <Box borderBottom={1}>About</Box>
-                            <Box>
+                            <Box style={{  paddingTop: 30,}}>
                                 InConcerto es una fundación sin fines de lucro que tiene como objetivo promover el desarrollo y la creación de nuevos espacios de expresión. Se trabaja desde el 2012 en proyectos interdisciplinarios que involucren a la música clásica en nuestro contexto y época. Repensar la música clásica y su papel en el ahora es también pensar su relación con el tejido social y simbólico y su participación en la construcción del conocimiento.
                             </Box>
                         </Grid>
