@@ -19,6 +19,15 @@ import {fetcher} from "../../utils";
 import AddIcon from "@material-ui/icons/Add";
 import Loading from "@/components/Loading";
 import {Activity} from "@/lib/activities";
+import {yupResolver} from '@hookform/resolvers/yup';
+import * as yup from "yup";
+
+const schema = yup.object().shape({
+    name: yup.string().required("Este campo es necesario..."),
+    date: yup.string().required("Debes escoger una fecha"),
+    description: yup.string().required("Este campo es necesario..."),
+    observation: yup.string().required("Este campo es necesario..."),
+});
 
 const useStyles = makeStyles((theme) => ({
     fixed: {
@@ -33,13 +42,20 @@ const useStyles = makeStyles((theme) => ({
 const CreateActivity = () => {
 
     const classes = useStyles();
-    const {data: activities, error} = useSWR(`/activityfestivals/${''}`, fetcher);
+    const {data: activities, error} = useSWR(`/activityfestivals`, fetcher);
     const {data: festivals} = useSWR(`/festivals`, fetcher);
     const {data: users} = useSWR(`/users`, fetcher);
-    const { register, handleSubmit } = useForm();
+    const { register, handleSubmit, reset, formState:{ errors } } = useForm({
+        resolver: yupResolver(schema)
+    });
     const [state, setState] = useState(null);
     const [stateUser, setUser] = useState(null);
     const [open, setOpen] = useState(false);
+
+    if(error) return <div>"No se obtuvo la actividad..."</div>;
+    if(!activities) return <Loading/>;
+    if(!festivals) return <Loading/>;
+    if(!users) return <Loading/>;
 
     const onSubmit = async (data) => {
         console.log('data', data);
@@ -64,6 +80,7 @@ const CreateActivity = () => {
         try {
             await Activity.create(formData);
             mutate("/activityfestivals");
+            handleClose();
         } catch (error) {
             if (error.response) {
                 console.error(error.response);
@@ -74,9 +91,11 @@ const CreateActivity = () => {
             }
             console.error(error.config);
         }
+        reset();
     };
 
-    const handleClickOpen = () => {
+    const handleOpen = () => {
+        reset();
         setOpen(true);
     };
 
@@ -92,16 +111,15 @@ const CreateActivity = () => {
         setUser({stateUser});
     };
 
-    if(error) return <div>"No se obtuvo la actividad..."</div>;
-    if(!activities) return <Loading/>;
-    if(!festivals) return <Loading/>;
-    if(!users) return <Loading/>;
+    const handleValidate = () =>{
+        setTimeout(handleClose,500000);
+    };
 
     return (
         <div>
 
             <Tooltip title="Nuevo" aria-label="add" className={classes.fixed}>
-                <Fab  color="secondary" onClick={handleClickOpen} > {/*className={classes.fixed}*/}
+                <Fab  color="secondary" onClick={handleOpen} > {/*className={classes.fixed}*/}
                     <AddIcon />
                 </Fab>
             </Tooltip>
@@ -123,6 +141,9 @@ const CreateActivity = () => {
                             {...register('name')}
                             fullWidth
                         />
+                        <DialogContentText color="secondary">
+                            {errors.name?.message}
+                        </DialogContentText>
                     </DialogContent>
 
                     <DialogContent>
@@ -137,6 +158,9 @@ const CreateActivity = () => {
                             //dateConcert
                             fullWidth
                         />
+                        <DialogContentText color="secondary">
+                            {errors.date?.message}
+                        </DialogContentText>
                     </DialogContent>
 
                     <DialogContent>
@@ -151,6 +175,9 @@ const CreateActivity = () => {
                             {...register('description')}
                             fullWidth
                         />
+                        <DialogContentText color="secondary">
+                            {errors.description?.message}
+                        </DialogContentText>
                     </DialogContent>
 
                     <DialogContent>
@@ -165,11 +192,15 @@ const CreateActivity = () => {
                             {...register('observation')}
                             fullWidth
                         />
+                        <DialogContentText color="secondary">
+                            {errors.observation?.message}
+                        </DialogContentText>
                     </DialogContent>
 
                     <DialogContent>
                         <InputLabel htmlFor="outlined-age-native-simple">Festival</InputLabel>
                         <Select
+                            autoFocus
                             fullWidth
                             native
                             value={state}
@@ -185,6 +216,7 @@ const CreateActivity = () => {
                     <DialogContent>
                         <InputLabel htmlFor="outlined-age-native-simple">Responasble</InputLabel>
                         <Select
+                            autoFocus
                             fullWidth
                             native
                             value={stateUser}
@@ -202,7 +234,7 @@ const CreateActivity = () => {
                         <Button onClick={handleClose} color="primary">
                             Cancelar
                         </Button>
-                        <Button onClick={handleClose} color="primary" type="submit">
+                        <Button onClick={handleValidate} color="primary" type="submit">
                             Crear
                         </Button>
                     </DialogActions>

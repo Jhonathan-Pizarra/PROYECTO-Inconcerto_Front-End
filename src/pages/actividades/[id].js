@@ -3,11 +3,10 @@ import {useRouter} from "next/router";
 import Loading from "@/components/Loading";
 import {fetcher} from "../../utils";
 import withAuth from "@/hocs/withAuth";
-import UpdateTransport from "@/components/transports/UpdateTransport";
-import DeleteTransport from "@/components/transports/DeleteTransport";
-import {CardActions, Grid, Link as MuiLink, makeStyles, Paper} from "@material-ui/core";
-import Typography from "@material-ui/core/Typography";
+import {CardActions, Grid, Link as MuiLink, makeStyles, Paper, Typography} from "@material-ui/core";
 import Link from "next/link";
+import UpdateActivity from "@/components/activities/UpdateActivity";
+import DeleteActivity from "@/components/activities/DeleteActivity";
 import React from "react";
 
 const useStyles = makeStyles((theme) => ({
@@ -21,19 +20,19 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const TransportesID= () =>{
+const ActividadesID= () => {
 
     const classes = useStyles();
     const router = useRouter();
     const {id} = router.query;
-    const {data: transport, error} = useSWR(`/transports/${id}`, fetcher);
+    const {data: activity, error} = useSWR(`/activityfestivals/${id}`, fetcher);
 
-    if(error) return <div>"Recarga para continuar..."</div>;
-    if(!transport) return <Loading/>;
+    if(error) return <div>"No se obtuvo el festival"</div>;
+    if(!activity) return <Loading/>;
 
     return (
         <div>
-            <h1>Detalle Transporte</h1>
+            <h1>Detalle Actividad</h1>
             <div>
                 <Paper className={classes.paper}>
                     <Grid container spacing={2}>
@@ -41,56 +40,60 @@ const TransportesID= () =>{
                             <Grid item xs container direction="column" justify="center" alignItems="center" spacing={2}>
                                 <Grid item xs>
                                     <Typography gutterBottom variant="subtitle1" style={{textAlign: 'center'}}>
-                                        <h2>{transport.type}</h2>
+                                        <h2>{activity.name}</h2>
                                     </Typography>
                                     <Typography variant="body2" gutterBottom>
-                                        <p><b>Capacidad de pasajeros:</b> {transport.capacity}</p>
+                                        <p><b>Fecha:</b> {activity.date}</p>
                                     </Typography>
                                     <Typography variant="body2" gutterBottom>
-                                        <p><b>Capacidad para instrumentos:</b> {transport.instruments_capacity} Kg</p>
+                                        <p><b>Observación:</b> {activity.observation}</p>
                                     </Typography>
                                     <Typography variant="body2" gutterBottom>
-                                        <p><b>Disponibilidad:</b> {((transport.disponibility) === 0) ? "No" : "Si" }</p>
+                                        <p><b>Descripción:</b> {activity.description}</p>
                                     </Typography>
                                     <Typography variant="body2" gutterBottom>
-                                        <p><b>Matrícula:</b> {transport.licence_plate}</p>
-                                    </Typography>
-                                    <Typography variant="body2" gutterBottom>
-                                        <b>Calendario:</b>&ensp;
-                                        <Link href={transport.calendar} passHref>
+                                        <b>Festival:</b>&ensp;
+                                        <Link href={activity.festival} passHref>
                                             <MuiLink>
                                                 Ver
                                             </MuiLink>
                                         </Link>
                                     </Typography>
 
-                                    <Grid container spacing={3} >
+                                    <Typography variant="body2" gutterBottom>
+                                        <b>Responsable:</b>&ensp;
+                                        <Link href={activity.user} passHref>
+                                            <MuiLink>
+                                                Ver
+                                            </MuiLink>
+                                        </Link>
+                                    </Typography>
+
+                                    <Grid container spacing={3}>
                                         <Grid item container justify="center" alignItems="center">
-                                            <CardActions xs={12} sm={4} md={4} lg={3} xl={3} >
+                                            <CardActions xs={12} sm={4} md={4} lg={3} xl={3}>
                                                 <MuiLink>
-                                                    <UpdateTransport id={transport.id}/>
+                                                    <UpdateActivity id={activity.id}/>
                                                 </MuiLink>
                                             </CardActions>
-                                            <CardActions xs={12} sm={4} md={4} lg={3} xl={3} >
+                                            <CardActions xs={12} sm={4} md={4} lg={3} xl={3}>
                                                 <MuiLink>
-                                                    <DeleteTransport id={transport.id}/>
+                                                    <DeleteActivity id={activity.id}/>
                                                 </MuiLink>
                                             </CardActions>
                                         </Grid>
                                     </Grid>
 
-
                                 </Grid>
+
                             </Grid>
                         </Grid>
                     </Grid>
                 </Paper>
             </div>
-
-
         </div>
     );
 
 };
 
-export default withAuth(TransportesID);
+export default withAuth(ActividadesID);

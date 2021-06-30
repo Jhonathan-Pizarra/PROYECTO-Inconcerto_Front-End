@@ -26,9 +26,29 @@ const useStyles = makeStyles((theme) => ({
 //Este {id} lo recibe desde el componente donde lo llamemos
 const UpdateLodging = ({id}) => {
     const classes = useStyles();
-    const { register, handleSubmit } = useForm();
+    const { register, handleSubmit, reset } = useForm();
     const [open, setOpen] = useState(false);
-    const {data: lodging, error, mutate} = useSWR(`/lodgings`, fetcher);
+    const {data: lodging, error, mutate} = useSWR(`/lodgings/${id}`, fetcher);
+
+    if(error) return <div>"Recarga la página para continuar..."</div>;
+    if(!lodging) return <Loading/>;
+
+    var inLodgign = new Date(lodging.checkIn); ////Sun May 30 2021 00:18:00 GMT-0500 (hora de Ecuador)
+    var yearIn = inLodgign.getFullYear();
+    var monthIn = (inLodgign.getMonth()+1).toString().padStart(2, "0");
+    var dayIn = inLodgign.getDate().toString().padStart(2, "0");
+    var hoursIn = ('0'+inLodgign.getHours()).substr(-2);
+    var minIn = inLodgign.getMinutes().toString().padStart(2, "0");
+    const dateIn = yearIn+'-'+monthIn+'-'+dayIn+'T'+hoursIn+':'+minIn;
+
+    var outLodging = new Date(lodging.checkOut); ////Sun May 30 2021 00:18:00 GMT-0500 (hora de Ecuador)
+    var yearOut = outLodging.getFullYear();
+    var monthOut = (outLodging.getMonth()+1).toString().padStart(2, "0");
+    var dayOut = outLodging.getDate().toString().padStart(2, "0");
+    var hoursOut = ('0'+outLodging.getHours()).substr(-2);
+    var minOut = outLodging.getMinutes().toString().padStart(2, "0");
+    const dateOut = yearOut+'-'+monthOut+'-'+dayOut+'T'+hoursOut+':'+minOut;
+
 
     const onSubmit = async (data) => {
         console.log('data', data);
@@ -36,12 +56,12 @@ const UpdateLodging = ({id}) => {
         try {
             await Lodging.update(id, {
                 ...data,
-                name: data.name,
-                type: data.type,
-                description: data.description,
-                observation: data.observation,
-                checkIn: data.checkIn,
-                checkOut: data.checkOut,
+                name:  ((data.name) === "") ? `Vacío (${lodging.id})` : data.name,
+                type: ((data.type) === "") ? `Vacío (${lodging.id})` : data.type,
+                description: ((data.description) === "") ? `Vacío (${lodging.id})` : data.description,
+                observation: ((data.observation) === "") ? `Vacío (${lodging.id})` : data.observation,
+                checkIn: ((data.checkIn) === "") ? dateIn : data.checkIn,
+                checkOut: ((data.checkOut) === "") ? dateOut : data.checkOut,
             });
             mutate();
         } catch (error) {
@@ -54,9 +74,10 @@ const UpdateLodging = ({id}) => {
             }
             console.error(error.config);
         }
+        reset();
     };
 
-    const handleClickOpen = () => {
+    const handleOpen = () => {
         setOpen(true);
     };
 
@@ -65,13 +86,10 @@ const UpdateLodging = ({id}) => {
     };
 
 
-    if(error) return <div>"Recarga la página para continuar..."</div>;
-    if(!lodging) return <Loading/>;
-
     return (
         <div>
 
-            <IconButton aria-label="editar"  className={classes.edit} size="small" onClick={handleClickOpen} >
+            <IconButton aria-label="editar"  className={classes.edit} size="small" onClick={handleOpen} >
                 <EditIcon />
             </IconButton>
 
@@ -87,6 +105,7 @@ const UpdateLodging = ({id}) => {
                             margin="dense"
                             id="name"
                             label="Nombre"
+                            defaultValue={lodging.name}
                             type="text"
                             {...register('name')}
                             fullWidth
@@ -98,6 +117,7 @@ const UpdateLodging = ({id}) => {
                             margin="dense"
                             id="name"
                             label="Tipo de hospedaje"
+                            defaultValue={lodging.type}
                             type="text"
                             {...register('type')}
                             fullWidth
@@ -109,6 +129,7 @@ const UpdateLodging = ({id}) => {
                             margin="dense"
                             id="name"
                             label="Característica"
+                            defaultValue={lodging.description}
                             type="text"
                             multiline
                             rows={3}
@@ -123,6 +144,7 @@ const UpdateLodging = ({id}) => {
                             margin="dense"
                             id="name"
                             label="Observación"
+                            defaultValue={lodging.observation}
                             type="text"
                             multiline
                             rows={3}
@@ -137,7 +159,8 @@ const UpdateLodging = ({id}) => {
                             id="datetime-local"
                             label="Check In"
                             type="datetime-local"
-                            defaultValue="2017-05-24T10:30"
+                            //defaultValue="2017-05-24T10:30"
+                            defaultValue={dateIn}
                             margin="dense"
                             //className={classes.textField}
                             {...register('checkIn')}
@@ -151,7 +174,8 @@ const UpdateLodging = ({id}) => {
                             id="datetime-local"
                             label="Check Out"
                             type="datetime-local"
-                            defaultValue="2017-05-24T10:30"
+                            //defaultValue="2017-05-24T10:30"
+                            defaultValue={dateOut}
                             margin="dense"
                             //className={classes.textField}
                             {...register('checkOut')}

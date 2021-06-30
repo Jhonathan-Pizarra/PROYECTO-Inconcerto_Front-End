@@ -21,6 +21,15 @@ import {
 import {fetcher} from "../../utils";
 import Loading from "@/components/Loading";
 import AddIcon from "@material-ui/icons/Add";
+import translateMessage from "@/constants/messages";
+import {yupResolver} from '@hookform/resolvers/yup';
+import * as yup from "yup";
+
+const schema = yup.object().shape({
+    name: yup.string().required("Este campo es necesario..."),
+    dateConcert: yup.string().required("Debes escoger una fecha..."),
+    duration: yup.string().required("Debes escoger una hora"),
+});
 
 const useStyles = makeStyles((theme) => ({
     fixed: {
@@ -30,19 +39,28 @@ const useStyles = makeStyles((theme) => ({
         bottom: theme.spacing(2),
         right: theme.spacing(2),
     },
+    checkbox: {
+      textAlign: "center",
+    },
 }));
-
 
 const CreateConcert = () => {
     const classes = useStyles();
     const {data: concert, error, mutate} = useSWR(`/concerts`, fetcher);
     const {data: festivals} = useSWR(`/festivals`, fetcher);
     const {data: places} = useSWR(`/places`, fetcher);
-    const { register, handleSubmit } = useForm();
+    const { register, handleSubmit, reset, formState:{ errors } } = useForm({
+        resolver: yupResolver(schema)
+    });
     const [checkedInsi, setInsi] = useState(true);
     const [checkedFree, setFree] = useState(true);
     const [state, setState] = useState(null);
     const [open, setOpen] = useState(false);
+
+    if(error) return <div>"No se obtuvo el concierto..."</div>;
+    if(!concert) return <Loading/>;
+    if(!festivals) return <Loading/>;
+    if(!places) return <Loading/>;
 
     const onSubmit = async (data) => {
         console.log('data del form:', data);
@@ -69,12 +87,14 @@ const CreateConcert = () => {
         try {
             await Concert.create(formData);
             mutate("/concerts");
+            handleClose();
             // console.log("file", fileInputRef.current.files[0]);
         } catch (error) {
             if (error.response) {
                 // The request was made and the server responded with a status code
                 // that falls out of the range of 2xx
                 // alert(error.response.message);
+                alert(translateMessage(error.response.data.message));
                 console.error(error.response);
             } else if (error.request) {
                 // The request was made but no response was received
@@ -87,6 +107,7 @@ const CreateConcert = () => {
             }
             console.error(error.config);
         }
+        reset(); //Limpiar los imput después del submit
     };
 
     const handleChangeSelection = () => {
@@ -102,6 +123,7 @@ const CreateConcert = () => {
     };
 
     const handleClickOpen = () => {
+        reset(); //Limpiar los imput después del submit
         setOpen(true);
     };
 
@@ -109,10 +131,11 @@ const CreateConcert = () => {
         setOpen(false);
     };
 
-    if(error) return <div>"No se obtuvo el concierto..."</div>;
-    if(!concert) return <Loading/>;
-    if(!festivals) return <Loading/>;
-    if(!places) return <Loading/>;
+    const handleValidate = () =>{
+        setTimeout(handleClose,500000);
+    };
+
+
 
     return (
         <div>
@@ -126,6 +149,7 @@ const CreateConcert = () => {
                 <form onSubmit={handleSubmit(onSubmit)}>
 
                     <DialogTitle id="form-dialog-title">InConcerto</DialogTitle>
+
                     <DialogContent>
                         <DialogContentText>
                             Por favor llena los siguientes campos:
@@ -140,6 +164,9 @@ const CreateConcert = () => {
                             {...register('name')}
                             fullWidth
                         />
+                        <DialogContentText color="secondary">
+                            {errors.name?.message}
+                        </DialogContentText>
                     </DialogContent>
 
                     <DialogContent>
@@ -154,6 +181,9 @@ const CreateConcert = () => {
                             //dateConcert
                             fullWidth
                         />
+                        <DialogContentText color="secondary">
+                            {errors.dateConcert?.message}
+                        </DialogContentText>
                     </DialogContent>
 
                     <DialogContent>
@@ -166,9 +196,12 @@ const CreateConcert = () => {
                             //className={classes.textField}
                             {...register('duration')}
                         />
+                        <DialogContentText color="secondary">
+                            {errors.duration?.message}
+                        </DialogContentText>
                     </DialogContent>
 
-                    <DialogContent>
+                    <DialogContent className={classes.checkbox}>
                         <FormControlLabel
                             value={checkedFree ? "1" : "0"}
                             //onChange={handleChangeFree}
@@ -200,11 +233,11 @@ const CreateConcert = () => {
 
                     </DialogContent>
 
-
                     <DialogContent>
                         <InputLabel htmlFor="outlined-age-native-simple">Festival</InputLabel>
                         <Select
                             fullWidth
+                            autoFocus
                             native
                             value={state}
                             onChange={handleChangeSelection}
@@ -220,6 +253,7 @@ const CreateConcert = () => {
                         <InputLabel htmlFor="outlined-age-native-simple">Lugar</InputLabel>
                         <Select
                             fullWidth
+                            autoFocus
                             native
                             value={state}
                             onChange={handleChangeSelection}
@@ -232,12 +266,11 @@ const CreateConcert = () => {
 
                     </DialogContent>
 
-
                     <DialogActions>
                         <Button onClick={handleClose}  color="primary">
                             Cancelar
                         </Button>
-                        <Button onClick={handleClose} color="primary" type="submit">
+                        <Button onClick={handleValidate} color="primary" type="submit">
                             Crear
                         </Button>
                     </DialogActions>

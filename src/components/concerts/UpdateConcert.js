@@ -19,7 +19,14 @@ import React, {useState} from "react";
 import {useForm} from "react-hook-form";
 import useSWR from "swr";
 import Loading from "@/components/Loading";
+//import { yupResolver } from '@hookform/resolvers/yup';
+//import * as yup from "yup";
 
+// const schema = yup.object().shape({
+//     name: yup.string().notRequired(),
+//     dateConcert: yup.string().notRequired(),
+//     duration: yup.string().notRequired(),
+// });
 
 const UpdateConcert = () => {
 
@@ -28,7 +35,7 @@ const UpdateConcert = () => {
     const {data: concert, error, mutate} = useSWR(`/concerts/${id}`, fetcher);
     const {data: festivals} = useSWR(`/festivals`, fetcher);
     const {data: places} = useSWR(`/places`, fetcher);
-    const { register, handleSubmit } = useForm();
+    const { register, handleSubmit, reset } = useForm();
     const [checkedFree, setFree] = useState(true);
     const [checkedInsi, setInsi] = useState(true);
     const [state, setState] = useState(null);
@@ -41,7 +48,7 @@ const UpdateConcert = () => {
         try {
             await Concert.update(id, {
                 ...data,
-                name: data.name,
+                name: ((data.name) === "") ? `Vacío (${concert.id})` : data.name,
                 dateConcert: data.dateConcert,
                 duration: data.duration,
                 free: data.free,
@@ -68,6 +75,7 @@ const UpdateConcert = () => {
             }
             console.log(error.config);
         }
+        reset(); //Limpiar los imput después del submit
     };
 
     const handleChangeSelection = () => {
@@ -82,7 +90,7 @@ const UpdateConcert = () => {
         setInsi(event.target.checked);
     };
 
-    const handleClickOpen = () => {
+    const handleOpen = () => {
         setOpen(true);
     };
 
@@ -101,7 +109,7 @@ const UpdateConcert = () => {
                 variant="contained"
                 color="secondary"
                 startIcon={<EditIcon />}
-                onClick={handleClickOpen}
+                onClick={handleOpen}
             >
                 Editar
             </Button>
@@ -110,6 +118,7 @@ const UpdateConcert = () => {
                 <form onSubmit={handleSubmit(onSubmit)}>
 
                     <DialogTitle id="form-dialog-title">Editar Concierto</DialogTitle>
+
                     <DialogContent>
                         <DialogContentText>
                             Por favor llena los siguientes campos:
@@ -122,9 +131,13 @@ const UpdateConcert = () => {
                             label="Nombre"
                             type="text"
                             margin="dense"
+                            defaultValue={concert.name}
                             {...register('name')}
                             fullWidth
                         />
+                        {/*<DialogContentText color="secondary">
+                            {errors.name?.message}
+                        </DialogContentText>*/}
                     </DialogContent>
 
                     <DialogContent>
@@ -132,13 +145,16 @@ const UpdateConcert = () => {
                             id="date"
                             label="Fecha"
                             type="date"
-                            defaultValue="1996-11-19"
+                            defaultValue={concert.dateConcert}
                             margin="dense"
                             //className={classes.textField}
                             {...register('dateConcert')}
                             //dateConcert
                             fullWidth
                         />
+                        {/*<DialogContentText color="secondary">
+                            {errors.dateConcert?.message}
+                        </DialogContentText>*/}
                     </DialogContent>
 
                     <DialogContent>
@@ -146,14 +162,17 @@ const UpdateConcert = () => {
                             id="time"
                             label="Hora"
                             type="time"
-                            defaultValue="00:00"
+                            defaultValue={concert.duration}
                             margin="dense"
                             //className={classes.textField}
                             {...register('duration')}
                         />
+                        {/*<DialogContentText color="secondary">
+                            {errors.duration?.message}
+                        </DialogContentText>*/}
                     </DialogContent>
 
-                    <DialogContent>
+                    <DialogContent style={{textAlign: "center"}}>
                         <FormControlLabel
                             value={checkedFree ? "1" : "0"}
                             //onChange={handleChangeFree}
@@ -181,16 +200,16 @@ const UpdateConcert = () => {
                             label="Insitu"
                             labelPlacement="top"
                         />
-
-
                     </DialogContent>
 
                     <DialogContent>
                         <InputLabel htmlFor="outlined-age-native-simple">Festival</InputLabel>
                         <Select
+                            autoFocus
                             fullWidth
                             native
                             value={state}
+                            defaultValue={concert.festival_id}
                             onChange={handleChangeSelection}
                             {...register("festival_id")}
                         >
@@ -203,9 +222,11 @@ const UpdateConcert = () => {
                     <DialogContent>
                         <InputLabel htmlFor="outlined-age-native-simple">Lugar</InputLabel>
                         <Select
+                            autoFocus
                             fullWidth
                             native
                             value={state}
+                            defaultValue={concert.place_id}
                             onChange={handleChangeSelection}
                             {...register("place_id")}
                         >

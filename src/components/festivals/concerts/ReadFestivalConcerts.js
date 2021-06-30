@@ -1,4 +1,4 @@
-import {fetcher} from "../../utils";
+import {fetcher} from "../../../utils";
 import useSWR from "swr";
 import Loading from "@/components/Loading";
 import {
@@ -17,17 +17,21 @@ import React, {useState} from "react";
 import CreateConcert from "@/components/concerts/CreateConcert";
 import Link from "next/link";
 import Routes from "@/constants/routes";
+import {useRouter} from "next/router";
 
 const useStyles = makeStyles((theme) => ({
     detail:{
-        color: "#3f51b5",
+        color: "#f44336",
     },
     head: {
-        backgroundColor: "#f44336",
+        backgroundColor: "#3f51b5",
     },
     titles:{
         color: "#FFFFFF",
         textAlign: "left",
+    },
+    button:{
+        backgroundColor: "#ffeb3b",
     },
     overrides: {
         color: "rgba(0, 0, 0, 0.87)",
@@ -43,15 +47,17 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-const ReadConcerts = () => {
+const ReadFestivalConcerts = ({id}) => {
 
     const classes = useStyles();
-    const {data: concerts, error} = useSWR(`/concerts/${''}`, fetcher);
+    const router = useRouter();
+    //const {id} = router.query;
+    const {data: festconcerts, error} = useSWR(`/festivals/${id}/concerts/${''}`, fetcher);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
 
     if(error) return <p>No se pudieron cargar los conciertos...</p>;
-    if (!concerts) return <Loading/>;
+    if (!festconcerts) return <Loading/>;
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -75,43 +81,27 @@ const ReadConcerts = () => {
                             <TableCell className={classes.titles}>Duración&nbsp;(horas)</TableCell>
                             <TableCell className={classes.titles}>Gratuidad&nbsp;(Si - No)</TableCell>
                             <TableCell className={classes.titles}>InsiItu&nbsp;(Si - No)</TableCell>
-                             {/*<TableCell align="center">Lugar</TableCell>*/}
-                             {/*<TableCell align="center">Festival</TableCell>*/}
+                            {/*<TableCell align="center">Lugar</TableCell>*/}
+                            {/*<TableCell align="center">Festival</TableCell>*/}
                             <TableCell align="center" style={{color: "white"}}>Detalle</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {concerts.data.map((concert => {
+                        {festconcerts.map((festconcert => {
 
-                            var free = ((concert.free) === 0) ? "No" : "Si" ;
-                            var insitu = ((concert.insitu) === 0) ? "No" : "Si" ;
+                            var free = ((festconcert.free) === 0) ? "No" : "Si" ;
+                            var insitu = ((festconcert.insitu) === 0) ? "No" : "Si" ;
 
                             return(
-                                <TableRow key={concert.id}>
-                                    <TableCell align="left">{concert.name}</TableCell>
-                                    <TableCell align="left">{concert.dateConcert}</TableCell>
-                                    <TableCell align="left">{concert.duration}</TableCell>
+                                <TableRow key={festconcert.id}>
+                                    <TableCell align="left">{festconcert.name}</TableCell>
+                                    <TableCell align="left">{festconcert.dateConcert}</TableCell>
+                                    <TableCell align="left">{festconcert.duration}</TableCell>
                                     <TableCell align="left">{free}</TableCell>
                                     <TableCell align="left">{insitu}</TableCell>
-
-                                    {/*<TableCell align="center">
-                                        <Link href={concert.place} passHref>
-                                            <MuiLink>
-                                                Ir
-                                            </MuiLink>
-                                        </Link>
-                                    </TableCell>
                                     <TableCell align="center">
-                                        <Link href={concert.festival} passHref>
-                                            <MuiLink>
-                                                Ver
-                                            </MuiLink>
-                                        </Link>
-                                    </TableCell>*/}
-
-                                    <TableCell align="center">
-                                        <Link href={`${Routes.CONCERTS}/${concert.id}`}>
-                                            <Button size="small" variant='contained' color="primary">
+                                        <Link href={`${Routes.CONCERTS}/${festconcert.id}`}>
+                                            <Button size="small" variant='contained' className={classes.button}>
                                                 Ver
                                             </Button>
                                             {/*<IconButton aria-label="delete"  size="small" className={classes.detail}>
@@ -119,7 +109,6 @@ const ReadConcerts = () => {
                                             </IconButton>*/}
                                         </Link>
                                     </TableCell>
-
                                 </TableRow>
                             )
                         })).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)}
@@ -131,7 +120,7 @@ const ReadConcerts = () => {
                     rowsPerPageOptions={[5, 10, 25]}
                     component="div"
                     //count={concerts.meta.total}
-                    count = {concerts.data.length}
+                    count = {festconcerts.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     onChangePage={handleChangePage}
@@ -142,4 +131,4 @@ const ReadConcerts = () => {
     );
 }
 
-export default ReadConcerts;
+export default ReadFestivalConcerts;

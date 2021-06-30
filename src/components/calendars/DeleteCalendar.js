@@ -4,9 +4,8 @@ import Loading from "@/components/Loading";
 import {fetcher} from "../../utils";
 import Routes from "@/constants/routes";
 import DeleteIcon from "@material-ui/icons/Delete";
-import {makeStyles} from "@material-ui/core";
+import {Button, makeStyles} from "@material-ui/core";
 import React from "react";
-import IconButton from "@material-ui/core/IconButton";
 import {Calendar} from "@/lib/calendars";
 
 const useStyles = makeStyles((theme) => ({
@@ -41,9 +40,17 @@ const DeleteCalendar = ({id}) => {
 
     return (
         <div>
-            <IconButton aria-label="eliminar"  className={classes.delete} size="small" onClick={handleDelete} >
+            {/*<IconButton aria-label="eliminar"  className={classes.delete} size="small" onClick={handleDelete} >
                 <DeleteIcon />
-            </IconButton>
+            </IconButton>*/}
+            <Button
+                variant="contained"
+                color="secondary"
+                startIcon={<DeleteIcon />}
+                onClick={handleDelete}
+            >
+                Eliminar
+            </Button>
         </div>
     );
 

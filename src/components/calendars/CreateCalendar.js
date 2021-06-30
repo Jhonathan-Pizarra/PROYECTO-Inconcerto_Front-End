@@ -17,6 +17,15 @@ import {fetcher} from "../../utils";
 import AddIcon from "@material-ui/icons/Add";
 import Loading from "@/components/Loading";
 import {Calendar} from "@/lib/calendars";
+import {yupResolver} from '@hookform/resolvers/yup';
+import * as yup from "yup";
+
+const schema = yup.object().shape({
+    checkIn_Artist: yup.string().required("Debes escoger una fecha..."),
+    checkOut_Artist: yup.string().required("Debes escoger una fecha..."),
+    comingFrom: yup.string().required("Este campo es necesario..."),
+    flyNumber: yup.string().required("Este campo es necesario..."),
+});
 
 const useStyles = makeStyles((theme) => ({
     fixed: {
@@ -32,8 +41,13 @@ const CreateActivity = () => {
 
     const classes = useStyles();
     const {data: calendar, error, mutate} = useSWR(`/calendars`, fetcher);
-    const { register, handleSubmit } = useForm();
+    const { register, handleSubmit, reset, formState:{ errors } } = useForm({
+        resolver: yupResolver(schema)
+    });
     const [open, setOpen] = useState(false);
+
+    if(error) return <div>"No se obtuvo el calendario..."</div>;
+    if(!calendar) return <Loading/>;
 
     const onSubmit = async (data) => {
         console.log('data', data);
@@ -54,6 +68,7 @@ const CreateActivity = () => {
         try {
             await Calendar.create(formData);
             mutate("/calendars");
+            handleClose();
         } catch (error) {
             if (error.response) {
                 console.error(error.response);
@@ -64,9 +79,11 @@ const CreateActivity = () => {
             }
             console.error(error.config);
         }
+        reset();
     };
 
-    const handleClickOpen = () => {
+    const handleOpen = () => {
+        reset();
         setOpen(true);
     };
 
@@ -74,14 +91,15 @@ const CreateActivity = () => {
         setOpen(false);
     };
 
-    if(error) return <div>"No se obtuvo el calendario..."</div>;
-    if(!calendar) return <Loading/>;
+    const handleValidate = () =>{
+        setTimeout(handleClose,500000);
+    };
 
     return (
         <div>
 
             <Tooltip title="Nuevo" aria-label="add" className={classes.fixed}>
-                <Fab  color="secondary" onClick={handleClickOpen} > {/*className={classes.fixed}*/}
+                <Fab  color="secondary" onClick={handleOpen} > {/*className={classes.fixed}*/}
                     <AddIcon />
                 </Fab>
             </Tooltip>
@@ -105,6 +123,9 @@ const CreateActivity = () => {
                             //dateConcert
                             fullWidth
                         />
+                        <DialogContentText color="secondary">
+                            {errors.checkIn_Artist?.message}
+                        </DialogContentText>
                     </DialogContent>
                     <DialogContent>
                         <TextField
@@ -116,6 +137,9 @@ const CreateActivity = () => {
                             {...register('checkOut_Artist')}
                             fullWidth
                         />
+                        <DialogContentText color="secondary">
+                            {errors.checkOut_Artist?.message}
+                        </DialogContentText>
                     </DialogContent>
 
                     <DialogContent>
@@ -127,6 +151,9 @@ const CreateActivity = () => {
                             {...register('comingFrom')}
                             fullWidth
                         />
+                        <DialogContentText color="secondary">
+                            {errors.comingFrom?.message}
+                        </DialogContentText>
                     </DialogContent>
 
                     <DialogContent>
@@ -138,13 +165,16 @@ const CreateActivity = () => {
                             {...register('flyNumber')}
                             fullWidth
                         />
+                        <DialogContentText color="secondary">
+                            {errors.flyNumber?.message}
+                        </DialogContentText>
                     </DialogContent>
 
                     <DialogActions>
                         <Button onClick={handleClose} color="primary">
                             Cancelar
                         </Button>
-                        <Button onClick={handleClose} color="primary" type="submit">
+                        <Button onClick={handleValidate} color="primary" type="submit">
                             Crear
                         </Button>
                     </DialogActions>

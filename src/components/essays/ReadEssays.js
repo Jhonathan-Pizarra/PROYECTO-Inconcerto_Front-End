@@ -2,11 +2,12 @@ import {fetcher} from "../../utils";
 import useSWR from "swr";
 import Loading from "@/components/Loading";
 import {makeStyles} from "@material-ui/core/styles";
-import {Avatar, Button, Divider, Grid, Link, ListItem, ListItemAvatar, ListItemText, Paper} from "@material-ui/core";
+import {Avatar, Button, Divider, Grid, Link as MuiLink, ListItem, ListItemAvatar, ListItemText, Paper} from "@material-ui/core";
 import EmojiObjectsIcon from '@material-ui/icons/EmojiObjects';
 import Routes from "@/constants/routes";
 import CreateEssay from "@/components/essays/CreateEssay";
 import React from "react";
+import Link from "next/link";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -35,10 +36,12 @@ const ReadEssays = () => {
                                     </Avatar>
                                 </ListItemAvatar>
                                 <ListItemText primary={essay.name} secondary={essay.dateEssay} />
-                                <Link href={`${Routes.ESSAYS}/${essay.id}`}>
-                                    <Button size="small" color="primary">
-                                        Ver Detalle
-                                    </Button>
+                                <Link href={`${Routes.ESSAYS}/${essay.id}`} passHref >
+                                    <MuiLink>
+                                        <Button size="small" color="primary">
+                                            Ver más
+                                        </Button>
+                                    </MuiLink>
                                 </Link>
                             </ListItem>
                             <Divider variant="inset" />

@@ -26,10 +26,14 @@ const UpdateTransport = ({id}) => {
 
     const {data: transport, mutate, error} = useSWR(`/transports/${id}`, fetcher);
     const {data: calendars} = useSWR(`/calendars`, fetcher);
-    const { register, handleSubmit } = useForm();
+    const { register, handleSubmit, reset } = useForm();
     const [disponibility, setDisponibility] = useState(true);
     const [state, setState] = useState(null);
     const [open, setOpen] = useState(false);
+
+    if(error) return <div>"Recarga la página para continuar..."</div>;
+    if(!transport) return <Loading/>;
+    if(!calendars) return <Loading/>;
 
     const onSubmit = async (data) => {
         console.log('data', data);
@@ -37,16 +41,17 @@ const UpdateTransport = ({id}) => {
         try {
             await Transport.update(id, {
                 ...data,
-                type: data.type,
-                capacity: data.capacity,
-                instruments_capacity: data.instruments_capacity,
+                type: ((data.type) === "") ? `Vacío (${transport.id})` : data.type,
+                capacity: (((data.capacity) === "") || ((data.capacity) <= 0) ) ? '1' : data.capacity,
+                instruments_capacity: (((data.instruments_capacity) === "") || ((data.instruments_capacity) <= 0) || (!!isNaN(data.instruments_capacity)) ) ? '1' : data.instruments_capacity,
                 disponibility: data.disponibility,
-                licence_plate: data.licence_plate,
+                licence_plate: ((data.licence_plate) === "") ? `Vacío (${transport.id})` : data.licence_plate,
                 calendar_id: data.calendar_id,
             });
             mutate();
         } catch (error) {
             if (error.response) {
+
                 console.error(error.response);
             } else if (error.request) {
                 console.error(error.request);
@@ -55,9 +60,10 @@ const UpdateTransport = ({id}) => {
             }
             console.error(error.config);
         }
+        reset();
     };
 
-    const handleClickOpen = () => {
+    const handleOpen = () => {
         setOpen(true);
     };
 
@@ -73,18 +79,13 @@ const UpdateTransport = ({id}) => {
         setState({state});
     };
 
-
-    if(error) return <div>"Recarga la página para continuar..."</div>;
-    if(!transport) return <Loading/>;
-    if(!calendars) return <Loading/>;
-
     return (
         <div>
             <Button
                 variant="contained"
                 color="secondary"
                 startIcon={<EditIcon />}
-                onClick={handleClickOpen}
+                onClick={handleOpen}
             >
                 Editar
             </Button>
@@ -101,6 +102,7 @@ const UpdateTransport = ({id}) => {
                             margin="dense"
                             id="name"
                             label="Transporte"
+                            defaultValue={transport.type}
                             type="text"
                             {...register('type')}
                             fullWidth
@@ -113,9 +115,8 @@ const UpdateTransport = ({id}) => {
                             id="standard-number"
                             label="Capacidad"
                             type="number"
-                            defaultValue={0}
+                            defaultValue={transport.capacity}
                             {...register('capacity')}
-                            helperText="(Déjelo en 0 si no aplica)"
                         />
                     </DialogContent>
 
@@ -127,11 +128,12 @@ const UpdateTransport = ({id}) => {
                                 startAdornment: <InputAdornment position="start">Kg</InputAdornment>,
                             }}
                             variant="outlined"
+                            defaultValue={transport.instruments_capacity}
                             {...register('instruments_capacity')}
                         />
                     </DialogContent>
 
-                    <DialogContent>
+                    <DialogContent style={{textAlign: "center"}}>
                         <FormControlLabel
                             value={disponibility ? "1" : "0"}
                             //onChange={handleChangeFree}
@@ -153,6 +155,7 @@ const UpdateTransport = ({id}) => {
                             id="name"
                             label="Matrícula"
                             type="text"
+                            defaultValue={transport.licence_plate}
                             {...register('licence_plate')}
                             fullWidth
                         />

@@ -17,6 +17,14 @@ import {fetcher} from "../../utils";
 import AddIcon from "@material-ui/icons/Add";
 import Loading from "@/components/Loading";
 import {Resource} from "@/lib/resources";
+import {yupResolver} from '@hookform/resolvers/yup';
+import * as yup from "yup";
+
+const schema = yup.object().shape({
+    name: yup.string().required("Este campo es necesario..."),
+    quantity: yup.number().typeError('Debes escribir un número').positive('La cantidad no es válida').min(0, 'No se aceptan números inferiores a 0').required("Este campo es necesario..."),
+    description: yup.string().required("Este campo es necesario..."),
+});
 
 const useStyles = makeStyles((theme) => ({
     fixed: {
@@ -32,8 +40,13 @@ const CreateResource = () => {
 
     const classes = useStyles();
     const {data: resource, error, mutate} = useSWR(`/resources`, fetcher);
-    const { register, handleSubmit } = useForm();
+    const { register, handleSubmit, reset, formState:{ errors } } = useForm({
+        resolver: yupResolver(schema)
+    });
     const [open, setOpen] = React.useState(false);
+
+    if(error) return <div>"No se pudo crear el recurso..."</div>;
+    if(!resource) return <Loading/>;
 
     const onSubmit = async (data) => {
         console.log('data', data);
@@ -52,6 +65,7 @@ const CreateResource = () => {
         try {
             await Resource.create(formData);
             mutate("/resources");
+            handleClose();
         } catch (error) {
             if (error.response) {
                 console.error(error.response);
@@ -62,9 +76,11 @@ const CreateResource = () => {
             }
             console.error(error.config);
         }
+        reset();
     };
 
-    const handleClickOpen = () => {
+    const handleOpen = () => {
+        reset();
         setOpen(true);
     };
 
@@ -72,15 +88,16 @@ const CreateResource = () => {
         setOpen(false);
     };
 
+    const handleValidate = () =>{
+        setTimeout(handleClose,500000);
+    };
 
-    if(error) return <div>"No se pudo crear el recurso..."</div>;
-    if(!resource) return <Loading/>;
 
     return (
         <div>
 
             <Tooltip title="Nuevo" aria-label="add" className={classes.fixed}>
-                <Fab  color="secondary" onClick={handleClickOpen} > {/*className={classes.fixed}*/}
+                <Fab  color="secondary" onClick={handleOpen} > {/*className={classes.fixed}*/}
                     <AddIcon />
                 </Fab>
             </Tooltip>
@@ -102,6 +119,9 @@ const CreateResource = () => {
                             {...register('name')}
                             fullWidth
                         />
+                        <DialogContentText color="secondary">
+                            {errors.name?.message}
+                        </DialogContentText>
                     </DialogContent>
 
                     <DialogContent>
@@ -110,10 +130,12 @@ const CreateResource = () => {
                             id="standard-number"
                             label="Cantidad"
                             type="number"
-                            defaultValue={0}
                             {...register('quantity')}
-                            helperText="(Déjelo en 0 si no aplica)"
+                            helperText="(0 si no aplica)"
                         />
+                        <DialogContentText color="secondary">
+                            {errors.quantity?.message}
+                        </DialogContentText>
                     </DialogContent>
 
                     <DialogContent>
@@ -128,13 +150,16 @@ const CreateResource = () => {
                             {...register('description')}
                             fullWidth
                         />
+                        <DialogContentText color="secondary">
+                            {errors.description?.message}
+                        </DialogContentText>
                     </DialogContent>
 
                     <DialogActions>
                         <Button onClick={handleClose} color="primary">
                             Cancelar
                         </Button>
-                        <Button onClick={handleClose} color="primary" type="submit">
+                        <Button onClick={handleValidate} color="primary" type="submit">
                             Crear
                         </Button>
                     </DialogActions>

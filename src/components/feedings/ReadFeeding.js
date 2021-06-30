@@ -75,9 +75,9 @@ const ReadFeeding = () => {
                             <TableCell className={classes.titles}>Nombre</TableCell>
                             <TableCell className={classes.titles}>Cantidad</TableCell>
                             <TableCell className={classes.titles}>Observación</TableCell>
-                            <TableCell className={classes.titles}>Lugar</TableCell>
-                            <TableCell className={classes.titles}>Artista</TableCell>
-                            <TableCell className={classes.titles}>Administrador</TableCell>
+                            {/*<TableCell className={classes.titles}>Lugar</TableCell>*/}
+                            {/*<TableCell className={classes.titles}>Artista</TableCell>*/}
+                            {/*<TableCell className={classes.titles}>Administrador</TableCell>*/}
                             <TableCell align="center" style={{color: "white"}}> Acciones</TableCell>
                         </TableRow>
                     </TableHead>
@@ -91,9 +91,9 @@ const ReadFeeding = () => {
                                     <TableCell align="left">{feeding.food}</TableCell>
                                     <TableCell align="left">{feeding.quantityLunchs}</TableCell>
                                     <TableCell align="left">{feeding.observation}</TableCell>
-                                    <TableCell align="left">{feeding.place}</TableCell>
-                                    <TableCell align="left">{feeding.artist}</TableCell>
-                                    <TableCell align="left">{feeding.user}</TableCell>
+                                    {/*<TableCell align="left">{feeding.place}</TableCell>*/}
+                                    {/*<TableCell align="left">{feeding.artist}</TableCell>*/}
+                                    {/*<TableCell align="left">{feeding.user}</TableCell>*/}
                                     <TableCell align="center" >
                                         <td>
                                             <Link href={`${Routes.FEEDINGS}/${feeding.id}`}>
@@ -118,7 +118,7 @@ const ReadFeeding = () => {
                 <TablePagination
                     rowsPerPageOptions={[5, 10, 25]}
                     component="div"
-                    count={feedings.meta.total}
+                    count={feedings.data.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     onChangePage={handleChangePage}

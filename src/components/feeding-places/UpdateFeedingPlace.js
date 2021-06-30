@@ -21,10 +21,13 @@ import {FeedingPlace} from "@/lib/feeding_places";
 //Este {id} lo recibe desde el componente donde lo llamemos
 const UpdateFeedingPlace = ({id}) => {
 
-    const {data: fplace, error, mutate} = useSWR(`/feeding_places/${''}`, fetcher);
-    const { register, handleSubmit } = useForm();
+    const {data: fplace, error, mutate} = useSWR(`/feeding_places/${id}`, fetcher);
+    const { register, handleSubmit, reset } = useForm();
     const [checkedPermission, setCheckedPermission] = useState(true);
     const [open, setOpen] = useState(false);
+
+    if(error) return <div>"Recarga la página para continuar..."</div>;
+    if(!fplace) return <Loading/>;
 
     const onSubmit = async (data) => {
         console.log('data', data);
@@ -32,10 +35,10 @@ const UpdateFeedingPlace = ({id}) => {
         try {
             await FeedingPlace.update(id, {
                 ...data,
-                name: data.name,
-                address: data.address,
+                name: ((data.name) === "") ? `Vacío (${fplace.id})` : data.name,
+                address: ((data.address) === "") ? `Vacío (${fplace.id})` : data.address,
                 permit: data.permit,
-                aforo: data.aforo,
+                aforo: (((data.aforo) === "") || ((data.aforo) <= 0) || (!!isNaN(data.aforo)) ) ? '1' : data.aforo,
             });
             mutate();
         } catch (error) {
@@ -48,9 +51,10 @@ const UpdateFeedingPlace = ({id}) => {
             }
             console.error(error.config);
         }
+        reset();
     };
 
-    const handleClickOpen = () => {
+    const handleOpen = () => {
         setOpen(true);
     };
 
@@ -62,18 +66,13 @@ const UpdateFeedingPlace = ({id}) => {
         setCheckedPermission(event.target.checked);
     };
 
-
-    if(error) return <div>"Recarga la página para continuar..."</div>;
-    if(!fplace) return <Loading/>;
-
     return (
         <div>
-
             <Button
                 variant="contained"
                 color="secondary"
                 startIcon={<EditIcon />}
-                onClick={handleClickOpen}
+                onClick={handleOpen}
             >
                 Editar
             </Button>
@@ -91,6 +90,7 @@ const UpdateFeedingPlace = ({id}) => {
                             id="name"
                             label="Nombre"
                             type="text"
+                            defaultValue={fplace.name}
                             {...register('name')}
                             fullWidth
                         />
@@ -103,6 +103,7 @@ const UpdateFeedingPlace = ({id}) => {
                             margin="dense"
                             id="address"
                             label="Dirección"
+                            defaultValue={fplace.address}
                             type="text"
                             multiline
                             rows={3}
@@ -134,9 +135,9 @@ const UpdateFeedingPlace = ({id}) => {
                             id="aforo"
                             label="Aforo"
                             type="number"
-                            defaultValue={0}
+                            defaultValue={fplace.aforo}
                             {...register('aforo')}
-                            helperText="(Déjelo en 0 si no aplica)"
+                            //helperText="(Déjelo en 0 si no aplica)"
                         />
                     </DialogContent>
 

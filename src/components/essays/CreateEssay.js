@@ -19,6 +19,14 @@ import {fetcher} from "../../utils";
 import AddIcon from "@material-ui/icons/Add";
 import {Essay} from "@/lib/essays";
 import Loading from "@/components/Loading";
+import {yupResolver} from '@hookform/resolvers/yup';
+import * as yup from "yup";
+
+const schema = yup.object().shape({
+    name: yup.string().required("Este campo es necesario..."),
+    dateEssay: yup.string().required("Debes escoger una fecha"),
+    place: yup.string().required("Este campo es necesario..."),
+});
 
 const useStyles = makeStyles((theme) => ({
     fixed: {
@@ -28,14 +36,20 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-
 const CreateEssay  = () => {
+
     const classes = useStyles();
     const {data: essay, error, mutate} = useSWR(`/essays`, fetcher);
     const {data: festivals} = useSWR(`/festivals`, fetcher);
-    const { register, handleSubmit } = useForm();
+    const { register, handleSubmit, reset, formState:{ errors } } = useForm({
+        resolver: yupResolver(schema)
+    });
     const [state, setState] = useState(null);
     const [open, setOpen] = useState(false);
+
+    if(error) return <div>"No se obtuvo el ensayo..."</div>;
+    if(!essay) return <Loading/>;
+    if(!festivals) return <Loading/>;
 
     const onSubmit = async (data) => {
         console.log('data', data);
@@ -56,6 +70,7 @@ const CreateEssay  = () => {
         try {
             await Essay.create(formData);
             mutate("/essays");
+            handleClose();
         } catch (error) {
             if (error.response) {
                 // The request was made and the server responded with a status code
@@ -73,13 +88,15 @@ const CreateEssay  = () => {
             }
             console.error(error.config);
         }
+        reset(); //Limpiar los imput después del submit
     };
 
     const handleChangeSelection = () => {
         setState({state});
     };
 
-    const handleClickOpen = () => {
+    const handleOpen = () => {
+        reset();
         setOpen(true);
     };
 
@@ -87,15 +104,15 @@ const CreateEssay  = () => {
         setOpen(false);
     };
 
-    if(error) return <div>"No se obtuvo el ensayo..."</div>;
-    if(!essay) return <Loading/>;
-    if(!festivals) return <Loading/>;
+    const handleValidate = () =>{
+        setTimeout(handleClose,500000);
+    };
 
     return (
         <div>
 
             <Tooltip title="Nuevo" aria-label="add" className={classes.fixed}>
-                <Fab  color="secondary" onClick={handleClickOpen} > {/*className={classes.fixed}*/}
+                <Fab  color="secondary" onClick={handleOpen} > {/*className={classes.fixed}*/}
                     <AddIcon />
                 </Fab>
             </Tooltip>
@@ -118,6 +135,9 @@ const CreateEssay  = () => {
                             {...register('name')}
                             fullWidth
                         />
+                        <DialogContentText color="secondary">
+                            {errors.name?.message}
+                        </DialogContentText>
                     </DialogContent>
                     <DialogContent>
                         <TextField
@@ -131,6 +151,9 @@ const CreateEssay  = () => {
                             //dateConcert
                             fullWidth
                         />
+                        <DialogContentText color="secondary">
+                            {errors.dateEssay?.message}
+                        </DialogContentText>
                     </DialogContent>
                     <DialogContent>
                         <TextField
@@ -143,6 +166,9 @@ const CreateEssay  = () => {
                             {...register('place')}
                             fullWidth
                         />
+                        <DialogContentText color="secondary">
+                            {errors.place?.message}
+                        </DialogContentText>
                     </DialogContent>
 
                     <DialogContent>
@@ -164,7 +190,7 @@ const CreateEssay  = () => {
                         <Button onClick={handleClose} color="primary">
                             Cancelar
                         </Button>
-                        <Button onClick={handleClose} color="primary" type="submit">
+                        <Button onClick={handleValidate} color="primary" type="submit">
                             Crear
                         </Button>
                     </DialogActions>
