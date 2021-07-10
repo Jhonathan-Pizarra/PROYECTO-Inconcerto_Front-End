@@ -48,10 +48,11 @@ const FestivalID = () =>{
                             <CardMedia
                                 display="flex"
                                 component="img"
-                                alt="Contemplative Reptile"
+                                alt={festival.name}
                                 height="100%"
                                 width= "100%"
-                                image={`http://localhost:8000/storage/${festival.image}`}
+                                //image={`https://inconcerto.herokuapp.com/storage/${festival.image}`}
+                                image={`${process.env.NEXT_PUBLIC_STORAGE_URL}/${festival.image}`}
                                 title={festival.name}
                             />
                         </Grid>

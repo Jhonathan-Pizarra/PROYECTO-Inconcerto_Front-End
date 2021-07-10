@@ -79,7 +79,6 @@ const TransportesID= () =>{
                                         </Grid>
                                     </Grid>
 
-
                                 </Grid>
                             </Grid>
                         </Grid>

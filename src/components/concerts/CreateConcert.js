@@ -24,6 +24,8 @@ import AddIcon from "@material-ui/icons/Add";
 import translateMessage from "@/constants/messages";
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from "yup";
+import MySnacks from "@/components/SnackSuccess";
+import SnackSuccess from "@/components/SnackSuccess";
 
 const schema = yup.object().shape({
     name: yup.string().required("Este campo es necesario..."),
@@ -47,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
 const CreateConcert = () => {
     const classes = useStyles();
     const {data: concert, error, mutate} = useSWR(`/concerts`, fetcher);
-    const {data: festivals} = useSWR(`/festivals`, fetcher);
+    const {data: festivals} = useSWR(`/festivals?page=${1}`, fetcher);
     const {data: places} = useSWR(`/places`, fetcher);
     const { register, handleSubmit, reset, formState:{ errors } } = useForm({
         resolver: yupResolver(schema)

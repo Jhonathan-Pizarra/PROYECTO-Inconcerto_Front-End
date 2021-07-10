@@ -21,6 +21,7 @@ import Loading from "@/components/Loading";
 import {Feeding} from "@/lib/feedings";
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from "yup";
+import SnackSuccess from "@/components/SnackSuccess";
 
 const schema = yup.object().shape({
     date: yup.string().required("Debes escoger una fecha"),
@@ -87,6 +88,7 @@ const CreateFeeding = () => {
             await Feeding.create(formData);
             mutate("/feedings");
             handleClose();
+            <SnackSuccess/>
         } catch (error) {
             if (error.response) {
                 console.error(error.response);

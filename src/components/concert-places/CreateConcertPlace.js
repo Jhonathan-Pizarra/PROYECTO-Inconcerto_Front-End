@@ -21,6 +21,7 @@ import Loading from "@/components/Loading";
 import {PlaceConcert} from "@/lib/concert_places";
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from "yup";
+import SnackSuccess from "@/components/SnackSuccess";
 
 const schema = yup.object().shape({
     name: yup.string().required("Este campo es necesario..."),
@@ -76,6 +77,7 @@ const CreateConcertPlace = () => {
             await PlaceConcert.create(formData);
             mutate("/places");
             handleClose();
+            <SnackSuccess/>
         } catch (error) {
             if (error.response) {
                 console.error(error.response);

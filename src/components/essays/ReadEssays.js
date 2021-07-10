@@ -8,6 +8,7 @@ import Routes from "@/constants/routes";
 import CreateEssay from "@/components/essays/CreateEssay";
 import React from "react";
 import Link from "next/link";
+import SnackSuccess from "@/components/SnackSuccess";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -18,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
 const ReadEssays = () => {
 
     const classes = useStyles();
-    const {data: essays, error} = useSWR(`/essays/${''}`, fetcher);
+    const {data: essays, error} = useSWR(`/essays`, fetcher);
 
     if(error) return <p>No se pudieron cargar los ensayos...</p>;
     if (!essays) return <Loading/>;
@@ -26,7 +27,8 @@ const ReadEssays = () => {
     return (
         <div>
             <Grid container className={classes.root} spacing={3} direction='column' justify='flex-start' component={Paper}>
-                {essays.data.map(essay => {
+                {essays.data ? <SnackSuccess/> : <Loading/>}
+                {essays.data && essays.data.map(essay => {
                     return(
                         <div key={essay.id}>
                             <ListItem>

@@ -4,10 +4,11 @@ import Loading from "@/components/Loading";
 import {Accordion, AccordionDetails, AccordionSummary, Grid} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
-import {useState} from "react";
+import React, {useState} from "react";
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import UpdateCalendar from "@/components/calendars/UpdateCalendar";
 import DeleteCalendar from "@/components/calendars/DeleteCalendar";
+import SnackSuccess from "@/components/SnackSuccess";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -33,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
 const ReadCalendars = () => {
 
     const classes = useStyles();
-    const {data: calendars, error} = useSWR(`/calendars/${''}`, fetcher);
+    const {data: calendars, error} = useSWR(`/calendars`, fetcher);
     const [expanded, setExpanded] = useState(false);
 
     const handleChange = (panel) => (event, isExpanded) => {
@@ -45,7 +46,8 @@ const ReadCalendars = () => {
 
     return (
         <div>
-            {calendars.data.map(calendar => {
+            {calendars.data ? <SnackSuccess/> : <Loading/>}
+            {calendars.data && calendars.data.map(calendar => {
                 return(
                     <Accordion expanded={expanded === `${calendar.id}`}  key={calendar.id} onChange={handleChange(`${calendar.id}`)}>
                         <AccordionSummary

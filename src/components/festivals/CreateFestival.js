@@ -20,6 +20,9 @@ import AddIcon from "@material-ui/icons/Add";
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from "yup";
 import translateMessage from "@/constants/messages";
+import SnackSuccess from "@/components/SnackSuccess";
+import ReadFestivals from "@/components/festivals/ReadFestivals";
+import SnackError from "@/components/SnackError";
 
 const schema = yup.object().shape({
     name: yup.string().required("Este campo es necesario..."),
@@ -69,6 +72,7 @@ const CreateFestival = () => {
         formData.append("description", newFestival.description);
         formData.append("image", newFestival.image);
 
+
         try {
             await Festival.create(formData);
             mutate("/festivals");
@@ -78,8 +82,8 @@ const CreateFestival = () => {
             if (error.response) {
                 // The request was made and the server responded with a status code
                 // that falls out of the range of 2xx
-                //alert(error.response.data.message);
-                alert(translateMessage(error.response.data.message));
+                alert(error.response.data.message);
+                //alert(translateMessage(error.response.data.message));
                 // alert(translateMessage(error.response.data.message));
                 // if (error.response.data.errors.name) {
                 //     alert(translateMessage(error.response.data.errors.name));
@@ -95,10 +99,11 @@ const CreateFestival = () => {
                 // The request was made but no response was received
                 // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
                 // http.ClientRequest in node.js
-                console.error(error.request);
+                alert(error.request);
+                //console.error("Error en request:", error.request);
             } else {
                 // Something happened in setting up the request that triggered an Error
-                console.error("Error", error.message);
+                console.error("Error:", error.message);
             }
             console.error(error.config);
         }
@@ -117,6 +122,7 @@ const CreateFestival = () => {
     const handleValidate = () =>{
         setTimeout(handleClose,500000);
     };
+
 
     return (
         <div>

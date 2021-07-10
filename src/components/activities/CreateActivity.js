@@ -21,6 +21,7 @@ import Loading from "@/components/Loading";
 import {Activity} from "@/lib/activities";
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from "yup";
+import SnackSuccess from "@/components/SnackSuccess";
 
 const schema = yup.object().shape({
     name: yup.string().required("Este campo es necesario..."),
@@ -81,6 +82,7 @@ const CreateActivity = () => {
             await Activity.create(formData);
             mutate("/activityfestivals");
             handleClose();
+            <SnackSuccess/>
         } catch (error) {
             if (error.response) {
                 console.error(error.response);

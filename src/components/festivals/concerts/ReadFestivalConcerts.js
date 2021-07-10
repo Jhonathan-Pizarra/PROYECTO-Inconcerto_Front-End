@@ -50,9 +50,9 @@ const useStyles = makeStyles((theme) => ({
 const ReadFestivalConcerts = ({id}) => {
 
     const classes = useStyles();
-    const router = useRouter();
+    //const router = useRouter();
     //const {id} = router.query;
-    const {data: festconcerts, error} = useSWR(`/festivals/${id}/concerts/${''}`, fetcher);
+    const {data: festconcerts, error} = useSWR(`/festivals/${id}/concerts`, fetcher);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
 
@@ -70,7 +70,6 @@ const ReadFestivalConcerts = ({id}) => {
 
     return (
         <div>
-            <CreateConcert/>
             <TableContainer component={Paper}>
                 <Table size="small" aria-label="a dense table">
                     <TableHead className={classes.head}>
@@ -87,7 +86,7 @@ const ReadFestivalConcerts = ({id}) => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {festconcerts.map((festconcert => {
+                        {festconcerts && festconcerts.map((festconcert => {
 
                             var free = ((festconcert.free) === 0) ? "No" : "Si" ;
                             var insitu = ((festconcert.insitu) === 0) ? "No" : "Si" ;
@@ -127,6 +126,7 @@ const ReadFestivalConcerts = ({id}) => {
                     onChangeRowsPerPage={handleChangeRowsPerPage}
                 />
             </TableContainer>
+            <CreateConcert/>
         </div>
     );
 }

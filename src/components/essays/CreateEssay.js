@@ -21,6 +21,7 @@ import {Essay} from "@/lib/essays";
 import Loading from "@/components/Loading";
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from "yup";
+import SnackSuccess from "@/components/SnackSuccess";
 
 const schema = yup.object().shape({
     name: yup.string().required("Este campo es necesario..."),
@@ -71,6 +72,7 @@ const CreateEssay  = () => {
             await Essay.create(formData);
             mutate("/essays");
             handleClose();
+            <SnackSuccess/>
         } catch (error) {
             if (error.response) {
                 // The request was made and the server responded with a status code

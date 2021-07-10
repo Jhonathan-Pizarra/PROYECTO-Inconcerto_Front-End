@@ -24,6 +24,7 @@ import AddIcon from "@material-ui/icons/Add";
 import Loading from "@/components/Loading";
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from "yup";
+import SnackSuccess from "@/components/SnackSuccess";
 
 const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
 
@@ -104,6 +105,7 @@ const CreateArtist = () => {
             await Artist.create(formData);
             mutate("/artists");
             handleClose();
+            <SnackSuccess/>
         } catch (error) {
             if (error.response) {
                 // The request was made and the server responded with a status code

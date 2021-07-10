@@ -11,7 +11,7 @@ import {FeedingPlace} from "@/lib/feeding_places";
 
 const DeleteFeedingPlace = ({id}) => {
     const router = useRouter();
-    const {data: fplace, error} = useSWR(`/feeding_places/${''}`, fetcher);
+    const {data: fplace, error} = useSWR(`/feeding_places`, fetcher);
 
     const handleDelete = async () => {
         try {

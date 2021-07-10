@@ -24,6 +24,7 @@ import Loading from "@/components/Loading";
 import {Transport} from "@/lib/transports";
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from "yup";
+import SnackSuccess from "@/components/SnackSuccess";
 
 const schema = yup.object().shape({
     type: yup.string().required("Este campo es necesario..."),
@@ -85,6 +86,7 @@ const CreateTransport = () => {
             await Transport.create(formData);
             mutate("/transports");
             handleClose();
+            <SnackSuccess/>
         } catch (error) {
             if (error.response) {
                 console.error(error.response);

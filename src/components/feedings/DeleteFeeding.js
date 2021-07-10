@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
 const DeleteFeeding = ({id}) => {
     const router = useRouter();
     const classes = useStyles();
-    const {data: feedings, error} = useSWR(`/feedings/${''}`, fetcher);
+    const {data: feedings, error} = useSWR(`/feedings`, fetcher);
 
     const handleDelete = async () => {
         try {

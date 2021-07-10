@@ -19,6 +19,7 @@ import Loading from "@/components/Loading";
 import {Resource} from "@/lib/resources";
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from "yup";
+import SnackSuccess from "@/components/SnackSuccess";
 
 const schema = yup.object().shape({
     name: yup.string().required("Este campo es necesario..."),
@@ -66,6 +67,7 @@ const CreateResource = () => {
             await Resource.create(formData);
             mutate("/resources");
             handleClose();
+            <SnackSuccess/>
         } catch (error) {
             if (error.response) {
                 console.error(error.response);

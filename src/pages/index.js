@@ -1,6 +1,7 @@
 import styles from '@/styles/Home.module.css';
 import BackToTop from "@/components/BackToTop";
 import ReactPlayer from 'react-player'
+import React from "react";
 
 export default function Home() {
   return(
@@ -27,7 +28,8 @@ export default function Home() {
 
           </style>
 
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis dapibus...</p>
+
+          <i>"And in the end, the love you take, is equal to the love you give..."</i>
 
 
           <p>
@@ -49,7 +51,7 @@ export default function Home() {
           </p>
 
           <h3>Video tutorial:</h3>
-          <ReactPlayer url='https://www.youtube.com/watch?v=OQJ_XPioWXE' playing />
+          <ReactPlayer url='https://www.youtube.com/watch?v=KQetemT1sWc' playing />
 
           {/*{[...new Array(10)]*/}
               {/*    .map(() =>*/}
