@@ -69,7 +69,6 @@ const ReadArtists = () => {
 
     return (
         <div>
-            <CreateArtist/>
             <TableContainer component={Paper}>
                     <Table size="small" aria-label="a dense table">
                         <TableHead className={classes.head}>
@@ -155,6 +154,7 @@ const ReadArtists = () => {
                         onChangeRowsPerPage={handleChangeRowsPerPage}
                     />
                 </TableContainer>
+            <CreateArtist/>
         </div>
     )
 }

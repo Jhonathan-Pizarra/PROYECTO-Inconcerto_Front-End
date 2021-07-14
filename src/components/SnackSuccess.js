@@ -43,7 +43,7 @@ export default function SnackSuccess() {
                 key={vertical + horizontal}
             >
                 <Alert onClose={handleClose} severity="success">
-                    ¡Registro exitoso!
+                    ¡Completado con exito!
                 </Alert>
             </Snackbar>
         </div>

@@ -9,6 +9,10 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import UpdateCalendar from "@/components/calendars/UpdateCalendar";
 import DeleteCalendar from "@/components/calendars/DeleteCalendar";
 import SnackSuccess from "@/components/SnackSuccess";
+import Link from "next/link";
+import Routes from "@/constants/routes";
+import IconButton from "@material-ui/core/IconButton";
+import FindInPageIcon from "@material-ui/icons/FindInPage";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -27,6 +31,9 @@ const useStyles = makeStyles((theme) => ({
         textAlign: "end",
         fontSize: theme.typography.pxToRem(15),
         color: theme.palette.text.secondary,
+    },
+    detail:{
+        color: "#3f51b5",
     },
 }));
 
@@ -62,6 +69,11 @@ const ReadCalendars = () => {
                                 alignItems="center"
                             >
                                 <Grid container  item >
+                                    <Link href={`${Routes.CALENDARS}/${calendar.id}`}>
+                                        <IconButton aria-label="ver"  size="small" className={classes.detail}>
+                                            <FindInPageIcon />
+                                        </IconButton>
+                                    </Link>
                                     <Typography className={classes.heading}>{calendar.artist.map(artist => artist.name+" | ")}</Typography>
                                 </Grid>
                                 <Grid container  item>

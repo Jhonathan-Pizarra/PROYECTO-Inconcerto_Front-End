@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
 const CreateConcert = () => {
     const classes = useStyles();
     const {data: concert, error, mutate} = useSWR(`/concerts`, fetcher);
-    const {data: festivals} = useSWR(`/festivals?page=${1}`, fetcher);
+    const {data: festivals} = useSWR(`/festivals`, fetcher);
     const {data: places} = useSWR(`/places`, fetcher);
     const { register, handleSubmit, reset, formState:{ errors } } = useForm({
         resolver: yupResolver(schema)

@@ -88,7 +88,6 @@ const CreateFeeding = () => {
             await Feeding.create(formData);
             mutate("/feedings");
             handleClose();
-            <SnackSuccess/>
         } catch (error) {
             if (error.response) {
                 console.error(error.response);
