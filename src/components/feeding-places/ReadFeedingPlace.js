@@ -9,6 +9,7 @@ import Link from "next/link";
 import UpdateFeedingPlace from "@/components/feeding-places/UpdateFeedingPlace";
 import DeleteFeedingPlace from "@/components/feeding-places/DeleteFeedingPlace";
 import CreateFeedingPlace from "@/components/feeding-places/CreateFeedingPlace";
+import SnackSuccess from "@/components/SnackSuccess";
 
 const useStyles = makeStyles({
     root: {
@@ -55,7 +56,7 @@ const useStyles = makeStyles({
 const ReadFeedingPlace = () => {
 
     const classes = useStyles();
-    const {data: fplaces, error} = useSWR(`/feeding_places/${''}`, fetcher);
+    const {data: fplaces, error} = useSWR(`/feeding_places`, fetcher);
 
     if(error) return <p>No se pudieron cargar los lugares...</p>;
     if (!fplaces) return <Loading/>;
@@ -63,9 +64,10 @@ const ReadFeedingPlace = () => {
     return (
 
         <div>
-            <CreateFeedingPlace/>
+
             <Grid container className={classes.root} spacing={3} direction='row' justify='flex-start'>
-                {fplaces.data.map(fplace => {
+                {fplaces.data ? <SnackSuccess/> : <Loading/>}
+                {fplaces.data && fplaces.data.map(fplace => {
                     return(
                         <Grid container item xs={12} sm={6} md={4} lg={3} xl={3} key={fplace.id}>
                             <Card className={classes.root}>
@@ -130,6 +132,7 @@ const ReadFeedingPlace = () => {
                     )
                 })}
             </Grid>
+            <CreateFeedingPlace/>
 
         </div>
     )

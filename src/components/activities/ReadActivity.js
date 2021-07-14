@@ -18,6 +18,7 @@ import React from 'react';
 import CreateActivity from "@/components/activities/CreateActivity";
 import FormatListNumberedRtlIcon from '@material-ui/icons/FormatListNumberedRtl';
 import Routes from "@/constants/routes";
+import SnackSuccess from "@/components/SnackSuccess";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -32,7 +33,7 @@ const ReadActivity = () => {
 
     //arr = arr.filter(function(entry) { return entry.trim() != ''; });
     const classes = useStyles();
-    const {data: activities, error} = useSWR(`/activityfestivals/${''}`, fetcher);
+    const {data: activities, error} = useSWR(`/activityfestivals`, fetcher);
 
     if (error) return <p>Recarga la página para continuar...</p>;
     if (!activities) return <Loading/>;
@@ -43,7 +44,8 @@ const ReadActivity = () => {
 
             <div >
                 <Grid container className={classes.root} spacing={3} direction='column' justify='flex-start' component={Paper}>
-                    {activities.data.map(activity => {
+                    {activities.data ? <SnackSuccess/> : <Loading/>}
+                    {activities.data && activities.data.map(activity => {
                         return(
                             <div key={activity.id}>
                                 <ListItem>

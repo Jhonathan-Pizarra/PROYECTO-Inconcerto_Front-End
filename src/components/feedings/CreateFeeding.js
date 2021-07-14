@@ -21,6 +21,7 @@ import Loading from "@/components/Loading";
 import {Feeding} from "@/lib/feedings";
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from "yup";
+import SnackSuccess from "@/components/SnackSuccess";
 
 const schema = yup.object().shape({
     date: yup.string().required("Debes escoger una fecha"),

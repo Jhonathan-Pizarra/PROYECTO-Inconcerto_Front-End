@@ -19,6 +19,7 @@ import Loading from "@/components/Loading";
 import {Calendar} from "@/lib/calendars";
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from "yup";
+import SnackSuccess from "@/components/SnackSuccess";
 
 const schema = yup.object().shape({
     checkIn_Artist: yup.string().required("Debes escoger una fecha..."),
@@ -69,6 +70,7 @@ const CreateActivity = () => {
             await Calendar.create(formData);
             mutate("/calendars");
             handleClose();
+            <SnackSuccess/>
         } catch (error) {
             if (error.response) {
                 console.error(error.response);

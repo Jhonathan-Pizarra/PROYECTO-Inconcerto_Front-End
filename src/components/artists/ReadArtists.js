@@ -5,6 +5,7 @@ import IconButton from "@material-ui/core/IconButton";
 import FindInPageIcon from "@material-ui/icons/FindInPage";
 import Link from "next/link";
 import {
+    Grid,
     makeStyles,
     Paper,
     Table,
@@ -20,6 +21,7 @@ import Routes from "@/constants/routes";
 import UpdateArtist from "@/components/artists/UpdateArtist";
 import DeleteArtist from "@/components/artists/DeleteArtist";
 import CreateArtist from "@/components/artists/CreateArtist";
+import SnackSuccess from "@/components/SnackSuccess";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -48,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
 
 const ReadArtists = () => {
 
-    const {data: artists, error} = useSWR(`/artists/${''}`, fetcher);
+    const {data: artists, error} = useSWR(`/artists`, fetcher);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const classes = useStyles();
@@ -67,7 +69,6 @@ const ReadArtists = () => {
 
     return (
         <div>
-            <CreateArtist/>
             <TableContainer component={Paper}>
                     <Table size="small" aria-label="a dense table">
                         <TableHead className={classes.head}>
@@ -93,7 +94,8 @@ const ReadArtists = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {artists.data.map((artist => {
+                            {artists.data ? <SnackSuccess/> : <Loading/>}
+                            {artists.data && artists.data.map((artist => {
                                 var passage = ((artist.passage) === 0) ? "No" : "Si" ;
 
                                 return(
@@ -144,13 +146,15 @@ const ReadArtists = () => {
                         rowsPerPageOptions={[5, 10, 25]}
                         component="div"
                         //count={artists.meta.total}
-                        count = {artists.data.length}
+                        //count = {artists.data.length}
+                        count = {(artists.data && artists.data.length)? artists.data.length : 100 }
                         rowsPerPage={rowsPerPage}
                         page={page}
                         onChangePage={handleChangePage}
                         onChangeRowsPerPage={handleChangeRowsPerPage}
                     />
                 </TableContainer>
+            <CreateArtist/>
         </div>
     )
 }

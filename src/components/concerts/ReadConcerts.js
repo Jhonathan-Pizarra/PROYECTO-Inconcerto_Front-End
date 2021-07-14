@@ -17,6 +17,7 @@ import React, {useState} from "react";
 import CreateConcert from "@/components/concerts/CreateConcert";
 import Link from "next/link";
 import Routes from "@/constants/routes";
+import SnackSuccess from "@/components/SnackSuccess";
 
 const useStyles = makeStyles((theme) => ({
     detail:{
@@ -46,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
 const ReadConcerts = () => {
 
     const classes = useStyles();
-    const {data: concerts, error} = useSWR(`/concerts/${''}`, fetcher);
+    const {data: concerts, error} = useSWR(`/concerts`, fetcher);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
 
@@ -64,7 +65,6 @@ const ReadConcerts = () => {
 
     return (
         <div>
-            <CreateConcert/>
             <TableContainer component={Paper}>
                 <Table size="small" aria-label="a dense table">
                     <TableHead className={classes.head}>
@@ -81,7 +81,8 @@ const ReadConcerts = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {concerts.data.map((concert => {
+                        {concerts.data ? <SnackSuccess/> : <Loading/>}
+                        {concerts.data && concerts.data.map((concert => {
 
                             var free = ((concert.free) === 0) ? "No" : "Si" ;
                             var insitu = ((concert.insitu) === 0) ? "No" : "Si" ;
@@ -131,13 +132,15 @@ const ReadConcerts = () => {
                     rowsPerPageOptions={[5, 10, 25]}
                     component="div"
                     //count={concerts.meta.total}
-                    count = {concerts.data.length}
+                    //count = {concerts.data.length}
+                    count = {(concerts.data && concerts.data.length)? concerts.data.length : 100 }
                     rowsPerPage={rowsPerPage}
                     page={page}
                     onChangePage={handleChangePage}
                     onChangeRowsPerPage={handleChangeRowsPerPage}
                 />
             </TableContainer>
+            <CreateConcert/>
         </div>
     );
 }

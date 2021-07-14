@@ -24,6 +24,8 @@ import AddIcon from "@material-ui/icons/Add";
 import translateMessage from "@/constants/messages";
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from "yup";
+import MySnacks from "@/components/SnackSuccess";
+import SnackSuccess from "@/components/SnackSuccess";
 
 const schema = yup.object().shape({
     name: yup.string().required("Este campo es necesario..."),

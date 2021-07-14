@@ -7,6 +7,7 @@ import Routes from "@/constants/routes";
 import React from "react";
 import CreateTransport from "@/components/transports/CreateTransport";
 import Link from "next/link";
+import SnackSuccess from "@/components/SnackSuccess";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -19,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
 const ReadTransport = () => {
 
     const classes = useStyles();
-    const {data: transports, error} = useSWR(`/transports/${''}`, fetcher);
+    const {data: transports, error} = useSWR(`/transports`, fetcher);
 
     if(error) return <p>No se pudieron cargar los tranpsortes...</p>;
     if (!transports) return <Loading/>;
@@ -35,7 +36,8 @@ const ReadTransport = () => {
                 alignItems="center"
             >
                 <List component="nav" className={classes.root} aria-label="mailbox folders">
-                    {transports.data.map(transport => {
+                    {transports.data ? <SnackSuccess/> : <Loading/>}
+                    {transports.data && transports.data.map(transport => {
                         return(
                             <div key={transport.id}>
                                 <ListItem button divider>

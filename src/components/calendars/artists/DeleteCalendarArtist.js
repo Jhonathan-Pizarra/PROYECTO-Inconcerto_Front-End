@@ -1,13 +1,13 @@
+import {fetcher} from "../../../utils";
 import useSWR from "swr";
 import {useRouter} from "next/router";
 import Loading from "@/components/Loading";
-import {fetcher} from "../../utils";
 import Routes from "@/constants/routes";
 import DeleteIcon from "@material-ui/icons/Delete";
-import {makeStyles} from "@material-ui/core";
+import {Button, IconButton, makeStyles} from "@material-ui/core";
 import React from "react";
-import IconButton from "@material-ui/core/IconButton";
-import {Feeding} from "@/lib/feedings";
+import {Calendar} from "@/lib/calendars";
+import {CalendarArtist} from "@/lib/calendar_artists";
 
 const useStyles = makeStyles((theme) => ({
     delete: {
@@ -15,15 +15,17 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const DeleteFeeding = ({id}) => {
-    const router = useRouter();
+const DeleteCalendarArtist = ({idArtist}) => {
+
     const classes = useStyles();
-    const {data: feedings, error} = useSWR(`/feedings`, fetcher);
+    const router = useRouter();
+    const {id} = router.query;
+    const {data: calendarArtist, error} = useSWR(`/calendars/${id}/artists/${idArtist}`, fetcher);
 
     const handleDelete = async () => {
         try {
-            await Feeding.delete(id);
-            router.push(Routes.FEEDINGS);
+            await CalendarArtist.delete(id, idArtist);
+            router.push(Routes.CALENDARS);
         } catch (error) {
             if (error.response) {
                 console.log(error.response);
@@ -36,8 +38,8 @@ const DeleteFeeding = ({id}) => {
         }
     };
 
-    if(error) return <div>"No se pudo borrar el cuadro..."</div>;
-    if(!feedings) return <Loading/>;
+    if(error) return <div>"No se pudo borrar el artista..."</div>;
+    if(!calendarArtist) return <Loading/>;
 
     return (
         <div>
@@ -49,4 +51,4 @@ const DeleteFeeding = ({id}) => {
 
 };
 
-export default DeleteFeeding;
+export default DeleteCalendarArtist;

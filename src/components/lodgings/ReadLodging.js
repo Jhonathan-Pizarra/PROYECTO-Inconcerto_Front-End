@@ -20,6 +20,7 @@ import FindInPageIcon from "@material-ui/icons/FindInPage";
 import UpdateLodging from "@/components/lodgings/UpdateLodging";
 import DeleteLodging from "@/components/lodgings/DeleteLodging";
 import CreateLodging from "@/components/lodgings/CreateLodging";
+import SnackSuccess from "@/components/SnackSuccess";
 
 const useStyles = makeStyles((theme) => ({
     detail:{
@@ -48,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
 const ReadLodging = () => {
 
     const classes = useStyles();
-    const {data: lodgings, error} = useSWR(`/lodgings/${''}`, fetcher);
+    const {data: lodgings, error} = useSWR(`/lodgings`, fetcher);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
 
@@ -81,7 +82,8 @@ const ReadLodging = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {lodgings.data.map((lodging => {
+                        {lodgings.data ? <SnackSuccess/> : <Loading/>}
+                        {lodgings.data && lodgings.data.map((lodging => {
                             //var passage = ((artist.passage) === 0) ? "No" : "Si" ;
 
                             return(
@@ -116,7 +118,8 @@ const ReadLodging = () => {
                 <TablePagination
                     rowsPerPageOptions={[5, 10, 25]}
                     component="div"
-                    count={lodgings.data.length}
+                    //count={lodgings.data.length}
+                    count = {(lodgings.data && lodgings.data.length)? lodgings.data.length : 100 }
                     rowsPerPage={rowsPerPage}
                     page={page}
                     onChangePage={handleChangePage}

@@ -14,4 +14,4 @@ const Festivales = () => {
 };
 
 
-export default withAuth(Festivales);
+export default Festivales;

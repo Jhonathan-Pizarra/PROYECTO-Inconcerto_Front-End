@@ -4,11 +4,12 @@ import Loading from "@/components/Loading";
 import {Accordion, AccordionDetails, AccordionSummary, Grid} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
-import {useState} from "react";
+import React, {useState} from "react";
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import UpdateResource from "@/components/resources/UpdateResource";
 import DeleteResource from "@/components/resources/DeleteResource";
 import CreateResource from "@/components/resources/CreateResource";
+import SnackSuccess from "@/components/SnackSuccess";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -29,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
 const ReadResources = () => {
 
     const classes = useStyles();
-    const {data: resources, error} = useSWR(`/resources/${''}`, fetcher);
+    const {data: resources, error} = useSWR(`/resources`, fetcher);
     const [expanded, setExpanded] = useState(false);
 
     if(error) return <p>No se pudieron cargar los recursos...</p>;
@@ -42,8 +43,8 @@ const ReadResources = () => {
 
     return (
         <div>
-            <CreateResource/>
-            {resources.data.map(resource => {
+            {resources.data ? <SnackSuccess/> : <Loading/>}
+            {resources.data && resources.data.map(resource => {
                 return(
                     <Accordion expanded={expanded === `${resource.id}`}  key={resource.id} onChange={handleChange(`${resource.id}`)}>
                         <AccordionSummary
@@ -98,6 +99,7 @@ const ReadResources = () => {
                     </Accordion>
                 );
             })}
+            <CreateResource/>
         </div>
     )
 }

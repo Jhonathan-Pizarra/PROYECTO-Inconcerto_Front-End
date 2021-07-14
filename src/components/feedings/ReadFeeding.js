@@ -20,6 +20,7 @@ import FindInPageIcon from "@material-ui/icons/FindInPage";
 import UpdateFeeding from "@/components/feedings/UpdateFeeding";
 import DeleteFeeding from "@/components/feedings/DeleteFeeding";
 import CreateFeeding from "@/components/feedings/CreateFeeding";
+import SnackSuccess from "@/components/SnackSuccess";
 
 const useStyles = makeStyles((theme) => ({
     detail:{
@@ -48,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
 const ReadFeeding = () => {
 
     const classes = useStyles();
-    const {data: feedings, error} = useSWR(`/feedings/${''}`, fetcher);
+    const {data: feedings, error} = useSWR(`/feedings`, fetcher);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
 
@@ -66,7 +67,6 @@ const ReadFeeding = () => {
 
     return (
         <div>
-            <CreateFeeding/>
             <TableContainer component={Paper}>
                 <Table size="small" aria-label="a dense table">
                     <TableHead className={classes.head}>
@@ -82,7 +82,8 @@ const ReadFeeding = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {feedings.data.map((feeding => {
+                        {feedings.data ? <SnackSuccess/> : <Loading/>}
+                        {feedings.data && feedings.data.map((feeding => {
                             //var passage = ((artist.passage) === 0) ? "No" : "Si" ;
 
                             return(
@@ -118,13 +119,15 @@ const ReadFeeding = () => {
                 <TablePagination
                     rowsPerPageOptions={[5, 10, 25]}
                     component="div"
-                    count={feedings.data.length}
+                    //count={feedings.data.length}
+                    count = {(feedings.data && feedings.data.length)? feedings.data.length : 100 }
                     rowsPerPage={rowsPerPage}
                     page={page}
                     onChangePage={handleChangePage}
                     onChangeRowsPerPage={handleChangeRowsPerPage}
                 />
             </TableContainer>
+            <CreateFeeding/>
         </div>
     )
 }

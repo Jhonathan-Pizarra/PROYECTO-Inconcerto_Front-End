@@ -4,10 +4,15 @@ import Loading from "@/components/Loading";
 import {Accordion, AccordionDetails, AccordionSummary, Grid} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
-import {useState} from "react";
+import React, {useState} from "react";
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import UpdateCalendar from "@/components/calendars/UpdateCalendar";
 import DeleteCalendar from "@/components/calendars/DeleteCalendar";
+import SnackSuccess from "@/components/SnackSuccess";
+import Link from "next/link";
+import Routes from "@/constants/routes";
+import IconButton from "@material-ui/core/IconButton";
+import FindInPageIcon from "@material-ui/icons/FindInPage";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -27,13 +32,16 @@ const useStyles = makeStyles((theme) => ({
         fontSize: theme.typography.pxToRem(15),
         color: theme.palette.text.secondary,
     },
+    detail:{
+        color: "#3f51b5",
+    },
 }));
 
 
 const ReadCalendars = () => {
 
     const classes = useStyles();
-    const {data: calendars, error} = useSWR(`/calendars/${''}`, fetcher);
+    const {data: calendars, error} = useSWR(`/calendars`, fetcher);
     const [expanded, setExpanded] = useState(false);
 
     const handleChange = (panel) => (event, isExpanded) => {
@@ -45,7 +53,8 @@ const ReadCalendars = () => {
 
     return (
         <div>
-            {calendars.data.map(calendar => {
+            {calendars.data ? <SnackSuccess/> : <Loading/>}
+            {calendars.data && calendars.data.map(calendar => {
                 return(
                     <Accordion expanded={expanded === `${calendar.id}`}  key={calendar.id} onChange={handleChange(`${calendar.id}`)}>
                         <AccordionSummary
@@ -60,6 +69,11 @@ const ReadCalendars = () => {
                                 alignItems="center"
                             >
                                 <Grid container  item >
+                                    <Link href={`${Routes.CALENDARS}/${calendar.id}`}>
+                                        <IconButton aria-label="ver"  size="small" className={classes.detail}>
+                                            <FindInPageIcon />
+                                        </IconButton>
+                                    </Link>
                                     <Typography className={classes.heading}>{calendar.artist.map(artist => artist.name+" | ")}</Typography>
                                 </Grid>
                                 <Grid container  item>

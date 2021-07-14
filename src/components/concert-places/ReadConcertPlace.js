@@ -19,6 +19,7 @@ import {makeStyles} from '@material-ui/core/styles';
 import UpdateConcertPlace from "@/components/concert-places/UpdateConcertPlace";
 import DeleteConcertPlace from "@/components/concert-places/DeleteConcertPlace";
 import CreateConcertPlace from "@/components/concert-places/CreateConcertPlace";
+import SnackSuccess from "@/components/SnackSuccess";
 
 
 const useStyles = makeStyles({
@@ -66,16 +67,16 @@ const useStyles = makeStyles({
 const ReadConcertPlace = () => {
 
     const classes = useStyles();
-    const {data: places, error} = useSWR(`/places/${''}`, fetcher);
+    const {data: places, error} = useSWR(`/places`, fetcher);
 
     if(error) return <p>No se pudieron cargar los lugares...</p>;
     if (!places) return <Loading/>;
 
     return (
         <div>
-            <CreateConcertPlace/>
             <Grid container className={classes.root} spacing={3} direction='row' justify='flex-start'>
-                {places.data.map(place => {
+                {places.data ? <SnackSuccess/> : <Loading/>}
+                {places.data && places.data.map(place => {
                     return(
                         <Grid container item xs={12} sm={6} md={4} lg={3} xl={3} key={place.id}>
                             <Card className={classes.root}>
@@ -137,21 +138,30 @@ const ReadConcertPlace = () => {
                                             {/*</Grid>*/}
                                             <br/>
                                         </CardContent>
+
+                                        <Grid container>
+                                            <CardActions >
+                                                <UpdateConcertPlace id={place.id}/>
+                                                <DeleteConcertPlace id={place.id}/>
+                                            </CardActions>
+                                        </Grid>
+
                                     </div>
                                 </Box>
                             </Card>
-                            <div className={classes.details}>
+                           {/* <div className={classes.details}>
                                 <Grid container>
                                     <CardActions >
                                         <UpdateConcertPlace id={place.id}/>
                                         <DeleteConcertPlace id={place.id}/>
                                     </CardActions>
                                 </Grid>
-                            </div>
+                            </div>*/}
                         </Grid>
                     )
                 })}
             </Grid>
+            <CreateConcertPlace/>
         </div>
     );
 }

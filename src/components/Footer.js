@@ -8,6 +8,7 @@ import PhoneIcon from '@material-ui/icons/Phone';
 import MailIcon from '@material-ui/icons/Mail';
 import React from "react";
 import Image from "next/image";
+import {white} from "colorette";
 
 const useStyles = makeStyles((theme) => ({
     copyright: {
@@ -155,7 +156,7 @@ const Footer = () => {
             </Box>
             <div className={classes.copyright}>
                 <Container >
-                    &copy; {new Date().getFullYear()} Copyright: <a href="https://esfot.epn.edu.ec/#"> ESFOT </a>
+                    &copy; {new Date().getFullYear()} Copyright: <a href="https://esfot.epn.edu.ec/#"><b>ESFOT</b></a>
                 </Container>
             </div>
         </div>

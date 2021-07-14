@@ -3,12 +3,16 @@ import {useRouter} from "next/router";
 import Loading from "@/components/Loading";
 import {fetcher} from "../../utils";
 import withAuth from "@/hocs/withAuth";
-import UpdateTransport from "@/components/transports/UpdateTransport";
-import DeleteTransport from "@/components/transports/DeleteTransport";
 import {CardActions, Grid, Link as MuiLink, makeStyles, Paper} from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import Link from "next/link";
+import UpdateTransport from "@/components/transports/UpdateTransport";
+import DeleteTransport from "@/components/transports/DeleteTransport";
 import React from "react";
+import DeleteCalendar from "@/components/calendars/DeleteCalendar";
+import UpdateCalendar from "@/components/calendars/UpdateCalendar";
+import ReadCalendarArtists from "@/components/calendars/artists/ReadCalendarArtists";
+import CreateCalendarArtist from "@/components/calendars/artists/CreateCalendarArtist";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -21,19 +25,21 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const TransportesID= () =>{
+
+const CalendariosID= () =>{
 
     const classes = useStyles();
     const router = useRouter();
     const {id} = router.query;
-    const {data: transport, error} = useSWR(`/transports/${id}`, fetcher);
+    const {data: calendar, error} = useSWR(`/calendars/${id}`, fetcher);
 
-    if(error) return <div>"Recarga para continuar..."</div>;
-    if(!transport) return <Loading/>;
+
+    if(error) return <div>"No se obtuvo el calendario"</div>;
+    if(!calendar) return <Loading/>;
 
     return (
         <div>
-            <h1>Detalle Transporte</h1>
+            <h1>Detalle Calendario</h1>
             <div>
                 <Paper className={classes.paper}>
                     <Grid container spacing={2}>
@@ -41,39 +47,31 @@ const TransportesID= () =>{
                             <Grid item xs container direction="column" justify="center" alignItems="center" spacing={2}>
                                 <Grid item xs>
                                     <Typography gutterBottom variant="subtitle1" style={{textAlign: 'center'}}>
-                                        <h2>{transport.type}</h2>
+                                        <h2>Fecha de entrada:&ensp;{calendar.checkIn_Artist}</h2>
                                     </Typography>
                                     <Typography variant="body2" gutterBottom>
-                                        <p><b>Capacidad de pasajeros:</b> {transport.capacity}</p>
+                                        <p><b>Fecha de salida:&ensp;</b> {calendar.checkOut_Artist}</p>
                                     </Typography>
                                     <Typography variant="body2" gutterBottom>
-                                        <p><b>Capacidad para instrumentos:</b> {transport.instruments_capacity} Kg</p>
+                                        <p><b>País del que viene:&ensp;</b> {calendar.comingFrom}</p>
                                     </Typography>
                                     <Typography variant="body2" gutterBottom>
-                                        <p><b>Disponibilidad:</b> {((transport.disponibility) === 0) ? "No" : "Si" }</p>
+                                        <p><b>Número de vuelo:&ensp;</b> {calendar.flyNumber}</p>
                                     </Typography>
-                                    <Typography variant="body2" gutterBottom>
-                                        <p><b>Matrícula:</b> {transport.licence_plate}</p>
-                                    </Typography>
-                                    <Typography variant="body2" gutterBottom>
-                                        <b>Calendario:</b>&ensp;
-                                        <Link href={transport.calendar} passHref>
-                                            <MuiLink>
-                                                Ver
-                                            </MuiLink>
-                                        </Link>
-                                    </Typography>
+                                    {/*<Typography variant="body2" gutterBottom>*/}
+                                    {/*    <p><b>Artista(s) al que pertenece:&ensp;</b>{calendar.artist.map(artist => artist.name+" | ")}</p>*/}
+                                    {/*</Typography>*/}
 
                                     <Grid container spacing={3} >
                                         <Grid item container justify="center" alignItems="center">
                                             <CardActions xs={12} sm={4} md={4} lg={3} xl={3} >
                                                 <MuiLink>
-                                                    <UpdateTransport id={transport.id}/>
+                                                    <UpdateCalendar id={calendar.id}/>
                                                 </MuiLink>
                                             </CardActions>
                                             <CardActions xs={12} sm={4} md={4} lg={3} xl={3} >
                                                 <MuiLink>
-                                                    <DeleteTransport id={transport.id}/>
+                                                    <DeleteCalendar id={calendar.id}/>
                                                 </MuiLink>
                                             </CardActions>
                                         </Grid>
@@ -85,11 +83,14 @@ const TransportesID= () =>{
                     </Grid>
                 </Paper>
             </div>
-
+            <br/>
+            <br/>
+            <ReadCalendarArtists id={calendar.id}/>
+            <CreateCalendarArtist id={calendar.id}/>
 
         </div>
     );
 
 };
 
-export default withAuth(TransportesID);
+export default withAuth(CalendariosID);
