@@ -8,6 +8,10 @@ import React from "react";
 import DeleteConcert from "@/components/concerts/DeleteConcert";
 import {CardActions, Grid, Link as MuiLink, makeStyles, Paper, Typography} from "@material-ui/core";
 import Link from "next/link";
+import ReadCalendarArtists from "@/components/calendars/artists/ReadCalendarArtists";
+import CreateCalendarArtist from "@/components/calendars/artists/CreateCalendarArtist";
+import ReadConcertArtists from "@/components/concerts/artists/ReadConcertArtists";
+import CreateConcertArtist from "@/components/concerts/artists/CreateConcertArtist";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -37,7 +41,6 @@ const ConciertosID = () => {
         <div>
             <h1>Detalle Concierto</h1>
             <div>
-
                 <Paper className={classes.paper}>
                     <Grid container spacing={2}>
                         <Grid item xs={12} sm container>
@@ -111,6 +114,10 @@ const ConciertosID = () => {
                     </Grid>
                 </Paper>
             </div>
+            <br/>
+            <br/>
+            <ReadConcertArtists id={concert.id}/>
+            <CreateConcertArtist id={concert.id}/>
         </div>
     );
 

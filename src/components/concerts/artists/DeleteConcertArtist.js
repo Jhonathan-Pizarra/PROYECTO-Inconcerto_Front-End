@@ -8,6 +8,7 @@ import {Button, IconButton, makeStyles} from "@material-ui/core";
 import React from "react";
 import {Calendar} from "@/lib/calendars";
 import {CalendarArtist} from "@/lib/calendar_artists";
+import {ConcertArtist} from "@/lib/concert_artists";
 import LinkOffIcon from '@material-ui/icons/LinkOff';
 
 const useStyles = makeStyles((theme) => ({
@@ -16,17 +17,17 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const DeleteCalendarArtist = ({idArtist}) => {
+const DeleteConcertArtist = ({idArtist}) => {
 
     const classes = useStyles();
     const router = useRouter();
     const {id} = router.query;
-    const {data: calendarArtist, error} = useSWR(`/calendars/${id}/artists/${idArtist}`, fetcher);
+    const {data: concertArtist, error} = useSWR(`/concerts/${id}/artists/${idArtist}`, fetcher);
 
     const handleDelete = async () => {
         try {
-            await CalendarArtist.delete(id, idArtist);
-            router.push(Routes.CALENDARS);
+            await ConcertArtist.delete(id, idArtist);
+            router.push(Routes.CONCERTS);
         } catch (error) {
             if (error.response) {
                 console.log(error.response);
@@ -40,7 +41,7 @@ const DeleteCalendarArtist = ({idArtist}) => {
     };
 
     if(error) return <div>"No se pudo borrar el artista..."</div>;
-    if(!calendarArtist) return <Loading/>;
+    if(!concertArtist) return <Loading/>;
 
     return (
         <div>
@@ -52,4 +53,4 @@ const DeleteCalendarArtist = ({idArtist}) => {
 
 };
 
-export default DeleteCalendarArtist;
+export default DeleteConcertArtist;

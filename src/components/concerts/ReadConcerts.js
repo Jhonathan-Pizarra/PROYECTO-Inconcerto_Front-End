@@ -2,7 +2,7 @@ import {fetcher} from "../../utils";
 import useSWR from "swr";
 import Loading from "@/components/Loading";
 import {
-    Button,
+    Button, IconButton,
     makeStyles,
     Paper,
     Table,
@@ -18,6 +18,7 @@ import CreateConcert from "@/components/concerts/CreateConcert";
 import Link from "next/link";
 import Routes from "@/constants/routes";
 import SnackSuccess from "@/components/SnackSuccess";
+import FindInPageIcon from "@material-ui/icons/FindInPage";
 
 const useStyles = makeStyles((theme) => ({
     detail:{
@@ -112,12 +113,12 @@ const ReadConcerts = () => {
 
                                     <TableCell align="center">
                                         <Link href={`${Routes.CONCERTS}/${concert.id}`}>
-                                            <Button size="small" variant='contained' color="primary">
-                                                Ver
-                                            </Button>
-                                            {/*<IconButton aria-label="delete"  size="small" className={classes.detail}>
+                                            {/*<Button size="small" variant='contained' color="primary">*/}
+                                            {/*    Ver*/}
+                                            {/*</Button>*/}
+                                            <IconButton aria-label="delete"  size="small" className={classes.detail}>
                                                 <FindInPageIcon />
-                                            </IconButton>*/}
+                                            </IconButton>
                                         </Link>
                                     </TableCell>
 
