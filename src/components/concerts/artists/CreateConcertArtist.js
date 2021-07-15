@@ -28,6 +28,7 @@ import {CalendarArtist} from "@/lib/calendar_artists";
 import {useRouter} from "next/router";
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import {ConcertArtist} from "@/lib/concert_artists";
+import LinkIcon from "@material-ui/icons/Link";
 
 const useStyles = makeStyles((theme) => ({
     fixed: {
@@ -122,7 +123,7 @@ const CreateConcertArtist = () => {
 
             <Tooltip title="Nuevo" aria-label="add" className={classes.fixed}>
                 <Fab  color="primary" onClick={handleOpen} > {/*className={classes.fixed}*/}
-                    <PersonAddIcon />
+                    <LinkIcon />
                 </Fab>
             </Tooltip>
 

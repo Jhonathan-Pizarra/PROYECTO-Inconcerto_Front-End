@@ -5,6 +5,11 @@ import {fetcher} from "../../utils";
 import withAuth from "@/hocs/withAuth";
 import {Grid, makeStyles, Paper} from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
+import ReadConcertArtists from "@/components/concerts/artists/ReadConcertArtists";
+import CreateConcertArtist from "@/components/concerts/artists/CreateConcertArtist";
+import React from "react";
+import ReadLodgingArtists from "@/components/lodgings/artists/ReadLodgingArtists";
+import CreateLodgingArtist from "@/components/lodgings/artists/CreateLodgingArtist";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -62,6 +67,10 @@ const HospedajesID= () =>{
 
                 </Paper>
             </div>
+            <br/>
+            <br/>
+            <ReadLodgingArtists id={lodging.id}/>
+            <CreateLodgingArtist id={lodging.id}/>
         </div>
     );
 

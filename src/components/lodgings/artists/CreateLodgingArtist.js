@@ -27,7 +27,8 @@ import SnackSuccess from "@/components/SnackSuccess";
 import {CalendarArtist} from "@/lib/calendar_artists";
 import {useRouter} from "next/router";
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
-import LinkIcon from "@material-ui/icons/Link";
+import LinkIcon from '@material-ui/icons/Link';
+import {LodgingArtist} from "@/lib/lodging_artists";
 
 const useStyles = makeStyles((theme) => ({
     fixed: {
@@ -39,37 +40,37 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const CreateCalendarArtist = () => {
+const CreateLodgingArtist = () => {
 
     const classes = useStyles();
 
     const router = useRouter();
     const {id} = router.query;
 
-    const {data: calendars} = useSWR(`/calendars`, fetcher);
+    const {data: lodgings} = useSWR(`/lodgings`, fetcher);
     const {data: artists} = useSWR(`/artists`, fetcher);
-    const {data: calendarArtists, mutate, error} = useSWR(`/calendars/${id}/artists`, fetcher);
+    const {data: lodgingArtists, mutate, error} = useSWR(`/lodgings/${id}/artists`, fetcher);
 
     const { register, handleSubmit, reset} = useForm();
-    const [calendarSelected, setCalendarSelected] = useState(null);
+    const [lodgingSelected, setLodgingSelected] = useState(null);
     const [artistSelected, setArtistSelected] = useState(null);
     const [open, setOpen] = useState(false);
 
     const onSubmit = async (data) => {
         console.log('data', data);
 
-        const newCalendarArtist = {
+        const newLodgingArtist = {
             artist_id: data.artist_id,
-            calendar_id: data.calendar_id,
+            lodging_id: data.lodging_id,
         };
 
         const formData = new FormData();
-        formData.append("artist_id", newCalendarArtist.artist_id);
-        formData.append("calendar_id", newCalendarArtist.calendar_id);
+        formData.append("artist_id", newLodgingArtist.artist_id);
+        formData.append("lodging_id", newLodgingArtist.lodging_id);
 
         try {
-            await CalendarArtist.create(id,formData);
-            mutate(`/calendars/${id}/artists`);
+            await LodgingArtist.create(id,formData);
+            mutate(`/lodgings/${id}/artists`);
             handleClose();
         } catch (error) {
             if (error.response) {
@@ -100,8 +101,8 @@ const CreateCalendarArtist = () => {
         setOpen(false);
     };
 
-    const handleChangeCalendar = () => {
-        setCalendarSelected({calendarSelected});
+    const handleChangeLodging = () => {
+        setLodgingSelected({lodgingSelected});
     };
 
     const handleChangeArtist = () => {
@@ -113,8 +114,8 @@ const CreateCalendarArtist = () => {
     };
 
     if(error) return <div>"Recarga la página para continuar..."</div>;
-    if(!calendarArtists) return <Loading/>;
-    if(!calendars) return <Loading/>;
+    if(!lodgingArtists) return <Loading/>;
+    if(!lodgings) return <Loading/>;
     if(!artists) return <Loading/>;
 
     return (
@@ -135,17 +136,17 @@ const CreateCalendarArtist = () => {
                         <DialogContentText>
                             Por favor llena los siguientes campos:
                         </DialogContentText>
-                        <InputLabel htmlFor="outlined-age-native-simple">Calendario</InputLabel>
+                        <InputLabel htmlFor="outlined-age-native-simple">Hospedaje</InputLabel>
                         <Select
                             fullWidth
                             autoFocus
                             native
-                            value={calendarSelected}
-                            onChange={handleChangeCalendar}
-                            {...register("calendar_id")}
+                            value={lodgingSelected}
+                            onChange={handleChangeLodging}
+                            {...register("lodging_id")}
                         >
-                            {calendars.data.map((calendar) => (
-                                <option key={calendar.id}  value={calendar.id}>{calendar.checkIn_Artist}</option>
+                            {lodgings.data.map((lodging) => (
+                                <option key={lodging.id}  value={lodging.id}>{lodging.name}</option>
                             ))}
                         </Select>
                     </DialogContent>
@@ -181,4 +182,4 @@ const CreateCalendarArtist = () => {
     );
 };
 
-export default CreateCalendarArtist;
+export default CreateLodgingArtist;
