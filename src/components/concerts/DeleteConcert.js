@@ -4,16 +4,22 @@ import Loading from "@/components/Loading";
 import {fetcher} from "../../utils";
 import Routes from "@/constants/routes";
 import DeleteIcon from "@material-ui/icons/Delete";
-import {Button} from "@material-ui/core";
+import {Button, makeStyles} from "@material-ui/core";
 import React from "react";
 import {Concert} from "@/lib/concerts";
+import IconButton from "@material-ui/core/IconButton";
 
+const useStyles = makeStyles((theme) => ({
+    delete: {
+        color: "#f50057",
+    },
+}));
 
-const DeleteConcert = () => {
+const DeleteConcert = ({id}) => {
 
+    const classes = useStyles();
     const router = useRouter();
-    const {id} = router.query;
-    const {data: concert, error} = useSWR(`/concerts/${id}`, fetcher);
+    const {data: concert, error} = useSWR(`/concerts`, fetcher);
 
     const handleDelete = async () => {
         try {
@@ -50,15 +56,9 @@ const DeleteConcert = () => {
 
     return (
         <div>
-            <Button
-                variant="contained"
-                color="secondary"
-                onClick={handleDelete}
-                // className={classes.button}
-                startIcon={<DeleteIcon />}
-            >
-                Eliminar
-            </Button>
+            <IconButton aria-label="eliminar"  className={classes.delete} size="small" onClick={handleDelete} >
+                <DeleteIcon />
+            </IconButton>
         </div>
     );
 

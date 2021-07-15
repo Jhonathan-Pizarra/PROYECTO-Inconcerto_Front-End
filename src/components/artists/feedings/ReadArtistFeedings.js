@@ -18,10 +18,11 @@ import CreateConcert from "@/components/concerts/CreateConcert";
 import Link from "next/link";
 import Routes from "@/constants/routes";
 import {useRouter} from "next/router";
-import UpdateConcert from "@/components/concerts/UpdateConcert";
-import DeleteConcert from "@/components/concerts/DeleteConcert";
-import FindInPageIcon from "@material-ui/icons/FindInPage";
+import SnackSuccess from "@/components/SnackSuccess";
 import IconButton from "@material-ui/core/IconButton";
+import FindInPageIcon from "@material-ui/icons/FindInPage";
+import UpdateFeeding from "@/components/feedings/UpdateFeeding";
+import DeleteFeeding from "@/components/feedings/DeleteFeeding";
 
 const useStyles = makeStyles((theme) => ({
     detail:{
@@ -51,14 +52,17 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-const ReadFestivalConcerts = ({id}) => {
+const ReadArtistFeedings = ({id}) => {
 
     const classes = useStyles();
     //const router = useRouter();
     //const {id} = router.query;
-    const {data: festconcerts, error} = useSWR(`/festivals/${id}/concerts`, fetcher);
+    const {data: artistfeedings, error} = useSWR(`/artists/${id}/feedings`, fetcher);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
+
+    if(error) return <p>No se pudieron cargar los cuadros...</p>;
+    if (!artistfeedings) return <Loading/>;
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -69,78 +73,72 @@ const ReadFestivalConcerts = ({id}) => {
         setPage(0);
     };
 
-    if(error) return <p>No se pudieron cargar los conciertos...</p>;
-    if (!festconcerts) return <Loading/>;
-
     return (
         <div>
+            <h1>Cuadro de Alimentación</h1>
             <TableContainer component={Paper}>
                 <Table size="small" aria-label="a dense table">
                     <TableHead className={classes.head}>
-
                         <TableRow>
-                            <TableCell className={classes.titles}>Concierto </TableCell>
                             <TableCell className={classes.titles}>Fecha</TableCell>
-                            <TableCell className={classes.titles}>Duración&nbsp;(horas)</TableCell>
-                            <TableCell className={classes.titles}>Gratuidad&nbsp;(Si - No)</TableCell>
-                            <TableCell className={classes.titles}>InsiItu&nbsp;(Si - No)</TableCell>
-                            {/*<TableCell align="center">Lugar</TableCell>*/}
-                            {/*<TableCell align="center">Festival</TableCell>*/}
-                            <TableCell align="center" style={{color: "white"}}>Detalle</TableCell>
+                            <TableCell className={classes.titles}>Nombre</TableCell>
+                            <TableCell className={classes.titles}>Cantidad</TableCell>
+                            <TableCell className={classes.titles}>Observación</TableCell>
+                            {/*<TableCell className={classes.titles}>Lugar</TableCell>*/}
+                            {/*<TableCell className={classes.titles}>Artista</TableCell>*/}
+                            {/*<TableCell className={classes.titles}>Administrador</TableCell>*/}
+                            <TableCell align="center" style={{color: "white"}}> Acciones</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {festconcerts && festconcerts.map((festconcert => {
-
-                            var free = ((festconcert.free) === 0) ? "No" : "Si" ;
-                            var insitu = ((festconcert.insitu) === 0) ? "No" : "Si" ;
+                        {artistfeedings ? <SnackSuccess/> : <Loading/>}
+                        {artistfeedings && artistfeedings.map((artistfeeding => {
+                            //var passage = ((artist.passage) === 0) ? "No" : "Si" ;
 
                             return(
-                                <TableRow key={festconcert.id}>
-                                    <TableCell align="left">{festconcert.name}</TableCell>
-                                    <TableCell align="left">{festconcert.dateConcert}</TableCell>
-                                    <TableCell align="left">{festconcert.duration}</TableCell>
-                                    <TableCell align="left">{free}</TableCell>
-                                    <TableCell align="left">{insitu}</TableCell>
-                                    <TableCell align="center">
+                                <TableRow key={artistfeeding.id}>
+                                    <TableCell align="left">{artistfeeding.date}</TableCell>
+                                    <TableCell align="left">{artistfeeding.food}</TableCell>
+                                    <TableCell align="left">{artistfeeding.quantityLunchs}</TableCell>
+                                    <TableCell align="left">{artistfeeding.observation}</TableCell>
+                                    {/*<TableCell align="left">{feeding.place}</TableCell>*/}
+                                    {/*<TableCell align="left">{feeding.artist}</TableCell>*/}
+                                    {/*<TableCell align="left">{feeding.user}</TableCell>*/}
+                                    <TableCell align="center" >
                                         <td>
-                                            <Link href={`${Routes.CONCERTS}/${festconcert.id}`}>
+                                            <Link href={`${Routes.FEEDINGS}/${artistfeeding.id}`}>
                                                 <IconButton aria-label="ver"  size="small" className={classes.detail}>
                                                     <FindInPageIcon />
                                                 </IconButton>
-                                                {/*<IconButton aria-label="delete"  size="small" className={classes.detail}>
-                                                <FindInPageIcon />
-                                            </IconButton>*/}
                                             </Link>
                                         </td>
                                         <td>
-                                            <UpdateConcert id={festconcert.id}/>
+                                            <UpdateFeeding id={artistfeeding.id}/>
                                         </td>
                                         <td>
-                                            <DeleteConcert id={festconcert.id}/>
+                                            <DeleteFeeding id={artistfeeding.id}/>
                                         </td>
                                     </TableCell>
                                 </TableRow>
                             )
                         })).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)}
                     </TableBody>
-
                 </Table>
 
                 <TablePagination
                     rowsPerPageOptions={[5, 10, 25]}
                     component="div"
-                    //count={concerts.meta.total}
-                    count = {festconcerts.length}
+                    //count={feedings.data.length}
+                    count = {artistfeedings.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     onChangePage={handleChangePage}
                     onChangeRowsPerPage={handleChangeRowsPerPage}
                 />
             </TableContainer>
-            <CreateConcert/>
+
         </div>
     );
 }
 
-export default ReadFestivalConcerts;
+export default ReadArtistFeedings;

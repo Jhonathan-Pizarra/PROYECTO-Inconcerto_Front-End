@@ -19,6 +19,8 @@ import Link from "next/link";
 import Routes from "@/constants/routes";
 import SnackSuccess from "@/components/SnackSuccess";
 import FindInPageIcon from "@material-ui/icons/FindInPage";
+import UpdateConcert from "@/components/concerts/UpdateConcert";
+import DeleteConcert from "@/components/concerts/DeleteConcert";
 
 const useStyles = makeStyles((theme) => ({
     detail:{
@@ -78,7 +80,7 @@ const ReadConcerts = () => {
                             <TableCell className={classes.titles}>InsiItu&nbsp;(Si - No)</TableCell>
                              {/*<TableCell align="center">Lugar</TableCell>*/}
                              {/*<TableCell align="center">Festival</TableCell>*/}
-                            <TableCell align="center" style={{color: "white"}}>Detalle</TableCell>
+                            <TableCell align="left" style={{color: "white"}}>&emsp;Acciones</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -110,16 +112,20 @@ const ReadConcerts = () => {
                                             </MuiLink>
                                         </Link>
                                     </TableCell>*/}
-
-                                    <TableCell align="center">
-                                        <Link href={`${Routes.CONCERTS}/${concert.id}`}>
-                                            {/*<Button size="small" variant='contained' color="primary">*/}
-                                            {/*    Ver*/}
-                                            {/*</Button>*/}
-                                            <IconButton aria-label="delete"  size="small" className={classes.detail}>
-                                                <FindInPageIcon />
-                                            </IconButton>
-                                        </Link>
+                                    <TableCell align="left">
+                                        <td>
+                                            <Link href={`${Routes.CONCERTS}/${concert.id}`}>
+                                                <IconButton aria-label="ver"  size="small" className={classes.detail}>
+                                                    <FindInPageIcon />
+                                                </IconButton>
+                                            </Link>
+                                        </td>
+                                        <td>
+                                            <UpdateConcert id={concert.id}/>
+                                        </td>
+                                        <td>
+                                            <DeleteConcert id={concert.id}/>
+                                        </td>
                                     </TableCell>
 
                                 </TableRow>
