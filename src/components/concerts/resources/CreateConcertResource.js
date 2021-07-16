@@ -4,43 +4,33 @@ import {useForm} from "react-hook-form";
 import useSWR from "swr";
 import {
     Button,
-    Checkbox,
     Dialog,
     DialogActions,
     DialogContent,
     DialogContentText,
     DialogTitle,
     Fab,
-    FormControlLabel,
-    Grid,
     InputLabel,
     makeStyles,
     Select,
-    TextField,
     Tooltip
 } from "@material-ui/core";
-import AddIcon from "@material-ui/icons/Add";
 import Loading from "@/components/Loading";
-import {yupResolver} from '@hookform/resolvers/yup';
-import * as yup from "yup";
-import SnackSuccess from "@/components/SnackSuccess";
-import {CalendarArtist} from "@/lib/calendar_artists";
 import {useRouter} from "next/router";
-import PersonAddIcon from '@material-ui/icons/PersonAdd';
-import {ConcertArtist} from "@/lib/concert_artists";
 import LinkIcon from "@material-ui/icons/Link";
+import {ConcertResource} from "@/lib/concert_resources";
 
 const useStyles = makeStyles((theme) => ({
     fixed: {
         /*display: 'inline-flex',*/
         //position: '-moz-initial',//a la derecha
         position: 'fixed', //a la izquierda...
-        bottom: theme.spacing(12),
+        bottom: theme.spacing(2),
         right: theme.spacing(2),
     },
 }));
 
-const CreateConcertArtist = () => {
+const CreateConcertResource = () => {
 
     const classes = useStyles();
 
@@ -48,29 +38,29 @@ const CreateConcertArtist = () => {
     const {id} = router.query;
 
     const {data: concerts} = useSWR(`/concerts`, fetcher);
-    const {data: artists} = useSWR(`/artists`, fetcher);
-    const {data: concertArtists, mutate, error} = useSWR(`/concerts/${id}/artists`, fetcher);
+    const {data: resources} = useSWR(`/resources`, fetcher);
+    const {data: concertResources, mutate, error} = useSWR(`/concerts/${id}/resources`, fetcher);
 
     const { register, handleSubmit, reset} = useForm();
     const [concertSelected, setConcertSelected] = useState(null);
-    const [artistSelected, setArtistSelected] = useState(null);
+    const [resourceSelected, setResourceSelected] = useState(null);
     const [open, setOpen] = useState(false);
 
     const onSubmit = async (data) => {
         console.log('data', data);
 
-        const newConcertArtist = {
-            artist_id: data.artist_id,
+        const newConcertResource = {
             concert_id: data.concert_id,
+            resource_id: data.resource_id,
         };
 
         const formData = new FormData();
-        formData.append("artist_id", newConcertArtist.artist_id);
-        formData.append("concert_id", newConcertArtist.concert_id);
+        formData.append("concert_id", newConcertResource.concert_id);
+        formData.append("resource_id", newConcertResource.resource_id);
 
         try {
-            await ConcertArtist.create(id,formData);
-            mutate(`/concerts/${id}/artists`);
+            await ConcertResource.create(id,formData);
+            mutate(`/concerts/${id}/resources`);
             handleClose();
         } catch (error) {
             if (error.response) {
@@ -105,8 +95,8 @@ const CreateConcertArtist = () => {
         setConcertSelected({concertSelected});
     };
 
-    const handleChangeArtist = () => {
-        setArtistSelected({artistSelected});
+    const handleChangeResource = () => {
+        setResourceSelected({resourceSelected});
     };
 
     const handleValidate = () =>{
@@ -114,15 +104,15 @@ const CreateConcertArtist = () => {
     };
 
     if(error) return <div>"Recarga la página para continuar..."</div>;
-    if(!concertArtists) return <Loading/>;
+    if(!concertResources) return <Loading/>;
     if(!concerts) return <Loading/>;
-    if(!artists) return <Loading/>;
+    if(!resources) return <Loading/>;
 
     return (
         <div>
 
             <Tooltip title="Vincular" aria-label="add" className={classes.fixed}>
-                <Fab  color="secondary" onClick={handleOpen} > {/*className={classes.fixed}*/}
+                <Fab  color="primary" onClick={handleOpen} > {/*className={classes.fixed}*/}
                     <LinkIcon />
                 </Fab>
             </Tooltip>
@@ -151,17 +141,17 @@ const CreateConcertArtist = () => {
                     </DialogContent>
 
                     <DialogContent>
-                        <InputLabel htmlFor="outlined-age-native-simple">Artista</InputLabel>
+                        <InputLabel htmlFor="outlined-age-native-simple">Recurso</InputLabel>
                         <Select
                             fullWidth
                             autoFocus
                             native
-                            value={artistSelected}
-                            onChange={handleChangeArtist}
-                            {...register("artist_id")}
+                            value={resourceSelected}
+                            onChange={handleChangeResource}
+                            {...register("resource_id")}
                         >
-                            {artists.data.map((artist) => (
-                                <option key={artist.id}  value={artist.id}>{artist.name}</option>
+                            {resources.data.map((resource) => (
+                                <option key={resource.id}  value={resource.id}>{resource.name}</option>
                             ))}
                         </Select>
                     </DialogContent>
@@ -180,4 +170,4 @@ const CreateConcertArtist = () => {
     );
 };
 
-export default CreateConcertArtist;
+export default CreateConcertResource;

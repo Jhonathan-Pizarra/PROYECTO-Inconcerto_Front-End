@@ -71,6 +71,7 @@ const ReadConcertArtists = ({id}) => {
 
     return (
         <div>
+            <h1>Artistas del concierto</h1>
             <TableContainer component={Paper}>
                 <Table size="small" aria-label="a dense table">
                     <TableHead className={classes.head}>
