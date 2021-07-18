@@ -41,8 +41,7 @@ const ReadActivity = () => {
     return (
         <div>
             <h1>Tareas InConcerto</h1>
-
-            <div >
+            <div>
                 <Grid container className={classes.root} spacing={3} direction='column' justify='flex-start' component={Paper}>
                     {activities.data ? <SnackSuccess/> : <Loading/>}
                     {activities.data && activities.data.map(activity => {
@@ -68,8 +67,8 @@ const ReadActivity = () => {
                         )
                     })}
                 </Grid>
-                <CreateActivity/>
             </div>
+            <CreateActivity/>
         </div>
     )
 }

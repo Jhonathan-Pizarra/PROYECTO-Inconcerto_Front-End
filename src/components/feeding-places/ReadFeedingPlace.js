@@ -64,7 +64,7 @@ const ReadFeedingPlace = () => {
     return (
 
         <div>
-
+            <h1>Huecas InConcerto</h1>
             <Grid container className={classes.root} spacing={3} direction='row' justify='flex-start'>
                 {fplaces.data ? <SnackSuccess/> : <Loading/>}
                 {fplaces.data && fplaces.data.map(fplace => {
@@ -133,7 +133,6 @@ const ReadFeedingPlace = () => {
                 })}
             </Grid>
             <CreateFeedingPlace/>
-
         </div>
     )
 }

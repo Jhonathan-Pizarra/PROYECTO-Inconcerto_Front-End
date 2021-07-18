@@ -6,6 +6,7 @@ import Routes from "@/constants/routes";
 import {Button} from "@material-ui/core";
 import React from "react";
 import {PlaceConcert} from "@/lib/concert_places";
+import translateMessage from "@/constants/messages";
 
 const DeleteConcertPlace = ({id}) => {
 
@@ -24,6 +25,7 @@ const DeleteConcertPlace = ({id}) => {
             } else {
                 console.log("Error", error.message);
             }
+            alert(translateMessage(error.config));
             console.log(error.config);
         }
     };

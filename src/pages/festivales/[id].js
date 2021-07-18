@@ -4,10 +4,13 @@ import Loading from "@/components/Loading";
 import {fetcher} from "../../utils";
 import withAuth from "@/hocs/withAuth";
 import {CardActions, CardMedia, Grid, Link, makeStyles, Paper, Typography} from "@material-ui/core";
-import React from "react";
+import React, {useEffect, useRef, useCallback} from "react";
 import UpdateFestival from "@/components/festivals/UpdateFestival";
 import DeleteFestival from "@/components/festivals/DeleteFestival";
 import ReadFestivalConcerts from "@/components/festivals/concerts/ReadFestivalConcerts";
+import SnackError from "@/components/SnackError";
+import SnackSuccess from "@/components/SnackSuccess";
+import SnackInfo from "@/components/SnackInfo";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -28,13 +31,11 @@ const FestivalID = () =>{
     const {id} = router.query;
     const {data: festival, error, mutate} = useSWR(`/festivals/${id}`, fetcher);
 
-
-    if(error) return <div>"No se obtuvo el festival"</div>;
+    if(error) return <div>"No se obtuvo el festival..."</div>;
     if(!festival) return <Loading/>;
 
     return (
         <div>
-
             <h1>Detalle Festival</h1>
             <div>
 
@@ -74,7 +75,7 @@ const FestivalID = () =>{
                                             <UpdateFestival/>
                                         </Link>
                                         <Link>
-                                            <DeleteFestival/>
+                                            <DeleteFestival />
                                         </Link>
                                     </CardActions>
                                 </Grid>

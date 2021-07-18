@@ -73,7 +73,7 @@ const ReadConcertResources = ({id}) => {
         <div>
             <h1>Recursos del concierto</h1>
             <Grid container className={classes.root} spacing={3} direction='row' justify='flex-start'>
-                {concertResources.data ? <SnackSuccess/> : <Loading/>}
+                {/*{concertResources.data ? <SnackSuccess/> : <Loading/>}*/}
                 {concertResources.data && concertResources.data.map(concertResource => {
                     return(
                         <Grid container item xs={12} sm={6} md={4} lg={3} xl={3} key={concertResource.id}>

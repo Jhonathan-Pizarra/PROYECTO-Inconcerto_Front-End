@@ -105,7 +105,6 @@ const CreateArtist = () => {
             await Artist.create(formData);
             mutate("/artists");
             handleClose();
-            <SnackSuccess/>
         } catch (error) {
             if (error.response) {
                 // The request was made and the server responded with a status code

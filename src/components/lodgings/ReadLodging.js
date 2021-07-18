@@ -67,7 +67,7 @@ const ReadLodging = () => {
 
     return (
         <div>
-            <CreateLodging/>
+            <h1>Hospedajes InConcerto</h1>
             <TableContainer component={Paper}>
                 <Table size="small" aria-label="a dense table">
                     <TableHead className={classes.head}>
@@ -126,7 +126,7 @@ const ReadLodging = () => {
                     onChangeRowsPerPage={handleChangeRowsPerPage}
                 />
             </TableContainer>
-
+            <CreateLodging/>
         </div>
     )
 }

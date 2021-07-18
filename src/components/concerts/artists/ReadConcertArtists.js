@@ -97,7 +97,7 @@ const ReadConcertArtists = ({id}) => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {concertArtists.data ? <SnackSuccess/> : <Loading/>}
+                        {/*{concertArtists.data ? <SnackSuccess/> : <Loading/>}*/}
                         {concertArtists.data && concertArtists.data.map((concertArtist => {
                             var passage = ((concertArtist.passage) === 0) ? "No" : "Si" ;
 

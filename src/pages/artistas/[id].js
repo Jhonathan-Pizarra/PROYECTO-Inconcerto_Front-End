@@ -24,7 +24,7 @@ const ArtistasID= () =>{
     const {id} = router.query;
     const {data: artist, error} = useSWR(`/artists/${id}`, fetcher);
 
-    if(error) return <div>"No se obtuvo el Artista"</div>;
+    if(error) return <div>"No se obtuvo el artista"</div>;
     if(!artist) return <Loading/>;
 
     return (
@@ -83,7 +83,6 @@ const ArtistasID= () =>{
                     </Grid>
 
                 </Paper>
-
                 <br/>
                 <br/>
                 <ReadArtistFeedings id={artist.id}/>

@@ -31,7 +31,7 @@ const useStyles = makeStyles({
         //fontSize: 14,
         overflow: "hidden",
         display: "-webkit-box",
-        "-webkit-line-clamp": 2,
+        "-webkit-line-clamp": 1,
         "-webkit-box-orient": "vertical",
     },
     direction: {
@@ -74,6 +74,7 @@ const ReadConcertPlace = () => {
 
     return (
         <div>
+            <h1>Lugares InConcierto</h1>
             <Grid container className={classes.root} spacing={3} direction='row' justify='flex-start'>
                 {places.data ? <SnackSuccess/> : <Loading/>}
                 {places.data && places.data.map(place => {

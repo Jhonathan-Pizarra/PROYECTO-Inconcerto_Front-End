@@ -71,7 +71,7 @@ const ReadFestivals = () => {
 
     return (
         <div>
-            {/*<BackToTop/>*/}
+            <h1>Festivales InConcerto</h1>
             <Grid container className={classes.root} spacing={3} direction='row' justify='flex-start'>
                 {festivals.data ? <SnackSuccess/> : <Loading/>}
                 {festivals.data && festivals.data.map(festival => {

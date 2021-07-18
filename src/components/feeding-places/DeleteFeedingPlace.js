@@ -29,7 +29,7 @@ const DeleteFeedingPlace = ({id}) => {
         }
     };
 
-    if(error) return <div>"No se pudo borrar el artista..."</div>;
+    if(error) return <div>"No se pudo borrar el lugar de alimentación..."</div>;
     if(!fplace) return <Loading/>;
 
     return (

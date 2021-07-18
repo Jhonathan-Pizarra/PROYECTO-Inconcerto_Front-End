@@ -7,6 +7,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import {Button, IconButton, makeStyles} from "@material-ui/core";
 import React from "react";
 import {ConcertResource} from "@/lib/concert_resources";
+import translateMessage from "@/constants/messages";
 
 
 const DeleteConcertResource = ({idResource}) => {

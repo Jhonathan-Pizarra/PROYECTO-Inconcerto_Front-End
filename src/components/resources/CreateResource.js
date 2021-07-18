@@ -67,7 +67,6 @@ const CreateResource = () => {
             await Resource.create(formData);
             mutate("/resources");
             handleClose();
-            <SnackSuccess/>
         } catch (error) {
             if (error.response) {
                 console.error(error.response);

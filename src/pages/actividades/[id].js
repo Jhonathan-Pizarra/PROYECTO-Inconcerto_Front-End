@@ -27,7 +27,7 @@ const ActividadesID= () => {
     const {id} = router.query;
     const {data: activity, error} = useSWR(`/activityfestivals/${id}`, fetcher);
 
-    if(error) return <div>"No se obtuvo el festival"</div>;
+    if(error) return <div>"No se obtuvo la actividad"</div>;
     if(!activity) return <Loading/>;
 
     return (

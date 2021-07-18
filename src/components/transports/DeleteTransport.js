@@ -6,6 +6,7 @@ import Routes from "@/constants/routes";
 import {Button} from "@material-ui/core";
 import React from "react";
 import {Transport} from "@/lib/transports";
+import translateMessage from "@/constants/messages";
 
 const DeleteTransport = ({id}) => {
 
@@ -25,6 +26,7 @@ const DeleteTransport = ({id}) => {
             } else {
                 console.log("Error", error.message);
             }
+            alert(translateMessage(error.config));
             console.log(error.config);
         }
     };

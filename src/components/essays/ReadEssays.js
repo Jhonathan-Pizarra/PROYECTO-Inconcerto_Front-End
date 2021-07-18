@@ -26,6 +26,7 @@ const ReadEssays = () => {
 
     return (
         <div>
+            <h1>Ensayos InConcerto</h1>
             <Grid container className={classes.root} spacing={3} direction='column' justify='flex-start' component={Paper}>
                 {essays.data ? <SnackSuccess/> : <Loading/>}
                 {essays.data && essays.data.map(essay => {

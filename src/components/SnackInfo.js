@@ -43,7 +43,7 @@ export default function SnackInfo() {
                 key={vertical + horizontal}
             >
                 <Alert onClose={handleClose} severity="info">
-                    ¡Modificación exitosa!
+                    ¡La información ha sido actualizada!
                 </Alert>
             </Snackbar>
         </div>

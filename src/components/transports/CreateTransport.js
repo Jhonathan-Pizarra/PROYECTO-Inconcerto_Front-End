@@ -86,7 +86,6 @@ const CreateTransport = () => {
             await Transport.create(formData);
             mutate("/transports");
             handleClose();
-            <SnackSuccess/>
         } catch (error) {
             if (error.response) {
                 console.error(error.response);

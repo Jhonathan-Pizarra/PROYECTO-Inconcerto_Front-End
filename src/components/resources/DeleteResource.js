@@ -7,6 +7,7 @@ import Routes from "@/constants/routes";
 import DeleteIcon from "@material-ui/icons/Delete";
 import {Button} from "@material-ui/core";
 import React from "react";
+import translateMessage from "@/constants/messages";
 
 
 const DeleteResource = ({id}) => {
@@ -27,6 +28,7 @@ const DeleteResource = ({id}) => {
             } else {
                 console.log("Error", error.message);
             }
+            alert(translateMessage(error.config));
             console.log(error.config);
         }
     };

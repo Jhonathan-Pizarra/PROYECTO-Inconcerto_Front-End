@@ -8,6 +8,7 @@ import {Button, makeStyles} from "@material-ui/core";
 import React from "react";
 import {Concert} from "@/lib/concerts";
 import IconButton from "@material-ui/core/IconButton";
+import translateMessage from "@/constants/messages";
 
 const useStyles = makeStyles((theme) => ({
     delete: {
@@ -29,14 +30,7 @@ const DeleteConcert = ({id}) => {
             if (error.response) {
                 // The request was made and the server responded with a status code
                 // that falls out of the range of 2xx
-                // enqueueSnackbar("No se pudo eliminar el festival", {
-                //     variant: "error",
-                //     anchorOrigin: {
-                //         vertical: "top",
-                //         horizontal: "center",
-                //     },
-                // });
-                alert(error.response.message);
+                //alert(error.response.message);
                 console.log(error.response);
             } else if (error.request) {
                 // The request was made but no response was received
@@ -47,6 +41,7 @@ const DeleteConcert = ({id}) => {
                 // Something happened in setting up the request that triggered an Error
                 console.log("Error", error.message);
             }
+            alert(translateMessage(error.config));
             console.log(error.config);
         }
     };
