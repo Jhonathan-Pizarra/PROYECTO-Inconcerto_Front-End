@@ -5,7 +5,7 @@
 const publicRoutes = {
     HOME: "/",
     LOGIN: "/login",
-    REGISTER: "/register",
+    //REGISTER: "/register",
     FESTIVALS: "/festivales",
     // USERS: "/usuarios",
     // USERS_ID: `/usuario/:id`,
@@ -38,6 +38,8 @@ const privateRoutes = {
     //ACTIVITIES_ID: "/actividades/:id",
     //FESTIVALCONCERTS: "festivales/:id/conciertos",
     //CALENDARARTISTS: "calendarios/:id/artistas",
+    REGISTER: "/register",
+    USERS: "/usuarios",
 };
 
 const Routes = {
