@@ -1,4 +1,4 @@
-import {fetcher} from "../../utils";
+import {fetcher} from "../../../utils";
 import useSWR from "swr";
 import Loading from "@/components/Loading";
 import IconButton from "@material-ui/core/IconButton";
@@ -18,18 +18,14 @@ import {
 } from "@material-ui/core";
 import React, {useState} from "react";
 import Routes from "@/constants/routes";
-import SnackSuccess from "@/components/SnackSuccess";
-import CreateUser from "@/components/usuarios/CreateUser";
-import UpdateUser from "@/components/usuarios/UpdateUser";
-import DeleteUser from "@/components/usuarios/DeleteUser";
-
+import DeleteCalendarUser from "@/components/calendars/users/DeleteCalendarUser";
 
 const useStyles = makeStyles((theme) => ({
     detail:{
         color: "#3f51b5",
     },
     head: {
-        backgroundColor: "#f44336",
+        backgroundColor: "#3f51b5",
     },
     overrides: {
         color: "rgba(0, 0, 0, 0.87)",
@@ -48,15 +44,15 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const ReadUsers = () => {
+const ReadCalendarUsers = ({id}) => {
 
-    const {data: users, error} = useSWR(`/users`, fetcher);
+    const classes = useStyles();
+    const {data: userCalendars, error} = useSWR(`/calendars/${id}/users`, fetcher);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
-    const classes = useStyles();
 
     if(error) return <p>No se pudieron cargar los usuarios...</p>;
-    if (!users) return <Loading/>;
+    if (!userCalendars) return <Loading/>;
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -69,11 +65,12 @@ const ReadUsers = () => {
 
     return (
         <div>
+            <h1>Usuarios del Calendario</h1>
             <TableContainer component={Paper}>
                 <Table size="small" aria-label="a dense table">
                     <TableHead className={classes.head}>
                         <TableRow>
-                            <TableCell className={classes.titles}>Registro </TableCell>
+                            <TableCell className={classes.titles}>Fecha de Registro </TableCell>
                             <TableCell className={classes.titles}>Nombre</TableCell>
                             <TableCell className={classes.titles}>E-mail </TableCell>
                             <TableCell className={classes.titles}>Rol</TableCell>
@@ -81,20 +78,20 @@ const ReadUsers = () => {
                             {/*<TableCell align="center"></TableCell>*/}
                             {/*<TableCell align="center"></TableCell>*/}
                             {/*<TableCell align="center"></TableCell>*/}
-                            <TableCell align="center" style={{color: "white"}}> Acciones</TableCell>
+                            <TableCell align="left" style={{color: "white"}}> Acciones</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {users ? <SnackSuccess/> : <Loading/>}
-                        {users && users.map((user => {
+                        {/*{userCalendars.data ? <SnackSuccess/> : <Loading/>}*/}
+                        {userCalendars.data && userCalendars.data.map((userCalendar => {
 
-                            var rol = user.role === 'ROLE_ADMIN' ? 'Administrador':'Usuario';
+                            var rol = userCalendar.role === 'ROLE_ADMIN' ? 'Administrador':'Usuario';
 
                             return(
-                                <TableRow key={user.id}>
-                                    <TableCell align="left">{user.created_at}</TableCell>
-                                    <TableCell align="left">{user.name}</TableCell>
-                                    <TableCell align="left">{user.email}</TableCell>
+                                <TableRow key={userCalendar.id}>
+                                    <TableCell align="left">{userCalendar.created_at}</TableCell>
+                                    <TableCell align="left">{userCalendar.name}</TableCell>
+                                    <TableCell align="left">{userCalendar.email}</TableCell>
                                     <TableCell align="left">{rol}</TableCell>
                                     {/*<TableCell align="center"></TableCell>*/}
                                     {/*<TableCell align="center"></TableCell>*/}
@@ -102,17 +99,14 @@ const ReadUsers = () => {
                                     {/*<TableCell align="center"></TableCell>*/}
                                     <TableCell align="center" >
                                         <td>
-                                        <Link href={`${Routes.USERS}/${user.id}`}>
-                                            <IconButton aria-label="ver"  size="small" className={classes.detail}>
-                                                <FindInPageIcon />
-                                            </IconButton>
-                                        </Link>
+                                            <Link href={`${Routes.USERS}/${userCalendar.id}`}>
+                                                <IconButton aria-label="ver"  size="small" className={classes.detail}>
+                                                    <FindInPageIcon />
+                                                </IconButton>
+                                            </Link>
                                         </td>
                                         <td>
-                                            <UpdateUser id={user.id} />
-                                        </td>
-                                        <td>
-                                            <DeleteUser id={user.id} />
+                                            <DeleteCalendarUser idUser={userCalendar.id} />
                                         </td>
                                     </TableCell>
                                 </TableRow>
@@ -127,25 +121,15 @@ const ReadUsers = () => {
                     component="div"
                     //count={artists.meta.total}
                     //count = {artists.data.length}
-                    count = {(users && users.length)? users.length : 100 }
+                    count = {(userCalendars.data && userCalendars.data.length)? userCalendars.data.length : 100 }
                     rowsPerPage={rowsPerPage}
                     page={page}
                     onChangePage={handleChangePage}
                     onChangeRowsPerPage={handleChangeRowsPerPage}
                 />
             </TableContainer>
-            <br/>
-            {/*<CreateArtist/>*/}
-            <Grid
-                container
-                direction="column"
-                justifyContent="center"
-                alignItems="center"
-            >
-                <CreateUser/>
-            </Grid>
         </div>
     )
 }
 
-export default ReadUsers;
+export default ReadCalendarUsers;

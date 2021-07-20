@@ -1,5 +1,5 @@
 import withAuth from "@/hocs/withAuth";
-import ReadUsers from "@/components/usuarios/ReadUsers";
+import ReadUsers from "@/components/users/ReadUsers";
 import React, {useEffect, useState} from "react";
 import api from "@/lib/api";
 import cookie from "js-cookie";

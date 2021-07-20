@@ -21,25 +21,22 @@ import {
 } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import Loading from "@/components/Loading";
-import {yupResolver} from '@hookform/resolvers/yup';
-import * as yup from "yup";
-import SnackSuccess from "@/components/SnackSuccess";
-import {CalendarArtist} from "@/lib/calendar_artists";
 import {useRouter} from "next/router";
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import LinkIcon from "@material-ui/icons/Link";
+import {CalendarUser} from "@/lib/calendar_users";
 
 const useStyles = makeStyles((theme) => ({
     fixed: {
         /*display: 'inline-flex',*/
         //position: '-moz-initial',//a la derecha
         position: 'fixed', //a la izquierda...
-        bottom: theme.spacing(12),
+        bottom: theme.spacing(2),
         right: theme.spacing(2),
     },
 }));
 
-const CreateCalendarArtist = () => {
+const CreateCalendarUser = () => {
 
     const classes = useStyles();
 
@@ -47,29 +44,34 @@ const CreateCalendarArtist = () => {
     const {id} = router.query;
 
     const {data: calendars} = useSWR(`/calendars`, fetcher);
-    const {data: artists} = useSWR(`/artists`, fetcher);
-    const {data: calendarArtists, mutate, error} = useSWR(`/calendars/${id}/artists`, fetcher);
+    const {data: users} = useSWR(`/users`, fetcher);
+    const {data: calendarUsers, mutate, error} = useSWR(`/calendars/${id}/users`, fetcher);
 
     const { register, handleSubmit, reset} = useForm();
     const [calendarSelected, setCalendarSelected] = useState(null);
-    const [artistSelected, setArtistSelected] = useState(null);
+    const [userSelected, setUserSelected] = useState(null);
     const [open, setOpen] = useState(false);
+
+    if(error) return <div>"Recarga la página para continuar..."</div>;
+    if(!calendarUsers) return <Loading/>;
+    if(!calendars) return <Loading/>;
+    if(!users) return <Loading/>;
 
     const onSubmit = async (data) => {
         console.log('data', data);
 
-        const newCalendarArtist = {
-            artist_id: data.artist_id,
+        const newCalendarUser = {
             calendar_id: data.calendar_id,
+            user_id: data.user_id,
         };
 
         const formData = new FormData();
-        formData.append("artist_id", newCalendarArtist.artist_id);
-        formData.append("calendar_id", newCalendarArtist.calendar_id);
+        formData.append("calendar_id", newCalendarUser.calendar_id);
+        formData.append("user_id", newCalendarUser.user_id);
 
         try {
-            await CalendarArtist.create(id,formData);
-            mutate(`/calendars/${id}/artists`);
+            await CalendarUser.create(id,formData);
+            mutate(`/calendars/${id}/users`);
             handleClose();
         } catch (error) {
             if (error.response) {
@@ -104,24 +106,20 @@ const CreateCalendarArtist = () => {
         setCalendarSelected({calendarSelected});
     };
 
-    const handleChangeArtist = () => {
-        setArtistSelected({artistSelected});
+    const handleChangeUser = () => {
+        setUserSelected({userSelected});
     };
 
     const handleValidate = () =>{
         setTimeout(handleClose,500000);
     };
 
-    if(error) return <div>"Recarga la página para continuar..."</div>;
-    if(!calendarArtists) return <Loading/>;
-    if(!calendars) return <Loading/>;
-    if(!artists) return <Loading/>;
 
     return (
         <div>
 
             <Tooltip title="Nuevo" aria-label="add" className={classes.fixed}>
-                <Fab  color="secondary" onClick={handleOpen} > {/*className={classes.fixed}*/}
+                <Fab  color="primary" onClick={handleOpen} > {/*className={classes.fixed}*/}
                     <LinkIcon />
                 </Fab>
             </Tooltip>
@@ -151,17 +149,17 @@ const CreateCalendarArtist = () => {
                     </DialogContent>
 
                     <DialogContent>
-                        <InputLabel htmlFor="outlined-age-native-simple">Artista</InputLabel>
+                        <InputLabel htmlFor="outlined-age-native-simple">Usuario</InputLabel>
                         <Select
                             fullWidth
                             autoFocus
                             native
-                            value={artistSelected}
-                            onChange={handleChangeArtist}
-                            {...register("artist_id")}
+                            value={userSelected}
+                            onChange={handleChangeUser}
+                            {...register("user_id")}
                         >
-                            {artists.data.map((artist) => (
-                                <option key={artist.id}  value={artist.id}>{artist.name}</option>
+                            {users.map((user) => (
+                                <option key={user.id}  value={user.id}>{user.name}</option>
                             ))}
                         </Select>
                     </DialogContent>
@@ -181,4 +179,4 @@ const CreateCalendarArtist = () => {
     );
 };
 
-export default CreateCalendarArtist;
+export default CreateCalendarUser;
