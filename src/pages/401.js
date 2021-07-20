@@ -31,7 +31,7 @@ const Unauthorized = () => {
                     width={250}
                     height={300}
                 />
-                <h2 className={classes.titulo}>Parece que no eres el director de la orquesta...</h2>
+                <h2 className={classes.titulo}>Parece que no tienes permisos de administrador...</h2>
                 <h3 className={classes.titulo}>
                     Prueba ir a&ensp;
                     <Link href={Routes.HOME}>
