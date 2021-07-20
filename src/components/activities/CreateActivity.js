@@ -82,7 +82,6 @@ const CreateActivity = () => {
             await Activity.create(formData);
             mutate("/activityfestivals");
             handleClose();
-            <SnackSuccess/>
         } catch (error) {
             if (error.response) {
                 console.error(error.response);

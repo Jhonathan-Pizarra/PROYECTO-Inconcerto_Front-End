@@ -18,10 +18,14 @@ import CreateConcert from "@/components/concerts/CreateConcert";
 import Link from "next/link";
 import Routes from "@/constants/routes";
 import {useRouter} from "next/router";
+import UpdateConcert from "@/components/concerts/UpdateConcert";
+import DeleteConcert from "@/components/concerts/DeleteConcert";
+import FindInPageIcon from "@material-ui/icons/FindInPage";
+import IconButton from "@material-ui/core/IconButton";
 
 const useStyles = makeStyles((theme) => ({
     detail:{
-        color: "#f44336",
+        color: "#3f51b5",
     },
     head: {
         backgroundColor: "#3f51b5",
@@ -56,9 +60,6 @@ const ReadFestivalConcerts = ({id}) => {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
 
-    if(error) return <p>No se pudieron cargar los conciertos...</p>;
-    if (!festconcerts) return <Loading/>;
-
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
@@ -67,6 +68,9 @@ const ReadFestivalConcerts = ({id}) => {
         setRowsPerPage(parseInt(event.target.value, 10));
         setPage(0);
     };
+
+    if(error) return <p>No se pudieron cargar los conciertos...</p>;
+    if (!festconcerts) return <Loading/>;
 
     return (
         <div>
@@ -99,14 +103,22 @@ const ReadFestivalConcerts = ({id}) => {
                                     <TableCell align="left">{free}</TableCell>
                                     <TableCell align="left">{insitu}</TableCell>
                                     <TableCell align="center">
-                                        <Link href={`${Routes.CONCERTS}/${festconcert.id}`}>
-                                            <Button size="small" variant='contained' className={classes.button}>
-                                                Ver
-                                            </Button>
-                                            {/*<IconButton aria-label="delete"  size="small" className={classes.detail}>
+                                        <td>
+                                            <Link href={`${Routes.CONCERTS}/${festconcert.id}`}>
+                                                <IconButton aria-label="ver"  size="small" className={classes.detail}>
+                                                    <FindInPageIcon />
+                                                </IconButton>
+                                                {/*<IconButton aria-label="delete"  size="small" className={classes.detail}>
                                                 <FindInPageIcon />
                                             </IconButton>*/}
-                                        </Link>
+                                            </Link>
+                                        </td>
+                                        <td>
+                                            <UpdateConcert id={festconcert.id}/>
+                                        </td>
+                                        <td>
+                                            <DeleteConcert id={festconcert.id}/>
+                                        </td>
                                     </TableCell>
                                 </TableRow>
                             )

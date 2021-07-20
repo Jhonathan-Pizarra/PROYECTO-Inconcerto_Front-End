@@ -73,7 +73,6 @@ const CreateFeedingPlace = () => {
             await FeedingPlace.create(formData);
             mutate("/feeding_places");
             handleClose();
-            <SnackSuccess/>
         } catch (error) {
             if (error.response) {
                 console.error(error.response);

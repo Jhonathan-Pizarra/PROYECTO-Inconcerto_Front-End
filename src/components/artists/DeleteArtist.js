@@ -8,6 +8,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import {makeStyles} from "@material-ui/core";
 import React from "react";
 import IconButton from "@material-ui/core/IconButton";
+import translateMessage from "@/constants/messages";
 
 const useStyles = makeStyles((theme) => ({
     delete: {
@@ -34,6 +35,7 @@ const DeleteArtist = ({id}) => {
             } else {
                 console.log("Error", error.message);
             }
+            alert(translateMessage(error.config));
             console.log(error.config);
         }
     };

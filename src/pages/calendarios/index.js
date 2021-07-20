@@ -9,7 +9,6 @@ const Calendarios = () => {
         <div>
             <div className="container">
                 <ReadCalendars/>
-                <CreateCalendar/>
             </div>
         </div>
 

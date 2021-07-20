@@ -7,6 +7,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import {Button, makeStyles} from "@material-ui/core";
 import React from "react";
 import {Calendar} from "@/lib/calendars";
+import translateMessage from "@/constants/messages";
 
 const useStyles = makeStyles((theme) => ({
     delete: {
@@ -31,6 +32,7 @@ const DeleteCalendar = ({id}) => {
             } else {
                 console.log("Error", error.message);
             }
+            alert(translateMessage(error.config));
             console.log(error.config);
         }
     };

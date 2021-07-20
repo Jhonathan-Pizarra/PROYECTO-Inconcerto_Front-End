@@ -10,6 +10,13 @@ import MenuItem from "@material-ui/core/MenuItem";
 import {useAuth} from "@/lib/auth";
 import Link from "next/link";
 import Routes from "@/constants/routes";
+import {useRouter} from "next/router";
+import useSWR from "swr";
+import {fetcher} from "../utils";
+import Loading from "@/components/Loading";
+import FindInPageIcon from "@material-ui/icons/FindInPage";
+import {Button, Link as MuiLink} from "@material-ui/core";
+import Login from "../pages/login";
 
 const useStyles = makeStyles((theme) => ({
     sectionDesktop: {
@@ -27,12 +34,16 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const NavigationIcons = () => {
+
     const { logout, user } = useAuth();
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
+    if(!user) return <Link href={Routes.LOGIN}><MenuItem>Iniciar sesión</MenuItem></Link>
+
     const isMenuOpen = Boolean(anchorEl);
+
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
     const handleMenuAccountOpen = (event) => {
@@ -58,6 +69,11 @@ const NavigationIcons = () => {
     };
 
     const menuId = "account-menu";
+
+    const ward = (user.id === undefined) ? user.user.id: user.id;
+    const ward2 = (user.name === undefined) ? user.user.name: user.name;
+    console.log("Valor?", ward)
+
     const renderMenuAccount = (
         <Menu
             anchorEl={anchorEl}
@@ -68,7 +84,14 @@ const NavigationIcons = () => {
             open={isMenuOpen}
             onClose={handleMenuAccountClose}
         >
-            <MenuItem onClick={handleMenuAccountClose}>Profile</MenuItem>
+
+
+            <Link href={`${Routes.USERS}/${ward}`}>
+                <MenuItem onClick={handleMenuAccountClose}>
+                    Perfil
+                </MenuItem>
+            </Link>
+
             {/*<MenuItem onClick={handleMenuAccountClose}>My account</MenuItem>*/}
             <MenuItem onClick={handleLogout}>Cerrar sesión</MenuItem>
         </Menu>
@@ -121,7 +144,9 @@ const NavigationIcons = () => {
 
                 {user ? (
                     <MenuItem onClick={handleMenuAccountOpen} id="account-menu-button">
-                        <AccountCircle style={{ marginRight: 5 }} /> {user.name}
+                        <AccountCircle style={{ marginRight: 5 }} />
+                        {/*{user.name}*/}
+                        {ward2}
                     </MenuItem>
                 ) : (
                     <Link href={Routes.LOGIN}>
@@ -144,7 +169,9 @@ const NavigationIcons = () => {
                 {/*</IconButton>*/}
                 {user ? (
                     <MenuItem onClick={handleMenuAccountOpen} id="account-menu-button">
-                        <AccountCircle style={{ marginRight: 5 }} /> {user.name}
+                        <AccountCircle style={{ marginRight: 5 }} />
+                        {/*{user.name}*/}
+                        {ward2}
                     </MenuItem>
                 ) : (
                     <Link href={Routes.LOGIN}>

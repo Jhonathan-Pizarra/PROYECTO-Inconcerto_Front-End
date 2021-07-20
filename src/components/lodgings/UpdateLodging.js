@@ -25,6 +25,7 @@ const useStyles = makeStyles((theme) => ({
 
 //Este {id} lo recibe desde el componente donde lo llamemos
 const UpdateLodging = ({id}) => {
+
     const classes = useStyles();
     const { register, handleSubmit, reset } = useForm();
     const [open, setOpen] = useState(false);

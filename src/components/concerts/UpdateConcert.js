@@ -8,7 +8,7 @@ import {
     DialogContentText,
     DialogTitle,
     FormControlLabel,
-    InputLabel,
+    InputLabel, makeStyles,
     Select,
     TextField
 } from "@material-ui/core";
@@ -19,6 +19,7 @@ import React, {useState} from "react";
 import {useForm} from "react-hook-form";
 import useSWR from "swr";
 import Loading from "@/components/Loading";
+import IconButton from "@material-ui/core/IconButton";
 //import { yupResolver } from '@hookform/resolvers/yup';
 //import * as yup from "yup";
 
@@ -28,19 +29,31 @@ import Loading from "@/components/Loading";
 //     duration: yup.string().notRequired(),
 // });
 
-const UpdateConcert = () => {
+const useStyles = makeStyles((theme) => ({
+    edit:{
+        color: "#FAC800",
+    },
+}));
 
-    const router = useRouter();
-    const {id} = router.query;
+const UpdateConcert = ({id}) => {
+
+    // const router = useRouter();
+    // const {id} = router.query;
+    const classes = useStyles();
+    const { register, handleSubmit, reset } = useForm();
     const {data: concert, error, mutate} = useSWR(`/concerts/${id}`, fetcher);
     const {data: festivals} = useSWR(`/festivals`, fetcher);
     const {data: places} = useSWR(`/places`, fetcher);
-    const { register, handleSubmit, reset } = useForm();
     const [checkedFree, setFree] = useState(true);
     const [checkedInsi, setInsi] = useState(true);
     const [state, setState] = useState(null);
     const [open, setOpen] = useState(false);
     // const fileInputRef = useRef();
+
+    if(error) return <div>"Recarga la página para continuar..."</div>;
+    if(!concert) return <Loading/>
+    if(!festivals) return <Loading/>
+    if(!places) return <Loading/>
 
     const onSubmit = async (data) => {
         console.log('data', data);
@@ -98,21 +111,13 @@ const UpdateConcert = () => {
         setOpen(false);
     };
 
-    if(error) return <div>"Recarga la página para continuar..."</div>;
-    if(!concert) return <Loading/>
-    if(!festivals) return <Loading/>
-    if(!places) return <Loading/>
 
     return (
         <div>
-            <Button
-                variant="contained"
-                color="secondary"
-                startIcon={<EditIcon />}
-                onClick={handleOpen}
-            >
-                Editar
-            </Button>
+
+            <IconButton aria-label="editar"  className={classes.edit} size="small" onClick={handleOpen} >
+                <EditIcon />
+            </IconButton>
 
             <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
                 <form onSubmit={handleSubmit(onSubmit)}>

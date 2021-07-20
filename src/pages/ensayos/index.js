@@ -6,7 +6,9 @@ import ReadEssays from "@/components/essays/ReadEssays";
 const Ensayos = () => {
 
     return (
-       <ReadEssays/>
+        <div>
+            <ReadEssays/>
+        </div>
     )
 }
 

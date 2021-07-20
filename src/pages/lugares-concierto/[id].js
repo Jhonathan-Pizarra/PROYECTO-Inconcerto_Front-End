@@ -32,7 +32,7 @@ const PlaceConcertsID= () =>{
 
     return (
         <div>
-            <h1>Detalle Lugar para  Concierto</h1>
+            <h1>Detalle Lugar Concierto</h1>
             <div>
                 {/*<h2>Places ID: {place.id}</h2>*/}
                 {/*<p>Nombre: {place.name}</p>*/}

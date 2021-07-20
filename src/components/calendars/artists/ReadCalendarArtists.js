@@ -70,6 +70,7 @@ const ReadCalendarArtists = ({id}) => {
 
     return (
         <div>
+            <h1>Artistas del Calendario</h1>
             <TableContainer component={Paper}>
                 <Table size="small" aria-label="a dense table">
                     <TableHead className={classes.head}>
@@ -95,7 +96,7 @@ const ReadCalendarArtists = ({id}) => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {artistsCalendars.data ? <SnackSuccess/> : <Loading/>}
+                        {/*{artistsCalendars.data ? <SnackSuccess/> : <Loading/>}*/}
                         {artistsCalendars.data && artistsCalendars.data.map((artistCalendar => {
                             var passage = ((artistCalendar.passage) === 0) ? "No" : "Si" ;
 

@@ -70,7 +70,6 @@ const CreateActivity = () => {
             await Calendar.create(formData);
             mutate("/calendars");
             handleClose();
-            <SnackSuccess/>
         } catch (error) {
             if (error.response) {
                 console.error(error.response);

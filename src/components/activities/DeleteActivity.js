@@ -7,6 +7,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import {Button} from "@material-ui/core";
 import React from "react";
 import {Activity} from "@/lib/activities";
+import translateMessage from "@/constants/messages";
 
 const DeleteActivity = ({id}) => {
 

@@ -28,7 +28,7 @@ const FeedingPlaceID = () =>{
     const {id} = router.query;
     const {data: fplace, error} = useSWR(`/feeding_places/${id}`, fetcher);
 
-    if(error) return <div>"No se obtuvo el festival"</div>;
+    if(error) return <div>"No se obtuvo el lugar de alimentación"</div>;
     if(!fplace) return <Loading/>;
 
     return (

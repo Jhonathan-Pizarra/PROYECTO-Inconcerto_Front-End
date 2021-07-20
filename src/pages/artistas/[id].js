@@ -4,6 +4,7 @@ import Loading from "@/components/Loading";
 import {fetcher} from "../../utils";
 import withAuth from "@/hocs/withAuth";
 import {Grid, makeStyles, Paper, Typography} from "@material-ui/core";
+import ReadArtistFeedings from "@/components/artists/feedings/ReadArtistFeedings";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -23,14 +24,13 @@ const ArtistasID= () =>{
     const {id} = router.query;
     const {data: artist, error} = useSWR(`/artists/${id}`, fetcher);
 
-    if(error) return <div>"No se obtuvo el Artista"</div>;
+    if(error) return <div>"No se obtuvo el artista"</div>;
     if(!artist) return <Loading/>;
 
     return (
         <div>
             <h1>Detalle Artista</h1>
             <div>
-
                 <Paper className={classes.paper}>
                     <Grid container spacing={2}>
                         <Grid item xs={12} sm container>
@@ -83,6 +83,9 @@ const ArtistasID= () =>{
                     </Grid>
 
                 </Paper>
+                <br/>
+                <br/>
+                <ReadArtistFeedings id={artist.id}/>
             </div>
         </div>
     );

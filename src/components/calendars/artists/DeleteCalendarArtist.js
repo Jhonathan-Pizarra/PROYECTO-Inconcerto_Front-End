@@ -8,6 +8,7 @@ import {Button, IconButton, makeStyles} from "@material-ui/core";
 import React from "react";
 import {Calendar} from "@/lib/calendars";
 import {CalendarArtist} from "@/lib/calendar_artists";
+import LinkOffIcon from '@material-ui/icons/LinkOff';
 
 const useStyles = makeStyles((theme) => ({
     delete: {
@@ -44,7 +45,7 @@ const DeleteCalendarArtist = ({idArtist}) => {
     return (
         <div>
             <IconButton aria-label="eliminar"  className={classes.delete} size="small" onClick={handleDelete} >
-                <DeleteIcon />
+                <LinkOffIcon />
             </IconButton>
         </div>
     );

@@ -27,13 +27,14 @@ import SnackSuccess from "@/components/SnackSuccess";
 import {CalendarArtist} from "@/lib/calendar_artists";
 import {useRouter} from "next/router";
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
+import LinkIcon from "@material-ui/icons/Link";
 
 const useStyles = makeStyles((theme) => ({
     fixed: {
         /*display: 'inline-flex',*/
         //position: '-moz-initial',//a la derecha
         position: 'fixed', //a la izquierda...
-        bottom: theme.spacing(2),
+        bottom: theme.spacing(12),
         right: theme.spacing(2),
     },
 }));
@@ -120,8 +121,8 @@ const CreateCalendarArtist = () => {
         <div>
 
             <Tooltip title="Nuevo" aria-label="add" className={classes.fixed}>
-                <Fab  color="primary" onClick={handleOpen} > {/*className={classes.fixed}*/}
-                    <PersonAddIcon />
+                <Fab  color="secondary" onClick={handleOpen} > {/*className={classes.fixed}*/}
+                    <LinkIcon />
                 </Fab>
             </Tooltip>
 

@@ -7,6 +7,8 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import {Button} from "@material-ui/core";
 import React from "react";
 import {Festival} from "@/lib/festivals";
+import translateMessage from "@/constants/messages";
+import SnackError from "@/components/SnackError";
 
 
 const DeleteFestival = () => {
@@ -24,17 +26,23 @@ const DeleteFestival = () => {
             router.push(Routes.FESTIVALS);
         } catch (error) {
             if (error.response) {
+                //alert(translateMessage(error.response.data.message));
                 //alert(error.response.message);
                 console.log(error.response);
             } else if (error.request) {
+                //alert(translateMessage(error.request.message));
+                //alert(error.request.message);
                 console.log(error.request);
             } else {
+                //alert(translateMessage(error.data.message));
+                //alert(error.message);
                 console.log("Error", error.message);
             }
+            alert(translateMessage(error.config));
+            //alert(error.config);
             console.log(error.config);
         }
     };
-
 
     return (
         <div>

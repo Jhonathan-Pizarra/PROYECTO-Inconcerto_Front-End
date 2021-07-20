@@ -8,6 +8,12 @@ import React from "react";
 import DeleteConcert from "@/components/concerts/DeleteConcert";
 import {CardActions, Grid, Link as MuiLink, makeStyles, Paper, Typography} from "@material-ui/core";
 import Link from "next/link";
+import ReadCalendarArtists from "@/components/calendars/artists/ReadCalendarArtists";
+import CreateCalendarArtist from "@/components/calendars/artists/CreateCalendarArtist";
+import ReadConcertArtists from "@/components/concerts/artists/ReadConcertArtists";
+import CreateConcertArtist from "@/components/concerts/artists/CreateConcertArtist";
+import ReadConcertResources from "@/components/concerts/resources/ReadConcertResources";
+import CreateConcertResource from "@/components/concerts/resources/CreateConcertResource";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -37,7 +43,6 @@ const ConciertosID = () => {
         <div>
             <h1>Detalle Concierto</h1>
             <div>
-
                 <Paper className={classes.paper}>
                     <Grid container spacing={2}>
                         <Grid item xs={12} sm container>
@@ -88,7 +93,7 @@ const ConciertosID = () => {
                                         <Grid item container justify="center" alignItems="center">
                                             <CardActions xs={12} sm={4} md={4} lg={3} xl={3} >
                                                 <MuiLink>
-                                                    <UpdateConcert/>
+                                                    <UpdateConcert id={concert.id}/>
                                                 </MuiLink>
                                                 {/*<MuiLink>
                                                     <DeleteConcert/>
@@ -99,7 +104,7 @@ const ConciertosID = () => {
                                                     <UpdateConcert/>
                                                 </MuiLink>*/}
                                                 <MuiLink>
-                                                    <DeleteConcert/>
+                                                    <DeleteConcert id={concert.id}/>
                                                 </MuiLink>
                                             </CardActions>
                                         </Grid>
@@ -111,6 +116,12 @@ const ConciertosID = () => {
                     </Grid>
                 </Paper>
             </div>
+            <br/>
+            <br/>
+            <ReadConcertArtists id={concert.id}/>
+            <CreateConcertArtist id={concert.id}/>
+            <ReadConcertResources id={concert.id}/>
+            <CreateConcertResource id={concert.id}/>
         </div>
     );
 

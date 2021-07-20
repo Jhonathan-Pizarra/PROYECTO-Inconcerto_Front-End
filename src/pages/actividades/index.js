@@ -10,10 +10,8 @@ const Actividades = () => {
         <div>
             <div className="container">
                 <ReadActivity/>
-                <CreateActivity/>
             </div>
         </div>
-
     )
 }
 

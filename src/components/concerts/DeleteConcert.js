@@ -4,16 +4,23 @@ import Loading from "@/components/Loading";
 import {fetcher} from "../../utils";
 import Routes from "@/constants/routes";
 import DeleteIcon from "@material-ui/icons/Delete";
-import {Button} from "@material-ui/core";
+import {Button, makeStyles} from "@material-ui/core";
 import React from "react";
 import {Concert} from "@/lib/concerts";
+import IconButton from "@material-ui/core/IconButton";
+import translateMessage from "@/constants/messages";
 
+const useStyles = makeStyles((theme) => ({
+    delete: {
+        color: "#f50057",
+    },
+}));
 
-const DeleteConcert = () => {
+const DeleteConcert = ({id}) => {
 
+    const classes = useStyles();
     const router = useRouter();
-    const {id} = router.query;
-    const {data: concert, error} = useSWR(`/concerts/${id}`, fetcher);
+    const {data: concert, error} = useSWR(`/concerts`, fetcher);
 
     const handleDelete = async () => {
         try {
@@ -23,14 +30,7 @@ const DeleteConcert = () => {
             if (error.response) {
                 // The request was made and the server responded with a status code
                 // that falls out of the range of 2xx
-                // enqueueSnackbar("No se pudo eliminar el festival", {
-                //     variant: "error",
-                //     anchorOrigin: {
-                //         vertical: "top",
-                //         horizontal: "center",
-                //     },
-                // });
-                alert(error.response.message);
+                //alert(error.response.message);
                 console.log(error.response);
             } else if (error.request) {
                 // The request was made but no response was received
@@ -41,6 +41,7 @@ const DeleteConcert = () => {
                 // Something happened in setting up the request that triggered an Error
                 console.log("Error", error.message);
             }
+            alert(translateMessage(error.config));
             console.log(error.config);
         }
     };
@@ -50,15 +51,9 @@ const DeleteConcert = () => {
 
     return (
         <div>
-            <Button
-                variant="contained"
-                color="secondary"
-                onClick={handleDelete}
-                // className={classes.button}
-                startIcon={<DeleteIcon />}
-            >
-                Eliminar
-            </Button>
+            <IconButton aria-label="eliminar"  className={classes.delete} size="small" onClick={handleDelete} >
+                <DeleteIcon />
+            </IconButton>
         </div>
     );
 

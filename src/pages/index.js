@@ -6,7 +6,7 @@ import React from "react";
 export default function Home() {
   return(
       <div className={styles.container}>
-        <p className={styles.title}>¡Bienvenido...!</p>
+        <p className={styles.title}>♪♬♩🎵InConcerto ♪🎶♫...</p>
 
           <BackToTop/>
           <style jsx>
@@ -29,7 +29,7 @@ export default function Home() {
           </style>
 
 
-          <i>"And in the end, the love you take, is equal to the love you give..."</i>
+          <i>"Música Clásica en Espacios InUsuales ..."</i>
 
 
           <p>
@@ -51,7 +51,7 @@ export default function Home() {
           </p>
 
           <h3>Video tutorial:</h3>
-          <ReactPlayer url='https://www.youtube.com/watch?v=KQetemT1sWc' playing />
+          <ReactPlayer url='https://www.youtube.com/watch?v=2gO1v2GPMFk' playing />
 
           {/*{[...new Array(10)]*/}
               {/*    .map(() =>*/}

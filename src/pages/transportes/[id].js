@@ -28,7 +28,8 @@ const TransportesID= () =>{
     const {id} = router.query;
     const {data: transport, error} = useSWR(`/transports/${id}`, fetcher);
 
-    if(error) return <div>"Recarga para continuar..."</div>;
+    // if(error) return <div>"Recarga para continuar..."</div>;
+    if(error) return <div>"No se obtivo el transporte..."</div>;
     if(!transport) return <Loading/>;
 
     return (
@@ -85,8 +86,6 @@ const TransportesID= () =>{
                     </Grid>
                 </Paper>
             </div>
-
-
         </div>
     );
 

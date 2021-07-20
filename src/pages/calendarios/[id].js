@@ -13,6 +13,8 @@ import DeleteCalendar from "@/components/calendars/DeleteCalendar";
 import UpdateCalendar from "@/components/calendars/UpdateCalendar";
 import ReadCalendarArtists from "@/components/calendars/artists/ReadCalendarArtists";
 import CreateCalendarArtist from "@/components/calendars/artists/CreateCalendarArtist";
+import ReadCalendarUsers from "@/components/calendars/users/ReadCalendarUsers";
+import CreateCalendarUser from "@/components/calendars/users/CreateCalendarUser";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -87,6 +89,8 @@ const CalendariosID= () =>{
             <br/>
             <ReadCalendarArtists id={calendar.id}/>
             <CreateCalendarArtist id={calendar.id}/>
+            <ReadCalendarUsers id={calendar.id}/>
+            <CreateCalendarUser id={calendar.id}/>
 
         </div>
     );

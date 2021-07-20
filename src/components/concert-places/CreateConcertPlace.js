@@ -77,7 +77,6 @@ const CreateConcertPlace = () => {
             await PlaceConcert.create(formData);
             mutate("/places");
             handleClose();
-            <SnackSuccess/>
         } catch (error) {
             if (error.response) {
                 console.error(error.response);

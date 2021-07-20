@@ -11,9 +11,11 @@ import {
     Paper,
     TextField
 } from "@material-ui/core";
+import Grid from "@material-ui/core/Grid";
 
 
 const Register = () => {
+
     const { register, handleSubmit, reset } = useForm();
     const { register: newUser } = useAuth();
 
@@ -44,7 +46,7 @@ const Register = () => {
 
     return (
         <div>
-            <Paper style={{width: 800}}>
+            <Paper style={{width: "auto"}}>
                 <form onSubmit={handleSubmit(onSubmit)}>
 
                     <DialogTitle id="form-dialog-title">InConcerto</DialogTitle>
@@ -104,7 +106,6 @@ const Register = () => {
                         />
                     </DialogContent>
 
-
                     <DialogActions>
                         <Button type="submit" color="primary" variant="contained">
                             Crear
@@ -112,7 +113,6 @@ const Register = () => {
                     </DialogActions>
                 </form>
             </Paper>
-
           {/*  <form onSubmit={handleSubmit(onSubmit)}>
                 <div>
                     <label htmlFor='name'>Nombre</label>
