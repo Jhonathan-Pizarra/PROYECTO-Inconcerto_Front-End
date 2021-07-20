@@ -1,54 +1,87 @@
-import React from "react";
+import React, {useState} from "react";
 import {useForm} from "react-hook-form";
-import withAuth from "@/hocs/withAuth";
-import {useAuth} from "@/lib/auth";
+import {Artist} from "@/lib/artists";
+import useSWR, {mutate} from "swr";
 import {
-    Button,
+    Button, Checkbox,
+    Dialog,
     DialogActions,
     DialogContent,
     DialogContentText,
-    DialogTitle,
-    Paper,
-    TextField
+    DialogTitle, Fab, FormControlLabel, Grid, InputLabel,
+    makeStyles, Select,
+    TextField, Tooltip
 } from "@material-ui/core";
-import Grid from "@material-ui/core/Grid";
+import {fetcher} from "../../utils";
+import AddIcon from "@material-ui/icons/Add";
+import Loading from "@/components/Loading";
+import {useRouter} from "next/router";
+import EditIcon from "@material-ui/icons/Edit";
+import IconButton from "@material-ui/core/IconButton";
+import {Concert} from "@/lib/concerts";
+import {User} from "@/lib/users";
 
+const useStyles = makeStyles((theme) => ({
+    edit:{
+        color: "#FAC800",
+    },
+}));
 
-const Register = () => {
+//Este {id} lo recibe desde el componente donde lo llamemos, en este caso sería: <UpdateArtistForm id={artist.id}/>
 
+const UpdateUser = ({id}) => {
+
+    const classes = useStyles();
     const { register, handleSubmit, reset } = useForm();
-    const { register: newUser } = useAuth();
+    const [open, setOpen] = useState(false);
+    const {data: user, mutate, error} = useSWR(`/users/${id}`, fetcher);
 
+    const onSubmit = async (data) => {
+        console.log('data', data);
 
-    const onSubmit = async (data) =>{
         try {
-            const userData = await newUser(data);
-            console.log('userData', data);
-
-        }catch (error) {
+            await User.update(id, {
+                ...data,
+                name: data.name,
+                email: data.email,
+                password: data.password,
+                password_confirmation: data.password_confirmation,
+            });
+            mutate();
+        } catch (error) {
             if (error.response) {
-                // The request was made and the server responded with a status code
-                // that falls out of the range of 2xx
-                console.log(error.response);
+                console.error(error.response);
             } else if (error.request) {
-                // The request was made but no response was received
-                // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-                // http.ClientRequest in node.js
-                console.log(error.request);
+                console.error(error.request);
             } else {
-                // Something happened in setting up the request that triggered an Error
-                console.log("Error", error.message);
+                console.error("Error", error.message);
             }
-            console.log(error.config);
+            console.error(error.config);
         }
         reset();
     };
 
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+
+    if(error) return <div>"Recarga la página para continuar..."</div>;
+    if(!user) return <Loading/>;
+
     return (
         <div>
-            <Paper style={{width: "auto"}}>
-                <form onSubmit={handleSubmit(onSubmit)}>
 
+            <IconButton aria-label="editar"  className={classes.edit} size="small" onClick={handleClickOpen} >
+                <EditIcon />
+            </IconButton>
+
+            <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+                <form onSubmit={handleSubmit(onSubmit)}>
                     <DialogTitle id="form-dialog-title">InConcerto</DialogTitle>
 
                     <DialogContent>
@@ -61,6 +94,7 @@ const Register = () => {
                             margin="dense"
                             id="name"
                             label="Nombre"
+                            defaultValue={user.name}
                             type="text"
                             {...register('name')}
                             fullWidth
@@ -74,6 +108,7 @@ const Register = () => {
                             margin="dense"
                             id="email"
                             label="Correo"
+                            defaultValue={user.email}
                             type="text"
                             {...register('email')}
                             fullWidth
@@ -87,6 +122,7 @@ const Register = () => {
                             margin="dense"
                             id="password"
                             label="Contraseña"
+                            defaultValue={user.password}
                             type="password"
                             {...register('password')}
                             fullWidth
@@ -101,6 +137,7 @@ const Register = () => {
                             id="password_confirmation"
                             label="Confirmación"
                             type="password"
+                            defaultValue={user.password_confirmation}
                             {...register('password_confirmation')}
                             fullWidth
                         />
@@ -108,33 +145,13 @@ const Register = () => {
 
                     <DialogActions>
                         <Button type="submit" color="primary" variant="contained">
-                            Crear
+                            Editar
                         </Button>
                     </DialogActions>
                 </form>
-            </Paper>
-          {/*  <form onSubmit={handleSubmit(onSubmit)}>
-                <div>
-                    <label htmlFor='name'>Nombre</label>
-                    <input type='text' id='name' {...register('name')} />
-                </div>
-                <div>
-                    <label htmlFor='email'>Email</label>
-                    <input type='text' id='email' {...register('email')} />
-                </div>
-                <div>
-                    <label htmlFor='password'>Password</label>
-                    <input type='password' id='password' {...register('password')}  />
-                </div>
-                <div>
-                    <label htmlFor='password_confirmation'>Confirmar Password</label>
-                    <input type='password' id='password_confirmation' {...register('password_confirmation')}  />
-                </div>
-                <input type="submit"/>
-            </form>*/}
+            </Dialog>
         </div>
     );
-
 };
 
-export default withAuth(Register); //Porque quiero ver esta página solo si tengo sesión
+export default UpdateUser;

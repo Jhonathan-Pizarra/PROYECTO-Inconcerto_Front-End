@@ -15,6 +15,8 @@ import useSWR from "swr";
 import {fetcher} from "../utils";
 import Loading from "@/components/Loading";
 import FindInPageIcon from "@material-ui/icons/FindInPage";
+import {Button, Link as MuiLink} from "@material-ui/core";
+import Login from "../pages/login";
 
 const useStyles = makeStyles((theme) => ({
     sectionDesktop: {
@@ -38,6 +40,7 @@ const NavigationIcons = () => {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
+    if(!user) return <Link href={Routes.LOGIN}><MenuItem>Iniciar sesión</MenuItem></Link>
 
     const isMenuOpen = Boolean(anchorEl);
 
@@ -66,6 +69,11 @@ const NavigationIcons = () => {
     };
 
     const menuId = "account-menu";
+
+    const ward = (user.id === undefined) ? user.user.id: user.id;
+    const ward2 = (user.name === undefined) ? user.user.name: user.name;
+    console.log("Valor?", ward)
+
     const renderMenuAccount = (
         <Menu
             anchorEl={anchorEl}
@@ -77,9 +85,10 @@ const NavigationIcons = () => {
             onClose={handleMenuAccountClose}
         >
 
-            <Link href={`${Routes.USERS}/${user.user.id}`}>
+
+            <Link href={`${Routes.USERS}/${ward}`}>
                 <MenuItem onClick={handleMenuAccountClose}>
-                Perfil
+                    Perfil
                 </MenuItem>
             </Link>
 
@@ -136,7 +145,8 @@ const NavigationIcons = () => {
                 {user ? (
                     <MenuItem onClick={handleMenuAccountOpen} id="account-menu-button">
                         <AccountCircle style={{ marginRight: 5 }} />
-                        {user.name}
+                        {/*{user.name}*/}
+                        {ward2}
                     </MenuItem>
                 ) : (
                     <Link href={Routes.LOGIN}>
@@ -160,7 +170,8 @@ const NavigationIcons = () => {
                 {user ? (
                     <MenuItem onClick={handleMenuAccountOpen} id="account-menu-button">
                         <AccountCircle style={{ marginRight: 5 }} />
-                        {user.name}
+                        {/*{user.name}*/}
+                        {ward2}
                     </MenuItem>
                 ) : (
                     <Link href={Routes.LOGIN}>

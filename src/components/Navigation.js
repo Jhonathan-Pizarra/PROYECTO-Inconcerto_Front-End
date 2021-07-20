@@ -87,6 +87,10 @@ const mainMenuItems = [
         to: Routes.ACTIVITIES,
     },
     {
+        text: "Usuarios",
+        to: Routes.USERS,
+    },
+    {
         text: "About",
         to: Routes.ABOUT,
     },
@@ -544,7 +548,7 @@ export default function MainMenu(props) {
                                             <ClickAwayListener onClickAway={handleClose}>
 
                                                 <MenuList autoFocusItem={open} id="menu-list-grow" onKeyDown={handleListKeyDown}>
-                                                    <Link href={Routes.REGISTER}>
+                                                    <Link href={Routes.USERS}>
                                                         <MenuItem onClick={handleClose}>Coordinadores</MenuItem>
                                                     </Link>
                                                     <Link href={Routes.ARTISTS}>
@@ -560,6 +564,9 @@ export default function MainMenu(props) {
                             </Popper>
                             {/*Fin*/}
 
+                            <Link href={Routes.ABOUT}>
+                                <MenuItem onClick={handleClose}>About</MenuItem>
+                            </Link>
                             {/*{mainMenuItems.map((item) => (
                                 <div>
 

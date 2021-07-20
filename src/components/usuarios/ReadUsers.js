@@ -19,6 +19,9 @@ import {
 import React, {useState} from "react";
 import Routes from "@/constants/routes";
 import SnackSuccess from "@/components/SnackSuccess";
+import CreateUser from "@/components/usuarios/CreateUser";
+import UpdateUser from "@/components/usuarios/UpdateUser";
+import DeleteUser from "@/components/usuarios/DeleteUser";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -106,10 +109,10 @@ const ReadUsers = () => {
                                         </Link>
                                         </td>
                                         <td>
-                                            {/*<UpdateUser id={user.id} />*/}
+                                            <UpdateUser id={user.id} />
                                         </td>
                                         <td>
-                                            {/*<DeleteUser id={user.id} />*/}
+                                            <DeleteUser id={user.id} />
                                         </td>
                                     </TableCell>
                                 </TableRow>
@@ -131,7 +134,16 @@ const ReadUsers = () => {
                     onChangeRowsPerPage={handleChangeRowsPerPage}
                 />
             </TableContainer>
+            <br/>
             {/*<CreateArtist/>*/}
+            <Grid
+                container
+                direction="column"
+                justifyContent="center"
+                alignItems="center"
+            >
+                <CreateUser/>
+            </Grid>
         </div>
     )
 }
