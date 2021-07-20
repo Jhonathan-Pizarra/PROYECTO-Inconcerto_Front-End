@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
         /*display: 'inline-flex',*/
         //position: '-moz-initial',//a la derecha
         position: 'fixed', //a la izquierda...
-        bottom: theme.spacing(2),
+        bottom: theme.spacing(12),
         right: theme.spacing(2),
     },
 }));
@@ -121,8 +121,8 @@ const CreateLodgingArtist = () => {
     return (
         <div>
 
-            <Tooltip title="Nuevo" aria-label="add" className={classes.fixed}>
-                <Fab  color="primary" onClick={handleOpen} > {/*className={classes.fixed}*/}
+            <Tooltip title="Vincular" aria-label="add" className={classes.fixed}>
+                <Fab  color="secondary" onClick={handleOpen} > {/*className={classes.fixed}*/}
                     <LinkIcon />
                 </Fab>
             </Tooltip>

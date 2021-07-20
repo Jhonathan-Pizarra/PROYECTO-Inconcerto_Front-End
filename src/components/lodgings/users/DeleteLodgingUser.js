@@ -3,13 +3,10 @@ import useSWR from "swr";
 import {useRouter} from "next/router";
 import Loading from "@/components/Loading";
 import Routes from "@/constants/routes";
-import DeleteIcon from "@material-ui/icons/Delete";
 import {Button, IconButton, makeStyles} from "@material-ui/core";
 import React from "react";
-import {Calendar} from "@/lib/calendars";
-import {CalendarArtist} from "@/lib/calendar_artists";
 import LinkOffIcon from '@material-ui/icons/LinkOff';
-import {CalendarUser} from "@/lib/calendar_users";
+import {LodgingUser} from "@/lib/lodging_users";
 
 const useStyles = makeStyles((theme) => ({
     delete: {
@@ -17,16 +14,16 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const DeleteCalendarUser = ({idUser}) => {
+const DeleteLodgingUser = ({idUser}) => {
 
     const classes = useStyles();
     const router = useRouter();
     const {id} = router.query;
-    const {data: calendarUser, error} = useSWR(`/calendars/${id}/users/${idUser}`, fetcher);
+    const {data: lodgingUser, error} = useSWR(`/lodgings/${id}/users/${idUser}`, fetcher);
 
     const handleDelete = async () => {
         try {
-            await CalendarUser.delete(id, idUser);
+            await LodgingUser.delete(id, idUser);
             router.push(Routes.CALENDARS);
         } catch (error) {
             if (error.response) {
@@ -41,7 +38,7 @@ const DeleteCalendarUser = ({idUser}) => {
     };
 
     if(error) return <div>"No se pudo desvincular el usuario..."</div>;
-    if(!calendarUser) return <Loading/>;
+    if(!lodgingUser) return <Loading/>;
 
     return (
         <div>
@@ -53,4 +50,4 @@ const DeleteCalendarUser = ({idUser}) => {
 
 };
 
-export default DeleteCalendarUser;
+export default DeleteLodgingUser;

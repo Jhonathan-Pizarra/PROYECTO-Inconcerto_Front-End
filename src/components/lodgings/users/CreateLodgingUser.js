@@ -24,7 +24,7 @@ import Loading from "@/components/Loading";
 import {useRouter} from "next/router";
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import LinkIcon from "@material-ui/icons/Link";
-import {CalendarUser} from "@/lib/calendar_users";
+import {LodgingUser} from "@/lib/lodging_users";
 
 const useStyles = makeStyles((theme) => ({
     fixed: {
@@ -36,42 +36,37 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const CreateCalendarUser = () => {
+const CreateLodgingUser = () => {
 
     const classes = useStyles();
 
     const router = useRouter();
     const {id} = router.query;
 
-    const {data: calendars} = useSWR(`/calendars`, fetcher);
+    const {data: lodgings} = useSWR(`/lodgings`, fetcher);
     const {data: users} = useSWR(`/users`, fetcher);
-    const {data: calendarUsers, mutate, error} = useSWR(`/calendars/${id}/users`, fetcher);
+    const {data: lodgingUsers, mutate, error} = useSWR(`/lodgings/${id}/users`, fetcher);
 
     const { register, handleSubmit, reset} = useForm();
-    const [calendarSelected, setCalendarSelected] = useState(null);
+    const [lodgingSelected, setLodgingSelected] = useState(null);
     const [userSelected, setUserSelected] = useState(null);
     const [open, setOpen] = useState(false);
-
-    if(error) return <div>"Recarga la página para continuar..."</div>;
-    if(!calendarUsers) return <Loading/>;
-    if(!calendars) return <Loading/>;
-    if(!users) return <Loading/>;
 
     const onSubmit = async (data) => {
         console.log('data', data);
 
-        const newCalendarUser = {
-            calendar_id: data.calendar_id,
+        const newLodgingUser = {
+            lodging_id: data.lodging_id,
             user_id: data.user_id,
         };
 
         const formData = new FormData();
-        formData.append("calendar_id", newCalendarUser.calendar_id);
-        formData.append("user_id", newCalendarUser.user_id);
+        formData.append("lodging_id", newLodgingUser.lodging_id);
+        formData.append("user_id", newLodgingUser.user_id);
 
         try {
-            await CalendarUser.create(id,formData);
-            mutate(`/calendars/${id}/users`);
+            await LodgingUser.create(id, formData);
+            mutate(`/lodgings/${id}/users`);
             handleClose();
         } catch (error) {
             if (error.response) {
@@ -102,8 +97,8 @@ const CreateCalendarUser = () => {
         setOpen(false);
     };
 
-    const handleChangeCalendar = () => {
-        setCalendarSelected({calendarSelected});
+    const handleChangeLodging = () => {
+        setLodgingSelected({lodgingSelected});
     };
 
     const handleChangeUser = () => {
@@ -114,6 +109,10 @@ const CreateCalendarUser = () => {
         setTimeout(handleClose,500000);
     };
 
+    if(error) return <div>"Recarga la página para continuar..."</div>;
+    if(!lodgingUsers) return <Loading/>;
+    if(!lodgings) return <Loading/>;
+    if(!users) return <Loading/>;
 
     return (
         <div>
@@ -124,7 +123,6 @@ const CreateCalendarUser = () => {
                 </Fab>
             </Tooltip>
 
-
             <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <DialogTitle id="form-dialog-title">InConcerto</DialogTitle>
@@ -133,17 +131,17 @@ const CreateCalendarUser = () => {
                         <DialogContentText>
                             Por favor llena los siguientes campos:
                         </DialogContentText>
-                        <InputLabel htmlFor="outlined-age-native-simple">Calendario</InputLabel>
+                        <InputLabel htmlFor="outlined-age-native-simple">Hospedaje</InputLabel>
                         <Select
                             fullWidth
                             autoFocus
                             native
-                            value={calendarSelected}
-                            onChange={handleChangeCalendar}
-                            {...register("calendar_id")}
+                            value={lodgingSelected}
+                            onChange={handleChangeLodging}
+                            {...register("lodging_id")}
                         >
-                            {calendars.data.map((calendar) => (
-                                <option key={calendar.id}  value={calendar.id}>{calendar.checkIn_Artist}</option>
+                            {lodgings.data.map((lodging) => (
+                                <option key={lodging.id}  value={lodging.id}>{lodging.name}</option>
                             ))}
                         </Select>
                     </DialogContent>
@@ -179,4 +177,4 @@ const CreateCalendarUser = () => {
     );
 };
 
-export default CreateCalendarUser;
+export default CreateLodgingUser;

@@ -10,6 +10,8 @@ import CreateConcertArtist from "@/components/concerts/artists/CreateConcertArti
 import React from "react";
 import ReadLodgingArtists from "@/components/lodgings/artists/ReadLodgingArtists";
 import CreateLodgingArtist from "@/components/lodgings/artists/CreateLodgingArtist";
+import ReadLodgingUsers from "@/components/lodgings/users/ReadLodgingUsers";
+import CreateLodgingUser from "@/components/lodgings/users/CreateLodgingUser";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -70,7 +72,9 @@ const HospedajesID= () =>{
             <br/>
             <br/>
             <ReadLodgingArtists id={lodging.id}/>
-            <CreateLodgingArtist id={lodging.id}/>
+            <CreateLodgingArtist/>
+            <ReadLodgingUsers id={lodging.id}/>
+            <CreateLodgingUser/>
         </div>
     );
 
