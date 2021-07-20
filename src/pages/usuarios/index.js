@@ -11,7 +11,7 @@ import AccountCircle from "@material-ui/icons/AccountCircle";
 import Link from "next/link";
 import Routes from "@/constants/routes";
 import Loading from "@/components/Loading";
-import NoLicense from "../license";
+import Unauthorized from "../401";
 
 
 const Usuarios = () => {
@@ -26,7 +26,7 @@ const Usuarios = () => {
     return (
         <div>
             <div>
-                {rol === 'ROLE_ADMIN' ? (<ReadUsers/>) : (<NoLicense/>)}
+                {rol === 'ROLE_ADMIN' ? (<ReadUsers/>) : (<Unauthorized/>)}
             </div>
         </div>
     )

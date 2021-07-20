@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-const NoLicense = () => {
+const Unauthorized = () => {
     const classes = useStyles();
 
     return (
@@ -48,4 +48,4 @@ const NoLicense = () => {
     );
 };
 
-export default NoLicense;
+export default Unauthorized;
