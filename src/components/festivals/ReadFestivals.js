@@ -95,7 +95,8 @@ const ReadFestivals = () => {
                                     className={classes.cover}
                                     /*image={`http://localhost:8000/storage/${festival.image}`}*/
                                     //image={`https://inconcerto.herokuapp.com/storage/${festival.image}`}
-                                    image={`https://res.cloudinary.com/inconcerto/image/upload/${festival.image}`}
+                                    //image={`https://res.cloudinary.com/inconcerto/image/upload/${festival.image}`}
+                                    image={`${process.env.NEXT_PUBLIC_STORAGE_URL}/${festival.image}`}
                                     title={festival.name}
                                 />
 
