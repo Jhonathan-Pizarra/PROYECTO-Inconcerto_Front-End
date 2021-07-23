@@ -40,14 +40,14 @@ const UpdateFestival = () => {
 
     const onSubmit = async (data) => {
         console.log('data', data);
-        console.log("imagen", data.image[0]);
+        //console.log("imagen", data.image[0]);
 
         try {
             await Festival.update(id, {
                 ...data,
                 name: ((data.name) === "") ? `Vacío (${festival.id})` : data.name,
                 description: ((data.description) === "") ? `Ninguna descripción` : data.description,
-                image: data.image[0],
+                //image: data.image[0],
             });
             mutate();
             /*mutate(`/festivals/${data.id}`);*/
