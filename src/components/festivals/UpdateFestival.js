@@ -47,9 +47,7 @@ const UpdateFestival = () => {
                 ...data,
                 name: ((data.name) === "") ? `Vacío (${festival.id})` : data.name,
                 description: ((data.description) === "") ? `Ninguna descripción` : data.description,
-                //name: data.name,
-                //description: data.description,
-                image: data.image[0],
+                //image: data.image[0],
             });
             mutate();
             /*mutate(`/festivals/${data.id}`);*/
@@ -137,7 +135,7 @@ const UpdateFestival = () => {
                         </DialogContentText>
                     </DialogContent>
 
-                    <DialogContentText>
+                    {/*<DialogContentText>
                         <DialogContent>
                             Cargar imagen:
                             <input
@@ -147,7 +145,8 @@ const UpdateFestival = () => {
                                 {...register('image')}
                             />
                         </DialogContent>
-                    </DialogContentText>
+                    </DialogContentText>*/}
+
                     <DialogActions>
                         <Button onClick={handleClose} color="primary">
                             Cancelar

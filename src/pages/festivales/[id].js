@@ -53,7 +53,7 @@ const FestivalID = () =>{
                                 height="100%"
                                 width= "100%"
                                 //image={`https://inconcerto.herokuapp.com/storage/${festival.image}`}
-                                image={`${process.env.NEXT_PUBLIC_STORAGE_URL}/${festival.image}`}
+                                image={`https://res.cloudinary.com/inconcerto/image/upload/${festival.image}`}
                                 title={festival.name}
                             />
                         </Grid>
