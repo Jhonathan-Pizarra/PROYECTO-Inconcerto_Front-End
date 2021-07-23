@@ -47,7 +47,7 @@ const UpdateFestival = () => {
                 ...data,
                 name: ((data.name) === "") ? `Vacío (${festival.id})` : data.name,
                 description: ((data.description) === "") ? `Ninguna descripción` : data.description,
-                //image: data.image[0],
+                image: data.image[0],
             });
             mutate();
             /*mutate(`/festivals/${data.id}`);*/
