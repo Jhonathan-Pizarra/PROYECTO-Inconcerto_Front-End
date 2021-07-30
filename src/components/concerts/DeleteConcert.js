@@ -41,8 +41,8 @@ const DeleteConcert = ({id}) => {
                 // Something happened in setting up the request that triggered an Error
                 console.log("Error", error.message);
             }
-            alert(translateMessage(error.config));
-            console.log(error.config);
+            //alert(translateMessage(error.config));
+            //console.log(error.config);
         }
     };
 

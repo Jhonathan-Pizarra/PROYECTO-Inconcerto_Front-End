@@ -4,44 +4,94 @@ import Loading from "@/components/Loading";
 import {fetcher} from "../../utils";
 import Routes from "@/constants/routes";
 import DeleteIcon from "@material-ui/icons/Delete";
-import {Button} from "@material-ui/core";
-import React from "react";
+import {
+    Button, CircularProgress,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    LinearProgress, makeStyles
+} from "@material-ui/core";
+import React, {useEffect, useRef, useState} from "react";
 import {Festival} from "@/lib/festivals";
 import translateMessage from "@/constants/messages";
-import SnackError from "@/components/SnackError";
+import SnackSuccess from "@/components/SnackSuccess";
 
+const useStyles = makeStyles((theme) => ({
+    wrapper: {
+        margin: theme.spacing(1),
+        position: 'relative',
+    },
+    buttonProgress: {
+        color: '#0d47a1',
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        marginTop: -12,
+        marginLeft: -12,
+    },
+}));
 
-const DeleteFestival = () => {
+const DeleteFestival = ({id}) => {
 
+    const classes = useStyles();
     const router = useRouter();
-    const {id} = router.query;
-    const {data: festival, error} = useSWR(`/festivals/${id}`, fetcher);
+    const [open, setOpen] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const timer = useRef();
 
-    if(error) return <div>"No se pudo borrar el festival..."</div>;
-    if(!festival) return <Loading/>;
+    useEffect(() => {
+        return () => {
+            clearTimeout(timer.current);
+        };
+    }, []);
+
+    const handleOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+        //router.push('/festivales');
+    };
+
+    const handleRedirect = () => {
+        router.push('/festivales');
+    };
+
+    const handleConfirm = () => {
+        if (!loading) {
+            setLoading(true);
+            timer.current = window.setTimeout(() => {
+                setLoading(false);
+            }, 4000);
+        }
+        handleDelete();
+    };
 
     const handleDelete = async () => {
+
         try {
+            //await Promise.allSettled([Festival.delete(id), router.push('/festivales')]);
             await Festival.delete(id);
-            router.push(Routes.FESTIVALS);
+
         } catch (error) {
             if (error.response) {
                 //alert(translateMessage(error.response.data.message));
                 //alert(error.response.message);
                 console.log(error.response);
             } else if (error.request) {
-                //alert(translateMessage(error.request.message));
+                alert(translateMessage(error.request.message));
                 //alert(error.request.message);
                 console.log(error.request);
             } else {
-                //alert(translateMessage(error.data.message));
+                alert(translateMessage(error.data.message));
                 //alert(error.message);
                 console.log("Error", error.message);
             }
-            alert(translateMessage(error.config));
-            //alert(error.config);
-            console.log(error.config);
         }
+        setTimeout(handleRedirect,3000); //Serás redirijodo a index en 3...2...1
     };
 
     return (
@@ -50,10 +100,42 @@ const DeleteFestival = () => {
                 variant="contained"
                 color="secondary"
                 startIcon={<DeleteIcon />}
-                onClick={handleDelete}
+                onClick={handleOpen}
             >
                 Eliminar
             </Button>
+
+            <Dialog
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">{"¿Deseas eliminar este festival?"}</DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        🎼 Asegúrese de no tener conciertos en este festival primero.🎵 <br/>
+                        De lo contrario no podrá eliminarlo ❌
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose} color="primary">
+                        Cancelar
+                    </Button>
+
+                    <div className={classes.wrapper}>
+                        <Button
+                            color="primary"
+                            disabled={loading}
+                            onClick={handleConfirm}
+                        >
+                            Confirmar
+                        </Button>
+                        {loading && <CircularProgress size={24} className={classes.buttonProgress} />}
+                    </div>
+                </DialogActions>
+            </Dialog>
+
         </div>
     );
 

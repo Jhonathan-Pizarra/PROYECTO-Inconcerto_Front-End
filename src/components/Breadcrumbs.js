@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
         //direction: "row",
         //position: "static",
         //top: "15%;",
-       // zIndex: 100,
+        // zIndex: 100,
     },
 
 }));
@@ -45,13 +45,21 @@ export const Breadcrumbs = () => {
     const router = useRouter();
     const [breadcrumbs, setBreadcrumbs] = useState(null);
 
+
     useEffect(() => {
         if (router) {
-            const linkPath = router.asPath.split('/');
-            linkPath.shift();
+            const linkPath = router.asPath.split('/').filter(x=>x);
+            //linkPath.shift();
 
             const pathArray = linkPath.map((path, i) => {
-                return { breadcrumb: path, href: '/' + linkPath.slice(0, i + 1).join('/') };
+                //console.log('VEMOAS', typeof (path));
+                //console.log('ISNAN', isNaN(path) ? path : 'detalle');
+                //path.filter(x=>x);
+                console.log("PATH", path);
+                const validate = (isNaN(path)) ? path : 'detalle';
+                return {
+                    breadcrumb: validate, href: '/' + linkPath.slice(0, i + 1).join('/')
+                };
             });
 
             setBreadcrumbs(pathArray);
@@ -64,25 +72,30 @@ export const Breadcrumbs = () => {
 
     return (
 
-            <nav aria-label="breadcrumbs" className={classes.nav}>
-                <ol className="breadcrumb">
-                    <Link href="/" passHref>
-                        <MuiLink className={classes.breads}>
-                            <HomeIcon/>Home&ensp;|&ensp;
-                        </MuiLink>
-                    </Link>
-                    {breadcrumbs.map((breadcrumb, i) => {
-                        return (
-                                <Link key={breadcrumb.href} href={breadcrumb.href}  passHref >
-                                    <MuiLink className={classes.breads}>
-                                        {convertBreadcrumb(breadcrumb.breadcrumb)}
-                                        &ensp;|&ensp;
-                                    </MuiLink>
-                                </Link>
-                        );
-                    })}
-                </ol>
-            </nav>
+
+        <nav aria-label="breadcrumbs" className={classes.nav}>
+            <ol className="breadcrumb">
+                <Link href="/" passHref>
+                    <MuiLink className={classes.breads}>
+                        <HomeIcon/>Home&ensp;|&ensp;
+                    </MuiLink>
+                </Link>
+                {breadcrumbs.map((breadcrumb, i) => {
+                    /*console.log('que es?', breadcrumb);
+                    console.log('y esto?', breadcrumb.href);
+                    console.log('y luego?', breadcrumb.breadcrumb);*/
+                    return (
+                        <Link key={breadcrumb.href} href={breadcrumb.href}  passHref >
+                            <MuiLink className={classes.breads}>
+                                {convertBreadcrumb(breadcrumb.breadcrumb)}
+                                &ensp;|&ensp;
+                            </MuiLink>
+                        </Link>
+                    );
+                })}
+
+            </ol>
+        </nav>
 
     );
 };

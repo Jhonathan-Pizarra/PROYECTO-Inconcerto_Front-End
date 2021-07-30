@@ -1,15 +1,15 @@
-import React from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {useForm} from "react-hook-form";
 import {Festival} from "@/lib/festivals";
 import useSWR from "swr";
 import {useRouter} from "next/router";
 import {
-    Button,
+    Button, CircularProgress,
     Dialog,
     DialogActions,
     DialogContent,
     DialogContentText,
-    DialogTitle,
+    DialogTitle, makeStyles,
     TextField
 } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
@@ -24,24 +24,64 @@ const schema = yup.object().shape({
     description: yup.string().notRequired(),
 });
 
+const useStyles = makeStyles((theme) => ({
+    wrapper: {
+        margin: theme.spacing(1),
+        position: 'relative',
+    },
+    buttonProgress: {
+        color: '#0d47a1',
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        marginTop: -12,
+        marginLeft: -12,
+    },
+}));
+
 const UpdateFestival = () => {
 
+    const classes = useStyles();
     const router = useRouter();
     const {id} = router.query;
     const {data: festival, error, mutate} = useSWR(`/festivals/${id}`, fetcher);
     const { register, handleSubmit, reset, formState:{ errors }  } = useForm({
         resolver: yupResolver(schema)
     });
-    const [open, setOpen] = React.useState(false);
-    // const fileInputRef = useRef();
+    const [open, setOpen] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const timer = useRef();
 
     if(error) return <div>"No se puede editar el festival..."</div>;
     if(!festival) return <Loading/>
 
+    useEffect(() => {
+        return () => {
+            clearTimeout(timer.current);
+        };
+    }, []);
+
+    const handleOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    const handleUpdate = () => {
+        if (!loading) {
+            setLoading(true);
+            timer.current = window.setTimeout(() => {
+                setLoading(false);
+            }, 3000);
+        }
+        setTimeout(handleClose,3000);
+    };
+
     const onSubmit = async (data) => {
         console.log('data', data);
         //console.log("imagen", data.image[0]);
-
         try {
             await Festival.update(id, {
                 ...data,
@@ -67,18 +107,9 @@ const UpdateFestival = () => {
                 // Something happened in setting up the request that triggered an Error
                 console.log("Error", error.message);
             }
-            console.log(error.config);
         }
+        handleUpdate();
         reset(); //Limpiar los imput después del submit
-    };
-
-    const handleOpen = () => {
-        //reset(); //Limpiar los imput antes de nada
-        setOpen(true);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
     };
 
     return (
@@ -103,6 +134,7 @@ const UpdateFestival = () => {
                         </DialogContentText>
                         <TextField
                             //autoFocus
+                            disabled={loading}
                             margin="dense"
                             id="name"
                             label="Nombre"
@@ -119,6 +151,7 @@ const UpdateFestival = () => {
                     <DialogContent>
                         <TextField
                             //autoFocus
+                            disabled={loading}
                             margin="dense"
                             id="description"
                             label="Descripción"
@@ -151,9 +184,20 @@ const UpdateFestival = () => {
                         <Button onClick={handleClose} color="primary">
                             Cancelar
                         </Button>
-                        <Button onClick={handleClose} color="primary" type="submit">
+                        {/*<Button onClick={handleClose} color="primary" type="submit">
                             Editar
-                        </Button>
+                        </Button>*/}
+                        <div className={classes.wrapper}>
+                            <Button
+                                color="primary"
+                                disabled={loading}
+                                //onClick={handlePreUpdate}
+                                type="submit"
+                            >
+                                Editar
+                            </Button>
+                            {loading && <CircularProgress size={24} className={classes.buttonProgress} />}
+                        </div>
                     </DialogActions>
                 </form>
             </Dialog>
