@@ -10,6 +10,7 @@ import {Calendar} from "@/lib/calendars";
 import {CalendarArtist} from "@/lib/calendar_artists";
 import {ConcertArtist} from "@/lib/concert_artists";
 import LinkOffIcon from '@material-ui/icons/LinkOff';
+import BackspaceIcon from '@material-ui/icons/Backspace';
 import translateMessage from "@/constants/messages";
 
 const useStyles = makeStyles((theme) => ({
@@ -46,8 +47,8 @@ const DeleteConcertArtist = ({idArtist}) => {
 
     return (
         <div>
-            <IconButton aria-label="eliminar"  className={classes.delete} size="small" onClick={handleDelete} >
-                <LinkOffIcon />
+            <IconButton title="Remover" aria-label="eliminar"  className={classes.delete} size="small" onClick={handleDelete} >
+                <BackspaceIcon />
             </IconButton>
         </div>
     );

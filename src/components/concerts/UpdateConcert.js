@@ -17,7 +17,7 @@ import {fetcher} from "../../utils";
 import {Concert} from "@/lib/concerts";
 import React, {useState} from "react";
 import {useForm} from "react-hook-form";
-import useSWR from "swr";
+import useSWR, {mutate as mutateTable} from "swr";
 import Loading from "@/components/Loading";
 import IconButton from "@material-ui/core/IconButton";
 //import { yupResolver } from '@hookform/resolvers/yup';
@@ -69,6 +69,7 @@ const UpdateConcert = ({id}) => {
                 place_id: data.place_id,
                 festival_id: data.festival_id,
             });
+            mutateTable('/concerts');
             mutate();
             /*mutate(`/festivals/${data.id}`);*/
         } catch (error) {
@@ -189,7 +190,7 @@ const UpdateConcert = ({id}) => {
                                     onChange={handleCheckFree}
                                     //onChange={function(event){ handleCheckFree(checkedFree); handleChangeFree()}}
                                 />}
-                            label="Free"
+                            label="Gratuito"
                             labelPlacement="top"
                         />
 

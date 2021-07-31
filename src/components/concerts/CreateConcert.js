@@ -215,7 +215,7 @@ const CreateConcert = () => {
                                     onChange={handleCheckFree}
                                     //onChange={function(event){ handleCheckFree(checkedFree); handleChangeFree()}}
                                 />}
-                            label="Free"
+                            label="Gratuito"
                             labelPlacement="top"
                         />
 

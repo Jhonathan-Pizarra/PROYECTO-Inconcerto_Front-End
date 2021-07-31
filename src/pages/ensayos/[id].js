@@ -8,6 +8,7 @@ import Link from "next/link";
 import UpdateEssay from "@/components/essays/UpdateEssay";
 import React from "react";
 import DeleteEssay from "@/components/essays/DeleteEssay";
+import NotFound from "../404";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -27,7 +28,7 @@ const EnsayosID = () => {
     const {id} = router.query;
     const {data: essay, error} = useSWR(`/essays/${id}`, fetcher);
 
-    if(error) return <div>"No se obtuvo el ensayo..."</div>;
+    if(error) return <div><NotFound/></div>;
     if(!essay) return <Loading/>;
 
     return (
@@ -62,12 +63,12 @@ const EnsayosID = () => {
                                         <Grid item container justify="center" alignItems="center">
                                             <CardActions xs={12} sm={4} md={4} lg={3} xl={3} >
                                                 <MuiLink>
-                                                    <UpdateEssay/>
+                                                    <UpdateEssay id={essay.id}/>
                                                 </MuiLink>
                                             </CardActions>
                                             <CardActions xs={12} sm={4} md={4} lg={3} xl={3} >
                                                 <MuiLink>
-                                                    <DeleteEssay/>
+                                                    <DeleteEssay  id={essay.id}/>
                                                 </MuiLink>
                                             </CardActions>
                                         </Grid>

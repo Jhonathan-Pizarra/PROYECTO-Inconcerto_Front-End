@@ -23,6 +23,7 @@ import SnackError from "@/components/SnackError";
 import {Alert} from "@material-ui/lab";
 import UpdateResource from "@/components/resources/UpdateResource";
 import DeleteConcertResource from "@/components/concerts/resources/DeleteConcertResource";
+import CreateConcertResource from "@/components/concerts/resources/CreateConcertResource";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -72,6 +73,11 @@ const ReadConcertResources = ({id}) => {
     return (
         <div>
             <h1>Recursos del concierto</h1>
+
+            <Grid container alignItems="flex-start" justify="flex-end" direction="row">
+                <CreateConcertResource/>
+            </Grid>
+
             <Grid container className={classes.root} spacing={3} direction='row' justify='flex-start'>
                 {/*{concertResources.data ? <SnackSuccess/> : <Loading/>}*/}
                 {concertResources.data && concertResources.data.map(concertResource => {

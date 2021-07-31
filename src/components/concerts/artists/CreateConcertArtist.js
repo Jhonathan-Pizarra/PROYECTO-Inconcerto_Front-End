@@ -29,14 +29,24 @@ import {useRouter} from "next/router";
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import {ConcertArtist} from "@/lib/concert_artists";
 import LinkIcon from "@material-ui/icons/Link";
+import DeleteIcon from "@material-ui/icons/Delete";
 
 const useStyles = makeStyles((theme) => ({
-    fixed: {
+
+    addartists:{
         /*display: 'inline-flex',*/
         //position: '-moz-initial',//a la derecha
-        position: 'fixed', //a la izquierda...
-        bottom: theme.spacing(12),
-        right: theme.spacing(2),
+        //display: 'inline-block',
+        //position: 'static',
+        //verticalAlign: 'bottom',
+        //justifyContent: 'flex-end',
+        //position: 'fixed', //a la izquierda...
+        //bottom: theme.spacing(12),
+        //right: theme.spacing(2),
+        backgroundColor: "#ffeb33",
+        "&:hover, &:focus": {
+            backgroundColor: "#ffeb33",
+        },
     },
 }));
 
@@ -120,12 +130,21 @@ const CreateConcertArtist = () => {
 
     return (
         <div>
+            <Button
+                className={classes.addartists}
+                variant="contained"
+                //color="secondary"
+                startIcon={<AddIcon />}
+                onClick={handleOpen}
+            >
+                Artista
+            </Button>
 
-            <Tooltip title="Vincular" aria-label="add" className={classes.fixed}>
-                <Fab  color="secondary" onClick={handleOpen} > {/*className={classes.fixed}*/}
-                    <LinkIcon />
-                </Fab>
-            </Tooltip>
+            {/*<Tooltip aria-label="add" >*/}
+            {/*    <Fab  color="secondary" onClick={handleOpen} > /!*className={classes.fixed}*!/*/}
+            {/*        <LinkIcon />*/}
+            {/*    </Fab>*/}
+            {/*</Tooltip>*/}
 
             <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
                 <form onSubmit={handleSubmit(onSubmit)}>

@@ -6,7 +6,7 @@ import withAuth from "@/hocs/withAuth";
 import UpdateConcert from "@/components/concerts/UpdateConcert";
 import React from "react";
 import DeleteConcert from "@/components/concerts/DeleteConcert";
-import {CardActions, Grid, Link as MuiLink, makeStyles, Paper, Typography} from "@material-ui/core";
+import {CardActions, Grid, IconButton, Link as MuiLink, makeStyles, Paper, Typography} from "@material-ui/core";
 import Link from "next/link";
 import ReadCalendarArtists from "@/components/calendars/artists/ReadCalendarArtists";
 import CreateCalendarArtist from "@/components/calendars/artists/CreateCalendarArtist";
@@ -14,6 +14,8 @@ import ReadConcertArtists from "@/components/concerts/artists/ReadConcertArtists
 import CreateConcertArtist from "@/components/concerts/artists/CreateConcertArtist";
 import ReadConcertResources from "@/components/concerts/resources/ReadConcertResources";
 import CreateConcertResource from "@/components/concerts/resources/CreateConcertResource";
+import FindInPageIcon from "@material-ui/icons/FindInPage";
+import NotFound from "../404";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -27,6 +29,9 @@ const useStyles = makeStyles((theme) => ({
     items: {
         textAlign: "center",
     },
+    detail:{
+        color: "#3f51b5",
+    },
 }));
 
 const ConciertosID = () => {
@@ -36,7 +41,7 @@ const ConciertosID = () => {
     const {id} = router.query;
     const {data: concert, error} = useSWR(`/concerts/${id}`, fetcher);
 
-    if(error) return <div>"No se obtuvo el concierto..."</div>;
+    if(error) return <div><NotFound/></div>;
     if(!concert) return <Loading/>;
 
     return (
@@ -72,20 +77,23 @@ const ConciertosID = () => {
                                     <br/>
 
                                     <Typography variant="body2" gutterBottom>
-                                        <b>Festival:</b>&ensp;
-                                        <Link href={concert.festival} passHref>
-                                            <MuiLink>
+                                        <b>Festival:</b>&ensp;{concert.festival}
+                                        <Link href={concert.festival_id} passHref>
+                                            <IconButton aria-label="ver"  size="small" className={classes.detail}>
+                                                <FindInPageIcon />
+                                            </IconButton>
+                                            {/*<MuiLink>
                                                 Ver
-                                            </MuiLink>
+                                            </MuiLink>*/}
                                         </Link>
                                     </Typography>
 
                                     <Typography variant="body2" gutterBottom>
-                                        <b>Lugar:</b>&ensp;
-                                        <Link href={concert.place} passHref>
-                                            <MuiLink>
-                                                Ver
-                                            </MuiLink>
+                                        <b>Lugar:</b>&ensp;{concert.place}
+                                        <Link href={concert.place_id} passHref>
+                                            <IconButton aria-label="ver"  size="small" className={classes.detail}>
+                                                <FindInPageIcon />
+                                            </IconButton>
                                         </Link>
                                     </Typography>
 
@@ -118,8 +126,8 @@ const ConciertosID = () => {
             </div>
             <br/>
             <br/>
+            {/*<CreateConcertArtist id={concert.id}/>*/}
             <ReadConcertArtists id={concert.id}/>
-            <CreateConcertArtist id={concert.id}/>
             <ReadConcertResources id={concert.id}/>
             <CreateConcertResource id={concert.id}/>
         </div>

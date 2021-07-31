@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import {useForm} from "react-hook-form";
-import useSWR from "swr";
+import useSWR, {mutate as mutateIndex} from "swr";
 import {
     Button,
     Dialog,
@@ -18,10 +18,10 @@ import Loading from "@/components/Loading";
 import {useRouter} from "next/router";
 import EditIcon from "@material-ui/icons/Edit";
 
-const UpdateEssay = () => {
+const UpdateEssay = ({id}) => {
 
     const router = useRouter();
-    const {id} = router.query;
+    //const {id} = router.query;
     const {data: essay, error, mutate} = useSWR(`/essays/${id}`, fetcher);
     const {data: festivals} = useSWR(`/festivals`, fetcher);
     const { register, handleSubmit, reset } = useForm();
@@ -51,6 +51,7 @@ const UpdateEssay = () => {
                 place: ((data.place) === "") ? `Vacío (${essay.id})` : data.place,
                 festival_id: data.festival_id,
             });
+            mutateIndex('/essays');
             mutate();
             //alert("Editado!");
         } catch (error) {

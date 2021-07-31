@@ -57,6 +57,7 @@ const DeleteFestival = ({id}) => {
     };
 
     const handleRedirect = () => {
+        handleClose();
         router.push('/festivales');
     };
 
