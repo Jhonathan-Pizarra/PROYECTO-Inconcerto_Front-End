@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import {useForm} from "react-hook-form";
-import useSWR from "swr";
+import useSWR, {mutate as mutateIndex} from "swr";
 import {
     Button,
     Dialog,
@@ -67,6 +67,7 @@ const UpdateFeeding = ({id}) => {
                 artist_id: data.artist_id,
                 place_id: data.place_id,
             });
+            mutateIndex('/feedings');
             mutate();
         } catch (error) {
             if (error.response) {

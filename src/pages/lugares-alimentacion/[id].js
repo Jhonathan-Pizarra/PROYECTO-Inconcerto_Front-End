@@ -3,8 +3,13 @@ import {useRouter} from "next/router";
 import Loading from "@/components/Loading";
 import {fetcher} from "../../utils";
 import withAuth from "@/hocs/withAuth";
-import {Grid, makeStyles, Paper, Typography} from "@material-ui/core";
+import {CardActions, Grid, Link as MuiLink, makeStyles, Paper, Typography} from "@material-ui/core";
 import React from "react";
+import UpdateEssay from "@/components/essays/UpdateEssay";
+import DeleteEssay from "@/components/essays/DeleteEssay";
+import UpdateFeedingPlace from "@/components/feeding-places/UpdateFeedingPlace";
+import DeleteFeedingPlace from "@/components/feeding-places/DeleteFeedingPlace";
+import NotFound from "../404";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -28,7 +33,7 @@ const FeedingPlaceID = () =>{
     const {id} = router.query;
     const {data: fplace, error} = useSWR(`/feeding_places/${id}`, fetcher);
 
-    if(error) return <div>"No se obtuvo el lugar de alimentación"</div>;
+    if(error) return <div><NotFound/></div>;
     if(!fplace) return <Loading/>;
 
     return (
@@ -55,6 +60,22 @@ const FeedingPlaceID = () =>{
                                                 <b>Permiso:</b> {((fplace.permit) === 0) ? "No" : "Si"}
                                             </Typography>
                                         </Grid>
+                                    </Grid>
+                                    <Grid container spacing={3}>
+
+                                        <Grid item container justify="center" alignItems="center">
+                                            <CardActions xs={12} sm={4} md={4} lg={3} xl={3} >
+                                                <MuiLink>
+                                                    <UpdateFeedingPlace id={fplace.id}/>
+                                                </MuiLink>
+                                            </CardActions>
+                                            <CardActions xs={12} sm={4} md={4} lg={3} xl={3} >
+                                                <MuiLink>
+                                                    <DeleteFeedingPlace  id={fplace.id}/>
+                                                </MuiLink>
+                                            </CardActions>
+                                        </Grid>
+
                                     </Grid>
 
                                 </Grid>

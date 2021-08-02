@@ -2,6 +2,8 @@ import {fetcher} from "../../utils";
 import useSWR from "swr";
 import Loading from "@/components/Loading";
 import {
+    Link as MUILink,
+    Grid,
     makeStyles,
     Paper,
     Table,
@@ -21,6 +23,7 @@ import UpdateFeeding from "@/components/feedings/UpdateFeeding";
 import DeleteFeeding from "@/components/feedings/DeleteFeeding";
 import CreateFeeding from "@/components/feedings/CreateFeeding";
 import SnackSuccess from "@/components/SnackSuccess";
+import Typography from "@material-ui/core/Typography";
 
 const useStyles = makeStyles((theme) => ({
     detail:{
@@ -67,6 +70,7 @@ const ReadFeeding = () => {
 
     return (
         <div>
+            <h1>Cuadros alimenticios Inconcerto</h1>
             <TableContainer component={Paper}>
                 <Table size="small" aria-label="a dense table">
                     <TableHead className={classes.head}>
@@ -75,6 +79,9 @@ const ReadFeeding = () => {
                             <TableCell className={classes.titles}>Nombre</TableCell>
                             <TableCell className={classes.titles}>Cantidad</TableCell>
                             <TableCell className={classes.titles}>Observación</TableCell>
+                            <TableCell className={classes.titles}>Lugar</TableCell>
+                            <TableCell className={classes.titles}>Artista</TableCell>
+                            <TableCell className={classes.titles}>Responsable</TableCell>
                             {/*<TableCell className={classes.titles}>Lugar</TableCell>*/}
                             {/*<TableCell className={classes.titles}>Artista</TableCell>*/}
                             {/*<TableCell className={classes.titles}>Administrador</TableCell>*/}
@@ -84,7 +91,7 @@ const ReadFeeding = () => {
                     <TableBody>
                         {feedings.data ? <SnackSuccess/> : <Loading/>}
                         {feedings.data && feedings.data.map((feeding => {
-                            //var passage = ((artist.passage) === 0) ? "No" : "Si" ;
+                            //var fid = ((feeding.id) === 0) ? "No" : "Si" ;
 
                             return(
                                 <TableRow key={feeding.id}>
@@ -93,14 +100,17 @@ const ReadFeeding = () => {
                                     <TableCell align="left">{feeding.quantityLunchs}</TableCell>
                                     <TableCell align="left">{feeding.observation}</TableCell>
                                     {/*<TableCell align="left">{feeding.place}</TableCell>*/}
-                                    {/*<TableCell align="left">{feeding.artist}</TableCell>*/}
-                                    {/*<TableCell align="left">{feeding.user}</TableCell>*/}
+                                    <TableCell align="left">{feeding.fplace}</TableCell>
+                                    <TableCell align="left">{feeding.artist}</TableCell>
+                                    <TableCell align="left">{feeding.user}</TableCell>
                                     <TableCell align="center" >
                                         <td>
                                             <Link href={`${Routes.FEEDINGS}/${feeding.id}`}>
-                                                <IconButton aria-label="ver"  size="small" className={classes.detail}>
-                                                    <FindInPageIcon />
-                                                </IconButton>
+                                                <MUILink>
+                                                    <IconButton aria-label="ver"  size="small" className={classes.detail}>
+                                                        <FindInPageIcon />
+                                                    </IconButton>
+                                                </MUILink>
                                             </Link>
                                         </td>
                                         <td>

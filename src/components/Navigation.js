@@ -90,10 +90,6 @@ const mainMenuItems = [
         text: "Usuarios",
         to: Routes.USERS,
     },
-    {
-        text: "About",
-        to: Routes.ABOUT,
-    },
 ];
 const useStyles = makeStyles((theme) => ({
     appBar: {
@@ -564,9 +560,9 @@ export default function MainMenu(props) {
                             </Popper>
                             {/*Fin*/}
 
-                            <Link href={Routes.ABOUT}>
+                          {/*  <Link href={Routes.ABOUT}>
                                 <MenuItem onClick={handleClose}>About</MenuItem>
-                            </Link>
+                            </Link>*/}
                             {/*{mainMenuItems.map((item) => (
                                 <div>
 

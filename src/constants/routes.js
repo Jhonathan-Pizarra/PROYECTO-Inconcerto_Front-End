@@ -9,7 +9,7 @@ const publicRoutes = {
     FESTIVALS: "/festivales",
     // USERS: "/usuarios",
     // USERS_ID: `/usuario/:id`,
-    ABOUT: "/about",
+    //ABOUT: "/about",
 };
 
 const privateRoutes = {

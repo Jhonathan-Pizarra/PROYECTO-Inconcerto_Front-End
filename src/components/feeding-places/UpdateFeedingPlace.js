@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import {useForm} from "react-hook-form";
-import useSWR from "swr";
+import useSWR, {mutate as mutateIndex} from "swr";
 import {
     Button,
     Checkbox,
@@ -40,6 +40,7 @@ const UpdateFeedingPlace = ({id}) => {
                 permit: data.permit,
                 aforo: (((data.aforo) === "") || ((data.aforo) <= 0) || (!!isNaN(data.aforo)) ) ? '1' : data.aforo,
             });
+            mutateIndex('/feeding_places');
             mutate();
         } catch (error) {
             if (error.response) {

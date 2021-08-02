@@ -105,7 +105,7 @@ const CreateFestival = () => {
                 // Something happened in setting up the request that triggered an Error
                 console.error("Error:", error.message);
             }
-            console.error(error.config);
+            //console.error(error.config);
         }
         reset(); //Limpiar los imput después del submit
     };

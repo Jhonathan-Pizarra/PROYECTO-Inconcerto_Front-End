@@ -12,6 +12,7 @@ import SnackError from "@/components/SnackError";
 import SnackSuccess from "@/components/SnackSuccess";
 import SnackInfo from "@/components/SnackInfo";
 import CreateFestivalConcert from "@/components/festivals/concerts/CreateFestivalConcert";
+import NotFound from "../404";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -32,7 +33,7 @@ const FestivalID = () =>{
     const {id} = router.query;
     const {data: festival, error, mutate} = useSWR(`/festivals/${id}`, fetcher);
 
-    if(error) return <div>"No se obtuvo el festival..."</div>;
+    if(error) return <div><NotFound/></div>;
     if(!festival) return <Loading/>;
 
     return (

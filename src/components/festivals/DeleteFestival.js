@@ -39,6 +39,7 @@ const DeleteFestival = ({id}) => {
     const router = useRouter();
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [deleteSuccess, setDeleteSuccess] = useState(false);
     const timer = useRef();
 
     useEffect(() => {
@@ -59,6 +60,7 @@ const DeleteFestival = ({id}) => {
     const handleRedirect = () => {
         handleClose();
         router.push('/festivales');
+
     };
 
     const handleConfirm = () => {
@@ -73,13 +75,16 @@ const DeleteFestival = ({id}) => {
 
     const handleDelete = async () => {
 
+        console.log('handleDelete');
         try {
             //await Promise.allSettled([Festival.delete(id), router.push('/festivales')]);
             await Festival.delete(id);
-
+            //alert('Eliminado!');
+            setDeleteSuccess(true);
         } catch (error) {
+            console.log('HandelDeleteError', error.response);
             if (error.response) {
-                //alert(translateMessage(error.response.data.message));
+                alert(translateMessage(error.response.data.message));
                 //alert(error.response.message);
                 console.log(error.response);
             } else if (error.request) {
@@ -94,6 +99,8 @@ const DeleteFestival = ({id}) => {
         }
         setTimeout(handleRedirect,3000); //Serás redirijodo a index en 3...2...1
     };
+
+
 
     return (
         <div>
@@ -136,7 +143,7 @@ const DeleteFestival = ({id}) => {
                     </div>
                 </DialogActions>
             </Dialog>
-
+            {deleteSuccess && <SnackSuccess/>}
         </div>
     );
 
