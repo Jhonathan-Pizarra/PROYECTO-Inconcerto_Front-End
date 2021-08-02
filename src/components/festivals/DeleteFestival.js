@@ -17,6 +17,7 @@ import React, {useEffect, useRef, useState} from "react";
 import {Festival} from "@/lib/festivals";
 import translateMessage from "@/constants/messages";
 import SnackSuccess from "@/components/SnackSuccess";
+import SnackError from "@/components/SnackError";
 
 const useStyles = makeStyles((theme) => ({
     wrapper: {
@@ -38,66 +39,48 @@ const DeleteFestival = ({id}) => {
     const classes = useStyles();
     const router = useRouter();
     const [open, setOpen] = useState(false);
-    const [loading, setLoading] = useState(false);
     const [deleteSuccess, setDeleteSuccess] = useState(false);
-    const timer = useRef();
-
-    useEffect(() => {
-        return () => {
-            clearTimeout(timer.current);
-        };
-    }, []);
+    const [deleteError, setDeleteError] = useState(false);
+    const [processing, setProcessing] = useState(false);
 
     const handleOpen = () => {
         setOpen(true);
     };
 
     const handleClose = () => {
+        setProcessing(false);
         setOpen(false);
-        //router.push('/festivales');
-    };
-
-    const handleRedirect = () => {
-        handleClose();
-        router.push('/festivales');
-
-    };
-
-    const handleConfirm = () => {
-        if (!loading) {
-            setLoading(true);
-            timer.current = window.setTimeout(() => {
-                setLoading(false);
-            }, 4000);
-        }
-        handleDelete();
     };
 
     const handleDelete = async () => {
 
-        console.log('handleDelete');
         try {
             //await Promise.allSettled([Festival.delete(id), router.push('/festivales')]);
+            setProcessing(true);
             await Festival.delete(id);
-            //alert('Eliminado!');
             setDeleteSuccess(true);
+            handleClose();
+            router.push('/festivales');
+            //alert('Eliminado!');
         } catch (error) {
-            console.log('HandelDeleteError', error.response);
+            setDeleteError(true);
+            setProcessing(false);
+            handleClose();
             if (error.response) {
-                alert(translateMessage(error.response.data.message));
+                //alert(translateMessage(error.response.data.message));
                 //alert(error.response.message);
                 console.log(error.response);
             } else if (error.request) {
-                alert(translateMessage(error.request.message));
+                //alert(translateMessage(error.request.message));
                 //alert(error.request.message);
                 console.log(error.request);
             } else {
-                alert(translateMessage(error.data.message));
+                //alert(translateMessage(error.data.message));
                 //alert(error.message);
                 console.log("Error", error.message);
             }
         }
-        setTimeout(handleRedirect,3000); //Serás redirijodo a index en 3...2...1
+        //setTimeout(handleRedirect,3000); //Serás redirijodo a index en 3...2...1
     };
 
 
@@ -134,16 +117,17 @@ const DeleteFestival = ({id}) => {
                     <div className={classes.wrapper}>
                         <Button
                             color="primary"
-                            disabled={loading}
-                            onClick={handleConfirm}
+                            disabled={processing}
+                            onClick={handleDelete}
                         >
                             Confirmar
                         </Button>
-                        {loading && <CircularProgress size={24} className={classes.buttonProgress} />}
+                        {processing && <CircularProgress size={24} className={classes.buttonProgress} />}
                     </div>
                 </DialogActions>
             </Dialog>
             {deleteSuccess && <SnackSuccess/>}
+            {deleteError && <SnackError/>}
         </div>
     );
 

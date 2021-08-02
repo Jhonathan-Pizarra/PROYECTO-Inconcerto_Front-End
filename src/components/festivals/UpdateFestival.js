@@ -18,6 +18,7 @@ import Loading from "@/components/Loading";
 import translateMessage from "@/constants/messages";
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from "yup";
+import SnackInfo from "@/components/SnackInfo";
 
 const schema = yup.object().shape({
     name: yup.string().notRequired(),
@@ -49,40 +50,26 @@ const UpdateFestival = () => {
         resolver: yupResolver(schema)
     });
     const [open, setOpen] = useState(false);
-    const [loading, setLoading] = useState(false);
-    const timer = useRef();
+    const [updateInfo, setUpdateInfo] = useState(false);
+    const [processing, setProcessing] = useState(false);
 
     if(error) return <div>"No se puede editar el festival..."</div>;
     if(!festival) return <Loading/>
-
-    useEffect(() => {
-        return () => {
-            clearTimeout(timer.current);
-        };
-    }, []);
 
     const handleOpen = () => {
         setOpen(true);
     };
 
     const handleClose = () => {
+        setProcessing(false);
         setOpen(false);
-    };
-
-    const handleUpdate = () => {
-        if (!loading) {
-            setLoading(true);
-            timer.current = window.setTimeout(() => {
-                setLoading(false);
-            }, 3000);
-        }
-        setTimeout(handleClose,3000);
     };
 
     const onSubmit = async (data) => {
         console.log('data', data);
         //console.log("imagen", data.image[0]);
         try {
+            setProcessing(true);
             await Festival.update(id, {
                 ...data,
                 name: ((data.name) === "") ? `Vacío (${festival.id})` : data.name,
@@ -90,13 +77,15 @@ const UpdateFestival = () => {
                 //image: data.image[0],
             });
             mutate();
+            handleClose();
+            setUpdateInfo(true);
             /*mutate(`/festivals/${data.id}`);*/
         } catch (error) {
             if (error.response) {
                 // The request was made and the server responded with a status code
                 // that falls out of the range of 2xx
                 //alert(error.response.message);
-                alert(translateMessage(error.response.data.message));
+                //alert(translateMessage(error.response.data.message));
                 console.log(error.response);
             } else if (error.request) {
                 // The request was made but no response was received
@@ -108,7 +97,7 @@ const UpdateFestival = () => {
                 console.log("Error", error.message);
             }
         }
-        handleUpdate();
+        //handleUpdate();
         reset(); //Limpiar los imput después del submit
     };
 
@@ -134,7 +123,7 @@ const UpdateFestival = () => {
                         </DialogContentText>
                         <TextField
                             //autoFocus
-                            disabled={loading}
+                            disabled={processing}
                             margin="dense"
                             id="name"
                             label="Nombre"
@@ -151,7 +140,7 @@ const UpdateFestival = () => {
                     <DialogContent>
                         <TextField
                             //autoFocus
-                            disabled={loading}
+                            disabled={processing}
                             margin="dense"
                             id="description"
                             label="Descripción"
@@ -190,17 +179,18 @@ const UpdateFestival = () => {
                         <div className={classes.wrapper}>
                             <Button
                                 color="primary"
-                                disabled={loading}
+                                disabled={processing}
                                 //onClick={handlePreUpdate}
                                 type="submit"
                             >
                                 Editar
                             </Button>
-                            {loading && <CircularProgress size={24} className={classes.buttonProgress} />}
+                            {processing && <CircularProgress size={24} className={classes.buttonProgress} />}
                         </div>
                     </DialogActions>
                 </form>
             </Dialog>
+            {updateInfo && <SnackInfo/>}
         </div>
     );
 };

@@ -1,9 +1,9 @@
-import React, {useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {useForm} from "react-hook-form";
 import {Festival} from "@/lib/festivals";
 import useSWR from "swr";
 import {
-    Button,
+    Button, CircularProgress,
     Dialog,
     DialogActions,
     DialogContent,
@@ -38,6 +38,18 @@ const useStyles = makeStyles((theme) => ({
         bottom: theme.spacing(2),
         right: theme.spacing(2),
     },
+    wrapper: {
+        margin: theme.spacing(1),
+        position: 'relative',
+    },
+    buttonProgress: {
+        color: '#0d47a1',
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        marginTop: -12,
+        marginLeft: -12,
+    },
     // cancel: {
     //     position: 'fixed', //a la izquierda...
     // },
@@ -51,10 +63,22 @@ const CreateFestival = () => {
         resolver: yupResolver(schema)
     });
     const [modal, setModal] = useState(false);
+    const [createSuccess, setCreateSuccess] = useState(false);
+    const [processing, setProcessing] = useState(false);
     // const fileInputRef = useRef();
 
     if(error) return <div>"No se pudo crear el festival..."</div>;
     if(!festival) return <Loading/>;
+
+    const handleOpen = () => {
+        reset();
+        setModal(true);
+    };
+
+    const handleClose =  () => {
+        setProcessing(false);
+        setModal(false);
+    };
 
     const onSubmit = async (data) => {
 
@@ -72,11 +96,12 @@ const CreateFestival = () => {
         formData.append("description", newFestival.description);
         formData.append("image", newFestival.image);
 
-
         try {
+            setProcessing(true);
             await Festival.create(formData);
             mutate("/festivals");
             handleClose();
+            setCreateSuccess(true);
             // console.log("file", fileInputRef.current.files[0]);
         } catch (error) {
             if (error.response) {
@@ -99,30 +124,18 @@ const CreateFestival = () => {
                 // The request was made but no response was received
                 // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
                 // http.ClientRequest in node.js
-                alert(error.request);
-                //console.error("Error en request:", error.request);
+                //alert(error.request);
+                console.error("Error en request:", error.request);
             } else {
+                //alert(error.message);
                 // Something happened in setting up the request that triggered an Error
                 console.error("Error:", error.message);
             }
+            //alert(error.config);
             //console.error(error.config);
         }
         reset(); //Limpiar los imput después del submit
     };
-
-    const handleOpen = () => {
-        reset();
-        setModal(true);
-    };
-
-    const handleClose =  () => {
-        setModal(false);
-    };
-
-    const handleValidate = () =>{
-        setTimeout(handleClose,500000);
-    };
-
 
     return (
         <div>
@@ -153,6 +166,7 @@ const CreateFestival = () => {
                         <TextField
                             //autoFocus
                             // className={classes.title}
+                            disabled={processing}
                             margin="dense"
                             id="name"
                             label="Nombre"
@@ -170,6 +184,7 @@ const CreateFestival = () => {
                         <TextField
                             //autoFocus
                             // className={classes.body}
+                            disabled={processing}
                             margin="dense"
                             id="description"
                             label="Descripción"
@@ -202,12 +217,21 @@ const CreateFestival = () => {
                             Cancelar
                         </Button>
 
-                        <Button type="submit" onClick={handleValidate} color="primary">
-                            Crear
-                        </Button>
+                        <div className={classes.wrapper}>
+                            <Button
+                                color="primary"
+                                //onClick={handleValidate}
+                                disabled={processing}
+                                type="submit"
+                            >
+                                Crear
+                            </Button>
+                            {processing && <CircularProgress size={24} className={classes.buttonProgress} />}
+                        </div>
                     </DialogActions>
                 </form>
             </Dialog>
+            {createSuccess && <SnackSuccess/>}
         </div>
     );
 };

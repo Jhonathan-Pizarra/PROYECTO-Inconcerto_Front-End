@@ -32,7 +32,7 @@ async function update(id, data) {
 }
 
 async function deleteFestival(id) {
-    return  api.delete(`/festivals/${id}`);
+    return await api.delete(`/festivals/${id}`);
 }
 
 export const Festival = {
