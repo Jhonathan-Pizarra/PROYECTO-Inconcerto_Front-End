@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import {useForm} from "react-hook-form";
 import useSWR from "swr";
 import {
-    Button,
+    Button, CircularProgress,
     Dialog,
     DialogActions,
     DialogContent,
@@ -35,6 +35,18 @@ const useStyles = makeStyles((theme) => ({
         bottom: theme.spacing(2),
         right: theme.spacing(3),
     },
+    wrapper: {
+        margin: theme.spacing(1),
+        position: 'relative',
+    },
+    buttonProgress: {
+        color: '#0d47a1',
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        marginTop: -12,
+        marginLeft: -12,
+    },
 }));
 
 const CreateEssay  = () => {
@@ -45,12 +57,29 @@ const CreateEssay  = () => {
     const { register, handleSubmit, reset, formState:{ errors } } = useForm({
         resolver: yupResolver(schema)
     });
-    const [state, setState] = useState(null);
-    const [open, setOpen] = useState(false);
+    const [modal, setModal] = useState(false);
+    const [selectFestival, setSelectFestival] = useState(null);
+    const [createSuccess, setCreateSuccess] = useState(false);
+    const [processing, setProcessing] = useState(false);
 
     if(error) return <div>"No se obtuvo el ensayo..."</div>;
     if(!essay) return <Loading/>;
     if(!festivals) return <Loading/>;
+
+    const handleOpen = () => {
+        reset();
+        setCreateSuccess(false);
+        setModal(true);
+    };
+
+    const handleClose = () => {
+        setProcessing(false);
+        setModal(false);
+    };
+
+    const handleChangeFestival = () => {
+        setSelectFestival({selectFestival});
+    };
 
     const onSubmit = async (data) => {
         console.log('data', data);
@@ -69,9 +98,11 @@ const CreateEssay  = () => {
         formData.append("festival_id", newEssay.festival_id);
 
         try {
+            setProcessing(true);
             await Essay.create(formData);
             mutate("/essays");
             handleClose();
+            setCreateSuccess(true);
         } catch (error) {
             if (error.response) {
                 // The request was made and the server responded with a status code
@@ -92,33 +123,14 @@ const CreateEssay  = () => {
         reset(); //Limpiar los imput después del submit
     };
 
-    const handleChangeSelection = () => {
-        setState({state});
-    };
-
-    const handleOpen = () => {
-        reset();
-        setOpen(true);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-    };
-
-    const handleValidate = () =>{
-        setTimeout(handleClose,500000);
-    };
-
     return (
         <div>
-
             <Tooltip title="Nuevo" aria-label="add" className={classes.fixed}>
                 <Fab  color="secondary" onClick={handleOpen} > {/*className={classes.fixed}*/}
                     <AddIcon />
                 </Fab>
             </Tooltip>
-
-            <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+            <Dialog open={modal} onClose={handleClose} aria-labelledby="form-dialog-title">
                 <form onSubmit={handleSubmit(onSubmit)}>
 
                     <DialogTitle id="form-dialog-title">InConcerto</DialogTitle>
@@ -129,6 +141,7 @@ const CreateEssay  = () => {
                         <TextField
                             //autoFocus
                             // className={classes.title}
+                            disabled={processing}
                             margin="dense"
                             id="name"
                             label="Nombre"
@@ -142,6 +155,7 @@ const CreateEssay  = () => {
                     </DialogContent>
                     <DialogContent>
                         <TextField
+                            disabled={processing}
                             id="datetime-local"
                             label="Fecha"
                             type="datetime-local"
@@ -158,6 +172,7 @@ const CreateEssay  = () => {
                     </DialogContent>
                     <DialogContent>
                         <TextField
+                            disabled={processing}
                             //autoFocus
                             // className={classes.title}
                             margin="dense"
@@ -177,8 +192,8 @@ const CreateEssay  = () => {
                         <Select
                             fullWidth
                             native
-                            value={state}
-                            onChange={handleChangeSelection}
+                            value={selectFestival}
+                            onChange={handleChangeFestival}
                             {...register("festival_id")}
                         >
                             {festivals.data.map((festival) => (
@@ -191,12 +206,21 @@ const CreateEssay  = () => {
                         <Button onClick={handleClose} color="primary">
                             Cancelar
                         </Button>
-                        <Button onClick={handleValidate} color="primary" type="submit">
-                            Crear
-                        </Button>
+                        <div className={classes.wrapper}>
+                            <Button
+                                disabled={processing}
+                                //onClick={handleValidate}
+                                color="primary"
+                                type="submit"
+                            >
+                                Crear
+                            </Button>
+                            {processing && <CircularProgress size={24} className={classes.buttonProgress} />}
+                        </div>
                     </DialogActions>
                 </form>
             </Dialog>
+            {createSuccess && <SnackSuccess/>}
         </div>
     );
 };

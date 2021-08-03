@@ -46,7 +46,6 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-
 const ReadConcerts = () => {
 
     const classes = useStyles();
@@ -87,7 +86,7 @@ const ReadConcerts = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {concerts.data ? <SnackSuccess/> : <Loading/>}
+                       {/* {concerts.data ? <SnackSuccess/> : <Loading/>}*/}
                         {concerts.data && concerts.data.map((concert => {
 
                             var free = ((concert.free) === 0) ? "No" : "Si" ;

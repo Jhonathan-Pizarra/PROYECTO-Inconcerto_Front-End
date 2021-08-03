@@ -3,6 +3,7 @@ import Loading from "@/components/Loading";
 import {fetcher} from "../../utils";
 import Routes from "@/constants/routes";
 import DeleteIcon from "@material-ui/icons/Delete";
+import useSWR, {mutate as mutateIndex} from "swr";
 import {
     Button, CircularProgress,
     Dialog,
@@ -16,6 +17,8 @@ import React, {useEffect, useRef, useState} from "react";
 import {Concert} from "@/lib/concerts";
 import IconButton from "@material-ui/core/IconButton";
 import translateMessage from "@/constants/messages";
+import SnackSuccess from "@/components/SnackSuccess";
+import SnackError from "@/components/SnackError";
 
 const useStyles = makeStyles((theme) => ({
     delete: {
@@ -39,45 +42,34 @@ const DeleteConcert = ({id}) => {
 
     const classes = useStyles();
     const router = useRouter();
-    const [open, setOpen] = useState(false);
-    const [loading, setLoading] = useState(false);
-    const timer = useRef();
-
-    useEffect(() => {
-        return () => {
-            clearTimeout(timer.current);
-        };
-    }, []);
+    const [modal, setModal] = useState(false);
+    const [deleteSuccess, setDeleteSuccess] = useState(false);
+    const [deleteError, setDeleteError] = useState(false);
+    const [processing, setProcessing] = useState(false);
 
     const handleOpen = () => {
-        setOpen(true);
+        setModal(true);
     };
 
     const handleClose = () => {
-        setOpen(false);
+        setProcessing(false);
+        setModal(false);
         //router.push('/festivales');
-    };
-
-    const handleRedirect = () => {
-        handleClose();
-        router.push('/conciertos');
-    };
-
-    const handleConfirm = () => {
-        if (!loading) {
-            setLoading(true);
-            timer.current = window.setTimeout(() => {
-                setLoading(false);
-            }, 4000);
-        }
-        handleDelete();
     };
 
     const handleDelete = async () => {
         try {
+            setProcessing(true);
             await Concert.delete(id);
+            setDeleteSuccess(true);
+            handleClose();
+            mutateIndex('/concerts');
+            router.push('/conciertos');
             //router.push(Routes.CONCERTS);
         } catch (error) {
+            setDeleteError(true);
+            setProcessing(false);
+            handleClose();
             if (error.response) {
                 // The request was made and the server responded with a status code
                 // that falls out of the range of 2xx
@@ -93,7 +85,7 @@ const DeleteConcert = ({id}) => {
                 console.log("Error", error.message);
             }
         }
-        setTimeout(handleRedirect,3000); //Serás redirijodo a index en 3...2...1
+        //setTimeout(handleRedirect,3000); //Serás redirijodo a index en 3...2...1
     };
 
 
@@ -110,7 +102,7 @@ const DeleteConcert = ({id}) => {
             </IconButton>
 
             <Dialog
-                open={open}
+                open={modal}
                 onClose={handleClose}
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
@@ -130,16 +122,17 @@ const DeleteConcert = ({id}) => {
                     <div className={classes.wrapper}>
                         <Button
                             color="primary"
-                            disabled={loading}
-                            onClick={handleConfirm}
+                            disabled={processing}
+                            onClick={handleDelete}
                         >
                             Confirmar
                         </Button>
-                        {loading && <CircularProgress size={24} className={classes.buttonProgress} />}
+                        {processing && <CircularProgress size={24} className={classes.buttonProgress} />}
                     </div>
                 </DialogActions>
             </Dialog>
-
+            {deleteSuccess && <SnackSuccess/>}
+            {deleteError && <SnackError/>}
         </div>
     );
 

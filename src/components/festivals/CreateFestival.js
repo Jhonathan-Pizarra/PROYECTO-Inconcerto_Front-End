@@ -72,6 +72,7 @@ const CreateFestival = () => {
 
     const handleOpen = () => {
         reset();
+        setCreateSuccess(false);
         setModal(true);
     };
 

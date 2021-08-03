@@ -84,7 +84,6 @@ const DeleteFestival = ({id}) => {
     };
 
 
-
     return (
         <div>
             <Button

@@ -1,7 +1,7 @@
 import {useRouter} from "next/router";
 import {
     Button,
-    Checkbox,
+    Checkbox, CircularProgress,
     Dialog,
     DialogActions,
     DialogContent,
@@ -17,9 +17,10 @@ import {fetcher} from "../../utils";
 import {Concert} from "@/lib/concerts";
 import React, {useState} from "react";
 import {useForm} from "react-hook-form";
-import useSWR, {mutate as mutateTable} from "swr";
+import useSWR, {mutate as mutateIndex} from "swr";
 import Loading from "@/components/Loading";
 import IconButton from "@material-ui/core/IconButton";
+import SnackInfo from "@/components/SnackInfo";
 //import { yupResolver } from '@hookform/resolvers/yup';
 //import * as yup from "yup";
 
@@ -33,32 +34,73 @@ const useStyles = makeStyles((theme) => ({
     edit:{
         color: "#FAC800",
     },
+    wrapper: {
+        margin: theme.spacing(1),
+        position: 'relative',
+    },
+    buttonProgress: {
+        color: '#0d47a1',
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        marginTop: -12,
+        marginLeft: -12,
+    },
 }));
 
 const UpdateConcert = ({id}) => {
 
-    // const router = useRouter();
     // const {id} = router.query;
+    const router = useRouter();
     const classes = useStyles();
-    const { register, handleSubmit, reset } = useForm();
     const {data: concert, error, mutate} = useSWR(`/concerts/${id}`, fetcher);
     const {data: festivals} = useSWR(`/festivals`, fetcher);
     const {data: places} = useSWR(`/places`, fetcher);
+    const { register, handleSubmit, reset } = useForm();
+    const [modal, setModal] = useState(false);
     const [checkedFree, setFree] = useState(true);
     const [checkedInsi, setInsi] = useState(true);
-    const [state, setState] = useState(null);
-    const [open, setOpen] = useState(false);
-    // const fileInputRef = useRef();
+    const [selectPlace, setSelectPlace] = useState(null);
+    const [selectFestival, setSelectFestival] = useState(null);
+    const [updateInfo, setUpdateInfo] = useState(false);
+    const [processing, setProcessing] = useState(false);
 
     if(error) return <div>"Recarga la página para continuar..."</div>;
     if(!concert) return <Loading/>
     if(!festivals) return <Loading/>
     if(!places) return <Loading/>
 
+    const handleOpen = () => {
+        setUpdateInfo(false);
+        setModal(true);
+    };
+
+    const handleClose = () => {
+        setProcessing(false);
+        setModal(false);
+    };
+
+    const handleChangeFestival = () => {
+        setSelectFestival({selectFestival});
+    };
+
+    const handleChangePlace = () => {
+        setSelectPlace({selectPlace});
+    };
+
+    const handleCheckFree = (event) => {
+        setFree(event.target.checked);
+    };
+
+    const handleCheckInsi = (event) => {
+        setInsi(event.target.checked);
+    };
+
     const onSubmit = async (data) => {
         console.log('data', data);
 
         try {
+            setProcessing(true);
             await Concert.update(id, {
                 ...data,
                 name: ((data.name) === "") ? `Vacío (${concert.id})` : data.name,
@@ -69,8 +111,10 @@ const UpdateConcert = ({id}) => {
                 place_id: data.place_id,
                 festival_id: data.festival_id,
             });
-            mutateTable('/concerts');
+            mutateIndex('/concerts');
             mutate();
+            handleClose();
+            setUpdateInfo(true);
             /*mutate(`/festivals/${data.id}`);*/
         } catch (error) {
             if (error.response) {
@@ -92,27 +136,6 @@ const UpdateConcert = ({id}) => {
         reset(); //Limpiar los imput después del submit
     };
 
-    const handleChangeSelection = () => {
-        setState({state});
-    };
-
-    const handleCheckFree = (event) => {
-        setFree(event.target.checked);
-    };
-
-    const handleCheckInsi = (event) => {
-        setInsi(event.target.checked);
-    };
-
-    const handleOpen = () => {
-        setOpen(true);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-    };
-
-
     return (
         <div>
 
@@ -120,7 +143,7 @@ const UpdateConcert = ({id}) => {
                 <EditIcon />
             </IconButton>
 
-            <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+            <Dialog open={modal} onClose={handleClose} aria-labelledby="form-dialog-title">
                 <form onSubmit={handleSubmit(onSubmit)}>
 
                     <DialogTitle id="form-dialog-title">Editar Concierto</DialogTitle>
@@ -133,6 +156,8 @@ const UpdateConcert = ({id}) => {
                             //autoFocus que al abrir se seleccione solo
                             // className={classes.title}
                             //margin="dense" o sea más chiquito el input
+                            autoFocus={true}
+                            disabled={processing}
                             id="name"
                             label="Nombre"
                             type="text"
@@ -148,6 +173,8 @@ const UpdateConcert = ({id}) => {
 
                     <DialogContent>
                         <TextField
+                            autoFocus={true}
+                            disabled={processing}
                             id="date"
                             label="Fecha"
                             type="date"
@@ -165,6 +192,8 @@ const UpdateConcert = ({id}) => {
 
                     <DialogContent>
                         <TextField
+                            autoFocus={true}
+                            disabled={processing}
                             id="time"
                             label="Hora"
                             type="time"
@@ -211,14 +240,17 @@ const UpdateConcert = ({id}) => {
                     <DialogContent>
                         <InputLabel htmlFor="outlined-age-native-simple">Festival</InputLabel>
                         <Select
-                            autoFocus
+                            autoFocus={true}
+                            disabled={processing}
                             fullWidth
                             native
-                            value={state}
-                            defaultValue={concert.festival_id}
-                            onChange={handleChangeSelection}
+                            value={selectFestival}
+                            //defaultValue={concert.festival_id}
+                            defaultValue={concert.festival_pk}
+                            onChange={handleChangeFestival}
                             {...register("festival_id")}
                         >
+                            <option key={concert.festival_pk}  value={concert.festival_pk} disabled={true}>{concert.festival}</option>
                             {festivals.data.map((festival) => (
                                 <option key={festival.id}  value={festival.id}>{festival.name}</option>
                             ))}
@@ -228,14 +260,17 @@ const UpdateConcert = ({id}) => {
                     <DialogContent>
                         <InputLabel htmlFor="outlined-age-native-simple">Lugar</InputLabel>
                         <Select
-                            autoFocus
+                            autoFocus={true}
+                            disabled={processing}
                             fullWidth
                             native
-                            value={state}
-                            defaultValue={concert.place_id}
-                            onChange={handleChangeSelection}
+                            value={selectPlace}
+                            //defaultValue={concert.place_id}
+                            defaultValue={concert.place_pk}
+                            onChange={handleChangePlace}
                             {...register("place_id")}
                         >
+                            <option key={concert.place_pk}  value={concert.place_pk} disabled={true}>{concert.place}</option>
                             {places.data.map((place) => (
                                 <option key={place.id}  value={place.id}>{place.name}</option>
                             ))}
@@ -247,14 +282,22 @@ const UpdateConcert = ({id}) => {
                         <Button onClick={handleClose} color="primary">
                             Cancelar
                         </Button>
-                        <Button onClick={handleClose} color="primary" type="submit">
-                            Editar
-                        </Button>
+
+                        <div className={classes.wrapper}>
+                            <Button
+                                disabled={processing}
+                                //onClick={handleClose}
+                                color="primary"
+                                type="submit">
+                                Editar
+                            </Button>
+                            {processing && <CircularProgress size={24} className={classes.buttonProgress} />}
+                        </div>
                     </DialogActions>
 
                 </form>
             </Dialog>
-
+            {updateInfo && <SnackInfo/>}
         </div>
     );
 };

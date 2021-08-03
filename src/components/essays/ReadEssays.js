@@ -94,7 +94,7 @@ const ReadEssays = () => {
             {/*    })}*/}
             {/*</Grid>*/}
             <Grid container className={classes.root} spacing={3} direction='row' justify='flex-start'>
-                {essays.data ? <SnackSuccess/> : <Loading/>}
+                {/*{essays.data ? <SnackSuccess/> : <Loading/>}*/}
                 {essays.data && essays.data.map(essay => {
                     return(
                         <Grid container item xs={12} sm={6} md={4} lg={3} xl={3} key={essay.id}>

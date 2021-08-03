@@ -4,7 +4,7 @@ import {Concert} from "@/lib/concerts";
 import useSWR from "swr";
 import {
     Button,
-    Checkbox,
+    Checkbox, CircularProgress,
     Dialog,
     DialogActions,
     DialogContent,
@@ -44,9 +44,22 @@ const useStyles = makeStyles((theme) => ({
     checkbox: {
       textAlign: "center",
     },
+    wrapper: {
+        margin: theme.spacing(1),
+        position: 'relative',
+    },
+    buttonProgress: {
+        color: '#0d47a1',
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        marginTop: -12,
+        marginLeft: -12,
+    },
 }));
 
 const CreateConcert = () => {
+
     const classes = useStyles();
     const {data: concert, error, mutate} = useSWR(`/concerts`, fetcher);
     const {data: festivals} = useSWR(`/festivals`, fetcher);
@@ -54,15 +67,45 @@ const CreateConcert = () => {
     const { register, handleSubmit, reset, formState:{ errors } } = useForm({
         resolver: yupResolver(schema)
     });
+    const [modal, setModal] = useState(false);
     const [checkedInsi, setInsi] = useState(true);
     const [checkedFree, setFree] = useState(true);
-    const [state, setState] = useState(null);
-    const [open, setOpen] = useState(false);
+    const [selectPlace, setSelectPlace] = useState(null);
+    const [selectFestival, setSelectFestival] = useState(null);
+    const [createSuccess, setCreateSuccess] = useState(false);
+    const [processing, setProcessing] = useState(false);
 
     if(error) return <div>"No se obtuvo el concierto..."</div>;
     if(!concert) return <Loading/>;
     if(!festivals) return <Loading/>;
     if(!places) return <Loading/>;
+
+    const handleOpen = () => {
+        reset(); //Limpiar los imput después del submit
+        setCreateSuccess(false);
+        setModal(true);
+    };
+
+    const handleClose = () => {
+        setProcessing(false);
+        setModal(false);
+    };
+
+    const handleChangePlace = () => {
+        setSelectPlace({selectPlace});
+    };
+
+    const handleChangeFestival = () => {
+        setSelectFestival({selectFestival});
+    };
+
+    const handleCheckFree = (event) => {
+        setFree(event.target.checked);
+    };
+
+    const handleCheckInsi = (event) => {
+        setInsi(event.target.checked);
+    };
 
     const onSubmit = async (data) => {
         console.log('data del form:', data);
@@ -87,9 +130,11 @@ const CreateConcert = () => {
         formData.append("festival_id", newConcert.festival_id);
 
         try {
+            setProcessing(true);
             await Concert.create(formData);
             mutate("/concerts");
             handleClose();
+            setCreateSuccess(true);
             // console.log("file", fileInputRef.current.files[0]);
         } catch (error) {
             if (error.response) {
@@ -112,42 +157,18 @@ const CreateConcert = () => {
         reset(); //Limpiar los imput después del submit
     };
 
-    const handleChangeSelection = () => {
-        setState({state});
-    };
-
-    const handleCheckFree = (event) => {
-        setFree(event.target.checked);
-    };
-
-    const handleCheckInsi = (event) => {
-        setInsi(event.target.checked);
-    };
-
-    const handleClickOpen = () => {
-        reset(); //Limpiar los imput después del submit
-        setOpen(true);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-    };
-
-    const handleValidate = () =>{
+  /*  const handleValidate = () =>{
         setTimeout(handleClose,500000);
-    };
-
-
+    };*/
 
     return (
         <div>
             <Tooltip title="Nuevo" aria-label="add" className={classes.fixed}>
-                <Fab  color="secondary" onClick={handleClickOpen} > {/*className={classes.fixed}*/}
+                <Fab  color="secondary" onClick={handleOpen} > {/*className={classes.fixed}*/}
                     <AddIcon />
                 </Fab>
             </Tooltip>
-
-            <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+            <Dialog open={modal} onClose={handleClose} aria-labelledby="form-dialog-title">
                 <form onSubmit={handleSubmit(onSubmit)}>
 
                     <DialogTitle id="form-dialog-title">InConcerto</DialogTitle>
@@ -159,6 +180,7 @@ const CreateConcert = () => {
                         <TextField
                             //autoFocus que al abrir se seleccione solo
                             // className={classes.title}
+                            disabled={processing}
                             id="name"
                             label="Nombre"
                             type="text"
@@ -173,6 +195,7 @@ const CreateConcert = () => {
 
                     <DialogContent>
                         <TextField
+                            disabled={processing}
                             id="date"
                             label="Fecha"
                             type="date"
@@ -190,6 +213,7 @@ const CreateConcert = () => {
 
                     <DialogContent>
                         <TextField
+                            disabled={processing}
                             id="time"
                             label="Hora"
                             type="time"
@@ -241,8 +265,8 @@ const CreateConcert = () => {
                             fullWidth
                             autoFocus
                             native
-                            value={state}
-                            onChange={handleChangeSelection}
+                            value={selectFestival}
+                            onChange={handleChangeFestival}
                             {...register("festival_id")}
                         >
                             {festivals.data.map((festival) => (
@@ -257,8 +281,8 @@ const CreateConcert = () => {
                             fullWidth
                             autoFocus
                             native
-                            value={state}
-                            onChange={handleChangeSelection}
+                            value={selectPlace}
+                            onChange={handleChangePlace}
                             {...register("place_id")}
                         >
                             {places.data.map((place) => (
@@ -272,13 +296,23 @@ const CreateConcert = () => {
                         <Button onClick={handleClose}  color="primary">
                             Cancelar
                         </Button>
-                        <Button onClick={handleValidate} color="primary" type="submit">
-                            Crear
-                        </Button>
-                    </DialogActions>
 
+                        <div className={classes.wrapper}>
+                            <Button
+                                disabled={processing}
+                                //onClick={handleValidate}
+                                color="primary"
+                                type="submit"
+                            >
+                                Crear
+                            </Button>
+                            {processing && <CircularProgress size={24} className={classes.buttonProgress} />}
+                        </div>
+
+                    </DialogActions>
                 </form>
             </Dialog>
+            {createSuccess && <SnackSuccess/>}
         </div>
     );
 };

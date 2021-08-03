@@ -15,6 +15,8 @@ import {
 } from "@material-ui/core";
 import React, {useEffect, useRef, useState} from "react";
 import {Essay} from "@/lib/essays";
+import SnackSuccess from "@/components/SnackSuccess";
+import SnackError from "@/components/SnackError";
 
 const useStyles = makeStyles((theme) => ({
     delete: {
@@ -38,48 +40,34 @@ const DeleteEssay = ({id}) => {
 
     const classes = useStyles();
     const router = useRouter();
-    const [open, setOpen] = useState(false);
-    const [loading, setLoading] = useState(false);
-    const timer = useRef();
-    //const {id} = router.query;
-    //const {data: essay, error} = useSWR(`/essays/${id}`, fetcher);
-
-    useEffect(() => {
-        return () => {
-            clearTimeout(timer.current);
-        };
-    }, []);
+    const [modal, setModal] = useState(false);
+    const [deleteSuccess, setDeleteSuccess] = useState(false);
+    const [deleteError, setDeleteError] = useState(false);
+    const [processing, setProcessing] = useState(false);
 
     const handleOpen = () => {
-        setOpen(true);
+        setModal(true);
     };
 
     const handleClose = () => {
-        setOpen(false);
+        setProcessing(false);
+        setModal(false);
         //router.push('/festivales');
     };
 
-    const handleRedirect = () => {
-        mutateIndex('/essays');
-        handleClose();
-        router.push('/ensayos');
-    };
-
-    const handleConfirm = () => {
-        if (!loading) {
-            setLoading(true);
-            timer.current = window.setTimeout(() => {
-                setLoading(false);
-            }, 4000);
-        }
-        handleDelete();
-    };
 
     const handleDelete = async () => {
         try {
+            setProcessing(true);
             await Essay.delete(id);
-            //router.push(Routes.ESSAYS);
+            setDeleteSuccess(true);
+            handleClose();
+            mutateIndex('/essays');
+            router.push(Routes.ESSAYS);
         } catch (error) {
+            setDeleteError(true);
+            setProcessing(false);
+            handleClose();
             if (error.response) {
                 //alert(error.response.message);
                 console.log(error.response);
@@ -90,7 +78,6 @@ const DeleteEssay = ({id}) => {
             }
             console.log(error.config);
         }
-        setTimeout(handleRedirect,3000); //Serás redirijodo a index en 3...2...1
     };
 
 
@@ -107,7 +94,7 @@ const DeleteEssay = ({id}) => {
             </Button>
 
             <Dialog
-                open={open}
+                open={modal}
                 onClose={handleClose}
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
@@ -122,15 +109,17 @@ const DeleteEssay = ({id}) => {
                     <div className={classes.wrapper}>
                         <Button
                             color="primary"
-                            disabled={loading}
-                            onClick={handleConfirm}
+                            disabled={processing}
+                            onClick={handleDelete}
                         >
                             Confirmar
                         </Button>
-                        {loading && <CircularProgress size={24} className={classes.buttonProgress} />}
+                        {processing && <CircularProgress size={24} className={classes.buttonProgress} />}
                     </div>
                 </DialogActions>
             </Dialog>
+            {deleteSuccess && <SnackSuccess/>}
+            {deleteError && <SnackError/>}
         </div>
     );
 

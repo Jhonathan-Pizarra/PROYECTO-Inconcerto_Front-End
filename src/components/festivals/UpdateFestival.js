@@ -57,6 +57,7 @@ const UpdateFestival = () => {
     if(!festival) return <Loading/>
 
     const handleOpen = () => {
+        setUpdateInfo(false);
         setOpen(true);
     };
 
