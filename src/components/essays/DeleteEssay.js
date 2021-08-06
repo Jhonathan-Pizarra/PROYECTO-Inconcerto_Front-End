@@ -46,6 +46,7 @@ const DeleteEssay = ({id}) => {
     const [processing, setProcessing] = useState(false);
 
     const handleOpen = () => {
+        setDeleteError(false);
         setModal(true);
     };
 
@@ -54,7 +55,6 @@ const DeleteEssay = ({id}) => {
         setModal(false);
         //router.push('/festivales');
     };
-
 
     const handleDelete = async () => {
         try {
@@ -79,7 +79,6 @@ const DeleteEssay = ({id}) => {
             console.log(error.config);
         }
     };
-
 
     return (
         <div>

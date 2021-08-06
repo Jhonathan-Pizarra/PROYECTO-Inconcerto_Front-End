@@ -27,7 +27,7 @@ import SnackError from "@/components/SnackError";
 const schema = yup.object().shape({
     name: yup.string().required("Este campo es necesario..."),
     description: yup.string().required("Este campo es necesario..."),
-    //image: yup.required(),
+    //image: yup.string().required("Este campo es necesario..."),
 });
 
 const useStyles = makeStyles((theme) => ({
@@ -64,6 +64,7 @@ const CreateFestival = () => {
     });
     const [modal, setModal] = useState(false);
     const [createSuccess, setCreateSuccess] = useState(false);
+    const [createError, setCreateError] = useState(false);
     const [processing, setProcessing] = useState(false);
     // const fileInputRef = useRef();
 
@@ -73,6 +74,7 @@ const CreateFestival = () => {
     const handleOpen = () => {
         reset();
         setCreateSuccess(false);
+        setCreateError(false);
         setModal(true);
     };
 
@@ -105,21 +107,23 @@ const CreateFestival = () => {
             setCreateSuccess(true);
             // console.log("file", fileInputRef.current.files[0]);
         } catch (error) {
+            setCreateError(true);
+            setProcessing(false);
+            handleClose();
             if (error.response) {
                 // The request was made and the server responded with a status code
                 // that falls out of the range of 2xx
                 //alert(error.response.data.message);
-                alert(translateMessage(error.response.data.message));
                 // alert(translateMessage(error.response.data.message));
-                // if (error.response.data.errors.name) {
-                //     alert(translateMessage(error.response.data.errors.name));
-                // } else if (error.response.data.errors.description) {
-                //     alert(translateMessage(error.response.data.errors.description));
-                // } else if(error.response.data.errors.image[0]) {
-                //     alert(translateMessage(error.response.data.errors.image[0]));
-                // } else if(error.response.data.errors.image[1]) {
-                //     alert(translateMessage(error.response.data.errors.image[1]));
-                // }
+                if (error.response.data.errors.name) {
+                    alert(translateMessage(error.response.data.errors.name));
+                } else if (error.response.data.errors.description) {
+                    alert(translateMessage(error.response.data.errors.description));
+                } else if(error.response.data.errors.image[0]) {
+                    alert(translateMessage(error.response.data.errors.image[0]));
+                } else if(error.response.data.errors.image[1]) {
+                    alert(translateMessage(error.response.data.errors.image[1]));
+                }
                 console.error(error.response);
             } else if (error.request) {
                 // The request was made but no response was received
@@ -210,6 +214,9 @@ const CreateFestival = () => {
                                 type="file"
                                 {...register('image')}
                             />
+                            {/*<DialogContentText color="secondary">
+                                {errors.image?.message}
+                            </DialogContentText>*/}
                         </DialogContent>
                     </DialogContentText>
 
@@ -233,6 +240,7 @@ const CreateFestival = () => {
                 </form>
             </Dialog>
             {createSuccess && <SnackSuccess/>}
+            {createError && <SnackError/>}
         </div>
     );
 };

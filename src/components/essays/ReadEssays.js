@@ -55,6 +55,9 @@ const useStyles = makeStyles((theme) => ({
         top: 35,
         left: 4
     },
+    content: {
+        flex: '1 0 ',
+    },
 }));
 
 const ReadEssays = () => {

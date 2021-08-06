@@ -54,7 +54,8 @@ function useAuthProvider() {
             if (error.response) {
                 // The request was made and the server responded with a status code
                 // that falls out of the range of 2xx
-                alert(error.response.data.message);
+                alert(translateMessage(error.response.data.message));
+                //alert(error.response.data.message);
                 console.log(error.response.data);
                 console.log(error.response.status);
                 console.log(error.response.headers);

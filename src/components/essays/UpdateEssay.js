@@ -18,6 +18,7 @@ import Loading from "@/components/Loading";
 import {useRouter} from "next/router";
 import EditIcon from "@material-ui/icons/Edit";
 import SnackInfo from "@/components/SnackInfo";
+import SnackError from "@/components/SnackError";
 
 const useStyles = makeStyles((theme) => ({
     edit:{
@@ -40,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
 const UpdateEssay = ({id}) => {
 
     //const {id} = router.query;
-    const router = useRouter();
+    //const router = useRouter();
     const classes = useStyles();
     const {data: essay, error, mutate} = useSWR(`/essays/${id}`, fetcher);
     const {data: festivals} = useSWR(`/festivals`, fetcher);
@@ -48,6 +49,7 @@ const UpdateEssay = ({id}) => {
     const [modal, setModal] = useState(false);
     const [selectFestival, setSelectFestival] = useState(null);
     const [updateInfo, setUpdateInfo] = useState(false);
+    const [updateError, setUpdateError] = useState(false);
     const [processing, setProcessing] = useState(false);
 
     if(error) return <div>"No se pudo editar el ensayo..."</div>;
@@ -64,6 +66,7 @@ const UpdateEssay = ({id}) => {
 
     const handleOpen = () => {
         setUpdateInfo(false);
+        setUpdateError(false);
         setModal(true);
     };
 
@@ -94,10 +97,13 @@ const UpdateEssay = ({id}) => {
             setUpdateInfo(true);
             //alert("Editado!");
         } catch (error) {
+            setUpdateError(true);
+            setProcessing(false);
+            handleClose();
             if (error.response) {
                 // The request was made and the server responded with a status code
                 // that falls out of the range of 2xx
-                alert(error.response.message);
+                //alert(error.response.message);
                 console.log(error.response);
             } else if (error.request) {
                 // The request was made but no response was received
@@ -218,6 +224,7 @@ const UpdateEssay = ({id}) => {
                 </form>
             </Dialog>
             {updateInfo && <SnackInfo/>}
+            {updateError && <SnackError/>}
         </div>
     );
 };

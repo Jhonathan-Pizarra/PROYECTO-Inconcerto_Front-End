@@ -4,7 +4,7 @@ import {Artist} from "@/lib/artists";
 import useSWR from "swr";
 import {
     Button,
-    Checkbox,
+    Checkbox, CircularProgress,
     Dialog,
     DialogActions,
     DialogContent,
@@ -25,6 +25,8 @@ import Loading from "@/components/Loading";
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from "yup";
 import SnackSuccess from "@/components/SnackSuccess";
+import SnackError from "@/components/SnackError";
+import translateMessage from "@/constants/messages";
 
 const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
 
@@ -53,6 +55,18 @@ const useStyles = makeStyles((theme) => ({
         bottom: theme.spacing(2),
         right: theme.spacing(2),
     },
+    wrapper: {
+        margin: theme.spacing(1),
+        position: 'relative',
+    },
+    buttonProgress: {
+        color: '#0d47a1',
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        marginTop: -12,
+        marginLeft: -12,
+    },
 }));
 
 const CreateArtist = () => {
@@ -62,10 +76,35 @@ const CreateArtist = () => {
     const { register, handleSubmit, reset, formState:{ errors } } = useForm({
         resolver: yupResolver(schema)
     });
+    const [modal, setModal] = useState(false);
     const [checkedPassage, setCheckedPassage] = useState(true);
     const [foodGroup, setfoodGroup] = useState(null);
-    const [open, setOpen] = useState(false);
+    const [createSuccess, setCreateSuccess] = useState(false);
+    const [createError, setCreateError] = useState(false);
+    const [processing, setProcessing] = useState(false);
 
+    if(error) return <div>"No se obtuvo el artista..."</div>;
+    if(!artists) return <Loading/>;
+
+    const handleOpen = () => {
+        reset();
+        setCreateSuccess(false);
+        setCreateError(false);
+        setModal(true);
+    };
+
+    const handleClose = () => {
+        setProcessing(false);
+        setModal(false);
+    };
+
+    const handleCheckPassage = (event) => {
+        setCheckedPassage(event.target.checked);
+    };
+
+    const handleChangeSelection = () => {
+        setfoodGroup({foodGroup});
+    };
 
     const onSubmit = async (data) => {
         console.log('data', data);
@@ -102,14 +141,20 @@ const CreateArtist = () => {
         formData.append("observation", newArtist.observation);
 
         try {
+            setProcessing(true);
             await Artist.create(formData);
             mutate("/artists");
             handleClose();
+            setCreateSuccess(true);
         } catch (error) {
+            setCreateError(true);
+            setProcessing(false);
+            handleClose();
             if (error.response) {
                 // The request was made and the server responded with a status code
                 // that falls out of the range of 2xx
-                alert(error.response.message);
+                //alert(error.response.message);
+                alert(translateMessage(error.response.data.message));
                 console.error(error.response);
             } else if (error.request) {
                 // The request was made but no response was received
@@ -125,40 +170,14 @@ const CreateArtist = () => {
         reset();
     };
 
-    const handleOpen = () => {
-        reset();
-        setOpen(true);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-    };
-
-    const handleCheckPassage = (event) => {
-        setCheckedPassage(event.target.checked);
-    };
-
-    const handleChangeSelection = () => {
-        setfoodGroup({foodGroup});
-    };
-
-    const handleValidate = () =>{
-        setTimeout(handleClose,500000);
-    };
-
-    if(error) return <div>"Recarga la página para continuar..."</div>;
-    if(!artists) return <Loading/>;
-
     return (
         <div>
-
             <Tooltip title="Nuevo" aria-label="add" className={classes.fixed}>
                 <Fab  color="secondary" onClick={handleOpen} > {/*className={classes.fixed}*/}
                     <AddIcon />
                 </Fab>
             </Tooltip>
-
-            <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+            <Dialog open={modal} onClose={handleClose} aria-labelledby="form-dialog-title">
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <DialogTitle id="form-dialog-title">InConcerto</DialogTitle>
 
@@ -167,6 +186,7 @@ const CreateArtist = () => {
                             Por favor llena los siguientes campos:
                         </DialogContentText>
                         <TextField
+                            disabled={processing}
                             margin="dense"
                             id="standard-number"
                             label="Cédula o Pasaporte"
@@ -178,6 +198,7 @@ const CreateArtist = () => {
                             {errors.ciOrPassport?.message}
                         </DialogContentText>
                         <TextField
+                            disabled={processing}
                             margin="dense"
                             id="standard-helperTex"
                             label="Nombre artístico"
@@ -199,6 +220,7 @@ const CreateArtist = () => {
                             <Grid item xs={12} sm={6} md={6} lg={6}>
                                 <TextField
                                     style={{paddingRight: 10}}
+                                    disabled={processing}
                                     margin="dense"
                                     id="outlined-basic"
                                     label="Nombre"
@@ -222,6 +244,7 @@ const CreateArtist = () => {
                             <Grid item xs={12} sm={6} md={6} lg={6}>
                                 <TextField
                                     style={{paddingRight: 10, marginLeft:10}}
+                                    disabled={processing}
                                     margin="dense"
                                     id="outlined-basic"
                                     label="Apellido"
@@ -245,6 +268,7 @@ const CreateArtist = () => {
                             <Grid item xs sm={6} md={6} lg={6}>
                                 <TextField
                                     style={{paddingRight: 10}}
+                                    disabled={processing}
                                     margin="dense"
                                     id="outlined-basic"
                                     label="Nacionalidad"
@@ -259,6 +283,7 @@ const CreateArtist = () => {
                                 <TextField
                                     style={{paddingRight: 10, marginLeft:10}}
                                     //style={{marginLeft: 10}}
+                                    disabled={processing}
                                     margin="dense"
                                     id="standard-number"
                                     label="Teléfono"
@@ -272,6 +297,7 @@ const CreateArtist = () => {
                         </Grid>
                         <Grid container>
                             <TextField
+                                disabled={processing}
                                 margin="dense"
                                 id="outlined-basic"
                                 label="E-mail"
@@ -293,6 +319,7 @@ const CreateArtist = () => {
                             control={
                                 <Checkbox
                                     autoFocus={true}
+                                    disabled={processing}
                                     checked={checkedPassage}
                                     onChange={handleCheckPassage}
                                 />
@@ -303,6 +330,7 @@ const CreateArtist = () => {
 
 
                         <TextField
+                            disabled={processing}
                             margin="dense"
                             id="outlined-basic"
                             label="Violín, Guitarra, Piano..."
@@ -324,6 +352,7 @@ const CreateArtist = () => {
                             <Grid item xs sm={6} md={6} lg={6}>
                                 <TextField
                                     style={{paddingRight: 10}}
+                                    disabled={processing}
                                     margin="dense"
                                     id="standard-number"
                                     label="Teléfono Emergencia"
@@ -338,6 +367,7 @@ const CreateArtist = () => {
                             <Grid item xs sm={6} md={6} lg={6}>
                                 <TextField
                                     style={{paddingRight: 10, marginLeft:10}}
+                                    disabled={processing}
                                     margin="dense"
                                     id="outlined-basic"
                                     label="E-mail Emergencia"
@@ -356,6 +386,7 @@ const CreateArtist = () => {
                         <InputLabel htmlFor="outlined-age-native-simple">Grupo Alimenticio</InputLabel>
                         <Select
                             //autoFocus
+                            disabled={processing}
                             fullWidth
                             native
                             //defaultValue={"default"}
@@ -373,6 +404,7 @@ const CreateArtist = () => {
 
                     <DialogContent>
                         <TextField
+                            disabled={processing}
                             margin="dense"
                             id="outlined-basic"
                             label="Observación"
@@ -392,12 +424,22 @@ const CreateArtist = () => {
                         <Button onClick={handleClose} color="primary">
                             Cancelar
                         </Button>
-                        <Button onClick={handleValidate} color="primary" type="submit">
-                            Crear
-                        </Button>
+                        <div className={classes.wrapper}>
+                            <Button
+                                disabled={processing}
+                                //onClick={handleValidate}
+                                color="primary"
+                                type="submit"
+                            >
+                                Crear
+                            </Button>
+                            {processing && <CircularProgress size={24} className={classes.buttonProgress} />}
+                        </div>
                     </DialogActions>
                 </form>
             </Dialog>
+            {createSuccess && <SnackSuccess/>}
+            {createError && <SnackError/>}
         </div>
     );
 };

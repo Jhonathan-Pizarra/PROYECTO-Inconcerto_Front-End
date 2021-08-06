@@ -45,7 +45,6 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-
 export default function Home() {
 
     const classes = useStyles();
@@ -104,8 +103,8 @@ export default function Home() {
                 <Grid item xs>
 
                         <p>
-                            El presente sistema web apoyará a la difusión de la música clásica, permitiendo coordinar diferentes áreas importantes para la gestión de eventos organizados por Inconcerto
-                            A su vez, pretende:
+                            El presente sistema web apoyará a la gestión interna, permitiendo coordinar diferentes áreas importantes para la administración de eventos organizados por Inconcerto
+                            Lo cual conlleva:
                             <ul>
                                 <li>
                                     <strong>Gestión de artistas invitados:</strong> Los artistas son nacionales e internacionales por lo que se lleva el control de compras de pasajes, tiempos de llegada y salida, observaciones de alimentación especiales, transporte, etc.
@@ -114,7 +113,7 @@ export default function Home() {
                                     <strong>Gestión de hospedajes:</strong> Se coordina donde se hospedan los artistas invitados teniendo en cuenta los horarios de entrada y salida de los artistas con el fin de optimizar los gastos.
                                 </li>
                                 <li>
-                                    <strong>Gestión de auspicios:</strong> La fundación cuenta con varios auspicios, entre los cuales están hostales y hoteles, alimentación, transporte, lugares para conciertos y auspicios directamente económicos para cubrir los gastos de los eventos.
+                                    <strong>Gestión de logística:</strong> La fundación cuenta con varios auspicios, entre los cuales están hostales y hoteles, alimentación, transporte, entre otros.
                                 </li>
                                 <li>
                                     <strong>Gestión de espacios para conciertos:</strong> La fundación está constantemente en búsqueda de espacios poco usuales para ofrecer conciertos. Se lleva un control de estos espacios para facilitar la organización de cada evento.
@@ -138,11 +137,18 @@ export default function Home() {
                     <p>
                         Colectivo de músicos, comunicadores, gestores y analistas culturales que construye diferentes espacios y canales para popularizar y resignificar la música clásica en nuestra época a través de proyectos que faciliten el acceso a la apreciación e interpretación musical, generando una relación activa, integral y humana entre músicos y espectadores. Una de las principales actividades que InConcerto desarrolla desde 2017 es el Festival Música Ocupa.
                     </p>
-                    <p>
-                        El ensamble colabora habitualmente con artistas nacionales e internacionales como David Ballesteros (Orquesta Sinfónica de Londres), Sarah Willis (Orquesta Filarmónica de Berlín), Bruno Lourensetto (Orquesta Sinfónica del Estado de São Paulo), Emmanuel Siffert (Orquesta Sinfónica de San Juan, Argentina) y Camila Barrientos (Orquesta Sinfónica Municipal de São Paulo).
-
-                    </p>
-
+                    <div className={classes.paper2}>
+                        <Link href='https://www.passline.com/eventos/sumate-a-musicaocupa' passHref >
+                            <MuiLink>
+                                <Image
+                                    src="/donaciones.png"
+                                    alt="InConcerto"
+                                    width={400}
+                                    height={400}
+                                />
+                            </MuiLink>
+                        </Link>
+                    </div>
 
                     <br/>
                     {/*<Paper className={classes.paper}>
@@ -169,9 +175,7 @@ export default function Home() {
 
                 </Grid>
             </Grid>
-            <br/>
-            <br/>
-            <Paper className={classes.paper2}>
+           {/* <Paper className={classes.paper2}>
                 <Link href='https://www.passline.com/eventos/sumate-a-musicaocupa' passHref >
                     <MuiLink>
                         <Image
@@ -182,7 +186,7 @@ export default function Home() {
                         />
                     </MuiLink>
                 </Link>
-            </Paper>
+            </Paper>*/}
         </div>
     );
 }

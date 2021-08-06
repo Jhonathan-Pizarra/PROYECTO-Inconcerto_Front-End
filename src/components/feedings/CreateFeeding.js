@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import {useForm} from "react-hook-form";
 import useSWR from "swr";
 import {
-    Button,
+    Button, CircularProgress,
     Dialog,
     DialogActions,
     DialogContent,
@@ -22,6 +22,7 @@ import {Feeding} from "@/lib/feedings";
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from "yup";
 import SnackSuccess from "@/components/SnackSuccess";
+import SnackError from "@/components/SnackError";
 
 const schema = yup.object().shape({
     date: yup.string().required("Debes escoger una fecha"),
@@ -38,8 +39,19 @@ const useStyles = makeStyles((theme) => ({
         bottom: theme.spacing(2),
         right: theme.spacing(2),
     },
+    wrapper: {
+        margin: theme.spacing(1),
+        position: 'relative',
+    },
+    buttonProgress: {
+        color: '#0d47a1',
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        marginTop: -12,
+        marginLeft: -12,
+    },
 }));
-
 
 const CreateFeeding = () => {
 
@@ -51,16 +63,44 @@ const CreateFeeding = () => {
     const { register, handleSubmit, reset, formState:{ errors } } = useForm({
         resolver: yupResolver(schema)
     });
+    const [modal, setModal] = useState(false);
     const [statePlace, setPlace] = useState(null);
     const [stateArtist, setArtist] = useState(null);
     const [stateUser, setUser] = useState(null);
-    const [open, setOpen] = useState(false);
+    const [createSuccess, setCreateSuccess] = useState(false);
+    const [createError, setCreateError] = useState(false);
+    const [processing, setProcessing] = useState(false);
+
 
     if(error) return <div>"No se obtuvo el cuadro de alimentación..."</div>;
     if(!feedings) return <Loading/>;
     if(!fplaces) return <Loading/>;
     if(!artists) return <Loading/>;
     if(!users) return <Loading/>;
+
+    const handleOpen = () => {
+        reset();
+        setCreateSuccess(false);
+        setCreateError(false);
+        setModal(true);
+    };
+
+    const handleClose = () => {
+        setProcessing(false);
+        setModal(false);
+    };
+
+    const handleChangePlace = () => {
+        setPlace({statePlace});
+    };
+
+    const handleChangeArtist = () => {
+        setArtist({stateArtist});
+    };
+
+    const handleChangeUser = () => {
+        setUser({stateUser});
+    };
 
     const onSubmit = async (data) => {
         console.log('data', data);
@@ -85,10 +125,16 @@ const CreateFeeding = () => {
         formData.append("place_id", newFeeding.place_id);
 
         try {
+            setProcessing(true);
             await Feeding.create(formData);
             mutate("/feedings");
             handleClose();
+            handleClose();
+            setCreateSuccess(true);
         } catch (error) {
+            setCreateError(true);
+            setProcessing(false);
+            handleClose();
             if (error.response) {
                 console.error(error.response);
             } else if (error.request) {
@@ -101,41 +147,14 @@ const CreateFeeding = () => {
         reset();
     };
 
-    const handleOpen = () => {
-        reset();
-        setOpen(true);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-    };
-
-    const handleChangePlace = () => {
-        setPlace({statePlace});
-    };
-
-    const handleChangeArtist = () => {
-        setArtist({stateArtist});
-    };
-
-    const handleChangeUser = () => {
-        setUser({stateUser});
-    };
-
-    const handleValidate = () =>{
-        setTimeout(handleClose,500000);
-    };
-
     return (
         <div>
-
             <Tooltip title="Nuevo" aria-label="add" className={classes.fixed}>
                 <Fab  color="secondary" onClick={handleOpen} > {/*className={classes.fixed}*/}
                     <AddIcon />
                 </Fab>
             </Tooltip>
-
-            <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+            <Dialog open={modal} onClose={handleClose} aria-labelledby="form-dialog-title">
                 <form onSubmit={handleSubmit(onSubmit)}>
 
                     <DialogTitle id="form-dialog-title">InConcerto</DialogTitle>
@@ -145,6 +164,7 @@ const CreateFeeding = () => {
                         </DialogContentText>
 
                         <TextField
+                            disabled={processing}
                             id="datetime-local"
                             label="Fecha"
                             type="datetime-local"
@@ -161,6 +181,7 @@ const CreateFeeding = () => {
 
                     <DialogContent>
                         <TextField
+                            disabled={processing}
                             margin="dense"
                             id="name"
                             label="Nombre"
@@ -175,6 +196,7 @@ const CreateFeeding = () => {
 
                     <DialogContent>
                         <TextField
+                            disabled={processing}
                             margin="dense"
                             id="standard-number"
                             label="Cantidad"
@@ -190,6 +212,7 @@ const CreateFeeding = () => {
 
                     <DialogContent>
                         <TextField
+                            disabled={processing}
                             margin="dense"
                             id="name"
                             label="Observación"
@@ -255,12 +278,22 @@ const CreateFeeding = () => {
                         <Button onClick={handleClose} color="primary">
                             Cancelar
                         </Button>
-                        <Button onClick={handleValidate} color="primary" type="submit">
-                            Crear
-                        </Button>
+                        <div className={classes.wrapper}>
+                            <Button
+                                disabled={processing}
+                                //onClick={handleValidate}
+                                color="primary"
+                                type="submit"
+                            >
+                                Crear
+                            </Button>
+                            {processing && <CircularProgress size={24} className={classes.buttonProgress} />}
+                        </div>
                     </DialogActions>
                 </form>
             </Dialog>
+            {createSuccess && <SnackSuccess/>}
+            {createError && <SnackError/>}
         </div>
     );
 };

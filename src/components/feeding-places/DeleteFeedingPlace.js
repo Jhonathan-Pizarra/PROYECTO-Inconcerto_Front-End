@@ -8,6 +8,8 @@ import {Button, CircularProgress, Dialog, DialogActions, DialogTitle, makeStyles
 import React, {useEffect, useRef, useState} from "react";
 import {FeedingPlace} from "@/lib/feeding_places";
 import {mutate as mutateIndex} from "swr";
+import SnackSuccess from "@/components/SnackSuccess";
+import SnackError from "@/components/SnackError";
 
 const useStyles = makeStyles((theme) => ({
     delete: {
@@ -31,46 +33,37 @@ const DeleteFeedingPlace = ({id}) => {
 
     const classes = useStyles();
     const router = useRouter();
-    const [open, setOpen] = useState(false);
-    const [loading, setLoading] = useState(false);
-    const timer = useRef();
+    const [modal, setModal] = useState(false);
+    const [deleteSuccess, setDeleteSuccess] = useState(false);
+    const [deleteError, setDeleteError] = useState(false);
+    const [processing, setProcessing] = useState(false);
+
     //const {data: fplace, error} = useSWR(`/feeding_places`, fetcher);
-    useEffect(() => {
-        return () => {
-            clearTimeout(timer.current);
-        };
-    }, []);
 
     const handleOpen = () => {
-        setOpen(true);
+        setDeleteError(false);
+        setModal(true);
     };
 
     const handleClose = () => {
-        setOpen(false);
+        setProcessing(false);
+        setModal(false);
         //router.push('/festivales');
     };
 
-    const handleRedirect = () => {
-        mutateIndex('/feeding_places');
-        handleClose();
-        router.push('/lugares-alimentacion');
-    };
-
-    const handleConfirm = () => {
-        if (!loading) {
-            setLoading(true);
-            timer.current = window.setTimeout(() => {
-                setLoading(false);
-            }, 4000);
-        }
-        handleDelete();
-    };
 
     const handleDelete = async () => {
         try {
+            setProcessing(true);
             await FeedingPlace.delete(id);
-            //router.push(Routes.FEEDINGPLACES);
+            setDeleteSuccess(true);
+            handleClose();
+            mutateIndex('/feeding_places');
+            router.push(Routes.FEEDINGPLACES);
         } catch (error) {
+            setDeleteError(true);
+            setProcessing(false);
+            handleClose();
             if (error.response) {
                 console.log(error.response);
             } else if (error.request) {
@@ -80,9 +73,7 @@ const DeleteFeedingPlace = ({id}) => {
             }
             console.log(error.config);
         }
-        setTimeout(handleRedirect,3000); //Serás redirijodo a index en 3...2...1
     };
-
 
     return (
         <div>
@@ -96,7 +87,7 @@ const DeleteFeedingPlace = ({id}) => {
             </Button>
 
             <Dialog
-                open={open}
+                open={modal}
                 onClose={handleClose}
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
@@ -111,15 +102,17 @@ const DeleteFeedingPlace = ({id}) => {
                     <div className={classes.wrapper}>
                         <Button
                             color="primary"
-                            disabled={loading}
-                            onClick={handleConfirm}
+                            disabled={processing}
+                            onClick={handleDelete}
                         >
                             Confirmar
                         </Button>
-                        {loading && <CircularProgress size={24} className={classes.buttonProgress} />}
+                        {processing && <CircularProgress size={24} className={classes.buttonProgress} />}
                     </div>
                 </DialogActions>
             </Dialog>
+            {deleteSuccess && <SnackSuccess/>}
+            {deleteError && <SnackError/>}
         </div>
     );
 

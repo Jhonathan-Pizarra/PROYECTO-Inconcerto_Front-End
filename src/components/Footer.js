@@ -154,11 +154,11 @@ const Footer = () => {
                     </Grid>
                 </Container>
             </Box>
-           {/* <div className={classes.copyright}>
+            <div className={classes.copyright}>
                 <Container >
-                    &copy; {new Date().getFullYear()} Copyright: <a href="https://esfot.epn.edu.ec/#"><b>ESFOT</b></a>
+                    &copy; {new Date().getFullYear()} Copyright: <a href="https://www.inconcerto.org/inicio" color="secondary"><b>Inconcerto 2021</b></a>
                 </Container>
-            </div>*/}
+            </div>
         </div>
     )
 }

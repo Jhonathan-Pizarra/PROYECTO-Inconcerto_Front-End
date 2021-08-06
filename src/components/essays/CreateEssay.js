@@ -22,6 +22,7 @@ import Loading from "@/components/Loading";
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from "yup";
 import SnackSuccess from "@/components/SnackSuccess";
+import SnackError from "@/components/SnackError";
 
 const schema = yup.object().shape({
     name: yup.string().required("Este campo es necesario..."),
@@ -60,6 +61,7 @@ const CreateEssay  = () => {
     const [modal, setModal] = useState(false);
     const [selectFestival, setSelectFestival] = useState(null);
     const [createSuccess, setCreateSuccess] = useState(false);
+    const [createError, setCreateError] = useState(false);
     const [processing, setProcessing] = useState(false);
 
     if(error) return <div>"No se obtuvo el ensayo..."</div>;
@@ -69,6 +71,7 @@ const CreateEssay  = () => {
     const handleOpen = () => {
         reset();
         setCreateSuccess(false);
+        setCreateError(false);
         setModal(true);
     };
 
@@ -104,6 +107,9 @@ const CreateEssay  = () => {
             handleClose();
             setCreateSuccess(true);
         } catch (error) {
+            setCreateError(true);
+            setProcessing(false);
+            handleClose();
             if (error.response) {
                 // The request was made and the server responded with a status code
                 // that falls out of the range of 2xx
@@ -221,6 +227,7 @@ const CreateEssay  = () => {
                 </form>
             </Dialog>
             {createSuccess && <SnackSuccess/>}
+            {createError && <SnackError/>}
         </div>
     );
 };

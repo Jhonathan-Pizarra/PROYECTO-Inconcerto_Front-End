@@ -89,7 +89,7 @@ const ReadFeeding = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {feedings.data ? <SnackSuccess/> : <Loading/>}
+                        {/*{feedings.data ? <SnackSuccess/> : <Loading/>}*/}
                         {feedings.data && feedings.data.map((feeding => {
                             //var fid = ((feeding.id) === 0) ? "No" : "Si" ;
 

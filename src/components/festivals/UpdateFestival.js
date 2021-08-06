@@ -19,6 +19,7 @@ import translateMessage from "@/constants/messages";
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from "yup";
 import SnackInfo from "@/components/SnackInfo";
+import SnackError from "@/components/SnackError";
 
 const schema = yup.object().shape({
     name: yup.string().notRequired(),
@@ -51,6 +52,7 @@ const UpdateFestival = () => {
     });
     const [open, setOpen] = useState(false);
     const [updateInfo, setUpdateInfo] = useState(false);
+    const [updateError, setUpdateError] = useState(false);
     const [processing, setProcessing] = useState(false);
 
     if(error) return <div>"No se puede editar el festival..."</div>;
@@ -58,6 +60,7 @@ const UpdateFestival = () => {
 
     const handleOpen = () => {
         setUpdateInfo(false);
+        setUpdateError(false);
         setOpen(true);
     };
 
@@ -82,11 +85,19 @@ const UpdateFestival = () => {
             setUpdateInfo(true);
             /*mutate(`/festivals/${data.id}`);*/
         } catch (error) {
+            setUpdateError(true);
+            setProcessing(false);
+            handleClose();
             if (error.response) {
                 // The request was made and the server responded with a status code
                 // that falls out of the range of 2xx
                 //alert(error.response.message);
                 //alert(translateMessage(error.response.data.message));
+                if (error.response.data.errors.name) {
+                    alert(translateMessage(error.response.data.errors.name));
+                } else if (error.response.data.errors.description) {
+                    alert(translateMessage(error.response.data.errors.description));
+                }
                 console.log(error.response);
             } else if (error.request) {
                 // The request was made but no response was received
@@ -124,6 +135,7 @@ const UpdateFestival = () => {
                         </DialogContentText>
                         <TextField
                             //autoFocus
+                            autoFocus={true}
                             disabled={processing}
                             margin="dense"
                             id="name"
@@ -141,6 +153,7 @@ const UpdateFestival = () => {
                     <DialogContent>
                         <TextField
                             //autoFocus
+                            autoFocus={true}
                             disabled={processing}
                             margin="dense"
                             id="description"
@@ -192,6 +205,7 @@ const UpdateFestival = () => {
                 </form>
             </Dialog>
             {updateInfo && <SnackInfo/>}
+            {updateError && <SnackError/>}
         </div>
     );
 };

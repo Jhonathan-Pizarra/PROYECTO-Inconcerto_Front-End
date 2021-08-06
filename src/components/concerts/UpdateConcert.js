@@ -21,6 +21,7 @@ import useSWR, {mutate as mutateIndex} from "swr";
 import Loading from "@/components/Loading";
 import IconButton from "@material-ui/core/IconButton";
 import SnackInfo from "@/components/SnackInfo";
+import SnackError from "@/components/SnackError";
 //import { yupResolver } from '@hookform/resolvers/yup';
 //import * as yup from "yup";
 
@@ -63,6 +64,7 @@ const UpdateConcert = ({id}) => {
     const [selectPlace, setSelectPlace] = useState(null);
     const [selectFestival, setSelectFestival] = useState(null);
     const [updateInfo, setUpdateInfo] = useState(false);
+    const [updateError, setUpdateError] = useState(false);
     const [processing, setProcessing] = useState(false);
 
     if(error) return <div>"Recarga la página para continuar..."</div>;
@@ -72,6 +74,7 @@ const UpdateConcert = ({id}) => {
 
     const handleOpen = () => {
         setUpdateInfo(false);
+        setUpdateError(false);
         setModal(true);
     };
 
@@ -117,6 +120,9 @@ const UpdateConcert = ({id}) => {
             setUpdateInfo(true);
             /*mutate(`/festivals/${data.id}`);*/
         } catch (error) {
+            setUpdateError(true);
+            setProcessing(false);
+            handleClose();
             if (error.response) {
                 // The request was made and the server responded with a status code
                 // that falls out of the range of 2xx
@@ -298,6 +304,7 @@ const UpdateConcert = ({id}) => {
                 </form>
             </Dialog>
             {updateInfo && <SnackInfo/>}
+            {updateError && <SnackError/>}
         </div>
     );
 };

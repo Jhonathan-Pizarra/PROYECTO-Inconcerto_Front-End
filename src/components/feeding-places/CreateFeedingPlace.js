@@ -3,7 +3,7 @@ import {useForm} from "react-hook-form";
 import useSWR from "swr";
 import {
     Button,
-    Checkbox,
+    Checkbox, CircularProgress,
     Dialog,
     DialogActions,
     DialogContent,
@@ -22,6 +22,7 @@ import {FeedingPlace} from "@/lib/feeding_places";
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from "yup";
 import SnackSuccess from "@/components/SnackSuccess";
+import SnackError from "@/components/SnackError";
 
 const schema = yup.object().shape({
     name: yup.string().required("Este campo es necesario..."),
@@ -37,8 +38,19 @@ const useStyles = makeStyles((theme) => ({
         bottom: theme.spacing(2),
         right: theme.spacing(2),
     },
+    wrapper: {
+        margin: theme.spacing(1),
+        position: 'relative',
+    },
+    buttonProgress: {
+        color: '#0d47a1',
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        marginTop: -12,
+        marginLeft: -12,
+    },
 }));
-
 
 const CreateFeedingPlace = () => {
 
@@ -47,11 +59,30 @@ const CreateFeedingPlace = () => {
     const { register, handleSubmit, reset, formState:{ errors } } = useForm({
         resolver: yupResolver(schema)
     });
+    const [modal, setModal] = React.useState(false);
     const [checkedPermission, setCheckedPermission] = useState(true);
-    const [open, setOpen] = React.useState(false);
+    const [createSuccess, setCreateSuccess] = useState(false);
+    const [createError, setCreateError] = useState(false);
+    const [processing, setProcessing] = useState(false);
 
     if(error) return <div>"No se pudo crear el lugar..."</div>;
     if(!fplace) return <Loading/>;
+
+    const handleOpen = () => {
+        reset();
+        setCreateSuccess(false);
+        setCreateError(false);
+        setModal(true);
+    };
+
+    const handleClose = () => {
+        setProcessing(false);
+        setModal(false);
+    };
+
+    const handleCheckPermission = (event) => {
+        setCheckedPermission(event.target.checked);
+    };
 
     const onSubmit = async (data) => {
         console.log('data', data);
@@ -70,9 +101,11 @@ const CreateFeedingPlace = () => {
         formData.append("aforo", newFeedingPlace.aforo);
 
         try {
+            setProcessing(true);
             await FeedingPlace.create(formData);
             mutate("/feeding_places");
             handleClose();
+            setCreateSuccess(true);
         } catch (error) {
             if (error.response) {
                 console.error(error.response);
@@ -86,34 +119,14 @@ const CreateFeedingPlace = () => {
         reset();
     };
 
-    const handleOpen = () => {
-        reset();
-        setOpen(true);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-    };
-
-    const handleCheckPermission = (event) => {
-        setCheckedPermission(event.target.checked);
-    };
-
-    const handleValidate = () =>{
-        setTimeout(handleClose,500000);
-    };
-
-
     return (
         <div>
-
             <Tooltip title="Nuevo" aria-label="add" className={classes.fixed}>
                 <Fab  color="secondary" onClick={handleOpen} > {/*className={classes.fixed}*/}
                     <AddIcon />
                 </Fab>
             </Tooltip>
-
-            <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+            <Dialog open={modal} onClose={handleClose} aria-labelledby="form-dialog-title">
                 <form onSubmit={handleSubmit(onSubmit)}>
 
                     <DialogTitle id="form-dialog-title">InConcerto</DialogTitle>
@@ -122,6 +135,7 @@ const CreateFeedingPlace = () => {
                             Por favor llena los siguientes campos:
                         </DialogContentText>
                         <TextField
+                            disabled={processing}
                             margin="dense"
                             id="name"
                             label="Nombre"
@@ -138,6 +152,7 @@ const CreateFeedingPlace = () => {
                         <TextField
                             //autoFocus
                             // className={classes.title}
+                            disabled={processing}
                             margin="dense"
                             id="address"
                             label="Dirección"
@@ -171,6 +186,7 @@ const CreateFeedingPlace = () => {
 
                     <DialogContent>
                         <TextField
+                            disabled={processing}
                             margin="dense"
                             id="aforo"
                             label="Aforo"
@@ -187,12 +203,22 @@ const CreateFeedingPlace = () => {
                         <Button onClick={handleClose} color="primary">
                             Cancelar
                         </Button>
-                        <Button onClick={handleValidate} color="primary" type="submit">
-                            Crear
-                        </Button>
+                        <div className={classes.wrapper}>
+                            <Button
+                                disabled={processing}
+                                //onClick={handleValidate}
+                                color="primary"
+                                type="submit"
+                            >
+                                Crear
+                            </Button>
+                            {processing && <CircularProgress size={24} className={classes.buttonProgress} />}
+                        </div>
                     </DialogActions>
                 </form>
             </Dialog>
+            {createSuccess && <SnackSuccess/>}
+            {createError && <SnackError/>}
         </div>
     );
 };

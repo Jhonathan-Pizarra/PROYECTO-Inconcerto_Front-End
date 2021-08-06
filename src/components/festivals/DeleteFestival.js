@@ -44,6 +44,7 @@ const DeleteFestival = ({id}) => {
     const [processing, setProcessing] = useState(false);
 
     const handleOpen = () => {
+        setDeleteError(false);
         setOpen(true);
     };
 
@@ -67,15 +68,12 @@ const DeleteFestival = ({id}) => {
             setProcessing(false);
             handleClose();
             if (error.response) {
-                //alert(translateMessage(error.response.data.message));
                 //alert(error.response.message);
                 console.log(error.response);
             } else if (error.request) {
-                //alert(translateMessage(error.request.message));
                 //alert(error.request.message);
                 console.log(error.request);
             } else {
-                //alert(translateMessage(error.data.message));
                 //alert(error.message);
                 console.log("Error", error.message);
             }

@@ -1,10 +1,10 @@
 import React, {useState} from "react";
 import {useForm} from "react-hook-form";
 import {Artist} from "@/lib/artists";
-import useSWR from "swr";
+import useSWR, {mutate as mutateIndex} from "swr";
 import {
     Button,
-    Checkbox,
+    Checkbox, CircularProgress,
     Dialog,
     DialogActions,
     DialogContent,
@@ -23,10 +23,24 @@ import EditIcon from "@material-ui/icons/Edit";
 import IconButton from "@material-ui/core/IconButton";
 import * as yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
+import SnackInfo from "@/components/SnackInfo";
+import SnackError from "@/components/SnackError";
 
 const useStyles = makeStyles((theme) => ({
     edit:{
         color: "#FAC800",
+    },
+    wrapper: {
+        margin: theme.spacing(1),
+        position: 'relative',
+    },
+    buttonProgress: {
+        color: '#0d47a1',
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        marginTop: -12,
+        marginLeft: -12,
     },
 }));
 
@@ -51,12 +65,38 @@ const UpdateArtist = ({id}) => {
     });
     const [checkedPassage, setCheckedPassage] = useState(true);
     const [foodGroup, setfoodGroup] = useState(null);
-    const [open, setOpen] = useState(false);
+    const [modal, setModal] = useState(false);
+    const [updateInfo, setUpdateInfo] = useState(false);
+    const [updateError, setUpdateError] = useState(false);
+    const [processing, setProcessing] = useState(false);
+
+    if(error) return <div>"No se pudo editar el artista..."</div>;
+    if(!artist) return <Loading/>;
+
+    const handleOpen = () => {
+        setUpdateInfo(false);
+        setUpdateError(false);
+        setModal(true);
+    };
+
+    const handleClose = () => {
+        setProcessing(false);
+        setModal(false);
+    };
+
+    const handleCheckPassage = (event) => {
+        setCheckedPassage(event.target.checked);
+    };
+
+    const handleChangeSelection = () => {
+        setfoodGroup({foodGroup});
+    };
 
     const onSubmit = async (data) => {
         console.log('data', data);
 
         try {
+            setProcessing(true);
             await Artist.update(id, {
                 ...data,
                 ciOrPassport: data.ciOrPassport,
@@ -74,13 +114,18 @@ const UpdateArtist = ({id}) => {
                 foodGroup: data.foodGroup,
                 observation: ((data.observation) === "") ? `Vacío (${artist.id})` : data.observation,
             });
+            mutateIndex('/artists');
             mutate();
             handleClose();
+            setUpdateInfo(true);
         } catch (error) {
+            setUpdateError(true);
+            setProcessing(false);
+            handleClose();
             if (error.response) {
                 // The request was made and the server responded with a status code
                 // that falls out of the range of 2xx
-                alert(error.response.message);
+                //alert(error.response.message);
                 console.error(error.response);
             } else if (error.request) {
                 // The request was made but no response was received
@@ -96,28 +141,6 @@ const UpdateArtist = ({id}) => {
         reset();
     };
 
-    const handleOpen = () => {
-        setOpen(true);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-    };
-
-    const handleCheckPassage = (event) => {
-        setCheckedPassage(event.target.checked);
-    };
-
-    const handleChangeSelection = () => {
-        setfoodGroup({foodGroup});
-    };
-
-    const handleValidate = () =>{
-        setTimeout(handleClose,500000);
-    };
-
-    if(error) return <div>"No se pudo editar el artista..."</div>;
-    if(!artist) return <Loading/>;
 
     return (
         <div>
@@ -126,7 +149,7 @@ const UpdateArtist = ({id}) => {
                 <EditIcon />
             </IconButton>
 
-            <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+            <Dialog open={modal} onClose={handleClose} aria-labelledby="form-dialog-title">
                 <form onSubmit={handleSubmit(onSubmit)}>
 
                     <DialogTitle id="form-dialog-title">InConcerto</DialogTitle>
@@ -136,6 +159,8 @@ const UpdateArtist = ({id}) => {
                             Por favor llena los siguientes campos:
                         </DialogContentText>
                         <TextField
+                            autoFocus={true}
+                            disabled={processing}
                             margin="dense"
                             id="standard-number"
                             label="Cédula o Pasaporte"
@@ -145,6 +170,8 @@ const UpdateArtist = ({id}) => {
                             fullWidth
                         />
                         <TextField
+                            autoFocus={true}
+                            disabled={processing}
                             margin="dense"
                             id="standard-helperTex"
                             label="Nombre artístico"
@@ -164,6 +191,8 @@ const UpdateArtist = ({id}) => {
                             <Grid item xs={12} sm={6} md={6} lg={6}>
                                 <TextField
                                     style={{paddingRight: 10}}
+                                    autoFocus={true}
+                                    disabled={processing}
                                     margin="dense"
                                     id="outlined-basic"
                                     label="Nombre"
@@ -176,6 +205,8 @@ const UpdateArtist = ({id}) => {
                             <Grid item xs={12} sm={6} md={6} lg={6}>
                                 <TextField
                                     style={{paddingRight: 10, marginLeft:10}}
+                                    autoFocus={true}
+                                    disabled={processing}
                                     margin="dense"
                                     id="outlined-basic"
                                     label="Apellido"
@@ -189,6 +220,8 @@ const UpdateArtist = ({id}) => {
                             <Grid item xs sm={6} md={6} lg={6}>
                                 <TextField
                                     style={{paddingRight: 10}}
+                                    autoFocus={true}
+                                    disabled={processing}
                                     margin="dense"
                                     id="outlined-basic"
                                     label="Nacionalidad"
@@ -200,6 +233,8 @@ const UpdateArtist = ({id}) => {
                             <Grid item xs sm={6} md={6} lg={6}>
                                 <TextField
                                     style={{paddingRight: 10, marginLeft:10}}
+                                    autoFocus={true}
+                                    disabled={processing}
                                     margin="dense"
                                     id="standard-number"
                                     label="Teléfono"
@@ -214,6 +249,8 @@ const UpdateArtist = ({id}) => {
                         </Grid>
                         <Grid container>
                             <TextField
+                                autoFocus={true}
+                                disabled={processing}
                                 margin="dense"
                                 id="outlined-basic"
                                 label="E-mail"
@@ -236,6 +273,7 @@ const UpdateArtist = ({id}) => {
                                 <Checkbox
                                     color="primary"
                                     autoFocus={true}
+                                    disabled={processing}
                                     checked={checkedPassage}
                                     onChange={handleCheckPassage}
                                 />
@@ -245,6 +283,8 @@ const UpdateArtist = ({id}) => {
                         />
 
                         <TextField
+                            autoFocus={true}
+                            disabled={processing}
                             margin="dense"
                             id="outlined-basic"
                             label="Violín, Guitarra, Piano..."
@@ -264,6 +304,8 @@ const UpdateArtist = ({id}) => {
                             <Grid item xs sm={6} md={6} lg={6}>
                                 <TextField
                                     style={{paddingRight: 10}}
+                                    autoFocus={true}
+                                    disabled={processing}
                                     margin="dense"
                                     id="standard-number"
                                     label="Teléfono Emergencia"
@@ -279,6 +321,8 @@ const UpdateArtist = ({id}) => {
                             <Grid item xs sm={6} md={6} lg={6}>
                                 <TextField
                                     style={{paddingRight: 10, marginLeft:10}}
+                                    autoFocus={true}
+                                    disabled={processing}
                                     margin="dense"
                                     id="outlined-basic"
                                     label="E-mail Emergencia"
@@ -297,6 +341,8 @@ const UpdateArtist = ({id}) => {
                     <DialogContent>
                         <InputLabel htmlFor="outlined-age-native-simple">Grupo Alimenticio</InputLabel>
                         <Select
+                            autoFocus={true}
+                            disabled={processing}
                             fullWidth
                             native
                             defaultValue={artist.foodGroup}
@@ -312,6 +358,8 @@ const UpdateArtist = ({id}) => {
 
                     <DialogContent>
                         <TextField
+                            autoFocus={true}
+                            disabled={processing}
                             margin="dense"
                             id="outlined-basic"
                             label="Observación"
@@ -329,12 +377,21 @@ const UpdateArtist = ({id}) => {
                         <Button onClick={handleClose} color="primary">
                             Cancelar
                         </Button>
-                        <Button onClick={handleValidate} color="primary" type="submit">
-                            Editar
-                        </Button>
+                        <div className={classes.wrapper}>
+                            <Button
+                                disabled={processing}
+                                //onClick={handleClose}
+                                color="primary"
+                                type="submit">
+                                Editar
+                            </Button>
+                            {processing && <CircularProgress size={24} className={classes.buttonProgress} />}
+                        </div>
                     </DialogActions>
                 </form>
             </Dialog>
+            {updateInfo && <SnackInfo/>}
+            {updateError && <SnackError/>}
         </div>
     );
 };

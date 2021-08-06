@@ -48,6 +48,7 @@ const DeleteConcert = ({id}) => {
     const [processing, setProcessing] = useState(false);
 
     const handleOpen = () => {
+        setDeleteError(false);
         setModal(true);
     };
 

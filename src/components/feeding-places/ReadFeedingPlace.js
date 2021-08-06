@@ -66,7 +66,7 @@ const ReadFeedingPlace = () => {
         <div>
             <h1>Huecas InConcerto</h1>
             <Grid container className={classes.root} spacing={3} direction='row' justify='flex-start'>
-                {fplaces.data ? <SnackSuccess/> : <Loading/>}
+                {/*{fplaces.data ? <SnackSuccess/> : <Loading/>}*/}
                 {fplaces.data && fplaces.data.map(fplace => {
                     return(
                         <Grid container item xs={12} sm={6} md={4} lg={3} xl={3} key={fplace.id}>

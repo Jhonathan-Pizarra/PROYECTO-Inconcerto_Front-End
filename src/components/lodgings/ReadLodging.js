@@ -82,7 +82,7 @@ const ReadLodging = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {lodgings.data ? <SnackSuccess/> : <Loading/>}
+                        {/*{lodgings.data ? <SnackSuccess/> : <Loading/>}*/}
                         {lodgings.data && lodgings.data.map((lodging => {
                             //var passage = ((artist.passage) === 0) ? "No" : "Si" ;
 

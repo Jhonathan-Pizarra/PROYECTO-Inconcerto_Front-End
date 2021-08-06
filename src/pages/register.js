@@ -1,34 +1,102 @@
-import React from "react";
+import React, {useState} from "react";
 import {useForm} from "react-hook-form";
 import withAuth from "@/hocs/withAuth";
 import {useAuth} from "@/lib/auth";
 import {
-    Button,
+    Button, CircularProgress, Dialog,
     DialogActions,
     DialogContent,
     DialogContentText,
-    DialogTitle,
-    Paper,
-    TextField
+    DialogTitle, Fab, InputLabel, makeStyles,
+    Paper, Select,
+    TextField, Tooltip
 } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
+import AddIcon from "@material-ui/icons/Add";
+import {useRouter} from "next/router";
+import SnackSuccess from "@/components/SnackSuccess";
+import * as yup from "yup";
+import {yupResolver} from "@hookform/resolvers/yup";
+import SnackError from "@/components/SnackError";
+//import translateMessage from "@/constants/messages";
 
+const schema = yup.object().shape({
+    name: yup.string().required("Este campo es necesario..."),
+    email: yup.string().email('Ese e-mail no es válido...').required("Es necesario un email"),
+    password: yup.string().required("Este campo es necesario").min(6, 'Debe tener al menos 6 caracteres'),
+    password_confirmation: yup.string().required("Este campo es necesario").min(6, 'Debe tener al menos 6 caracteres').oneOf([yup.ref('password')], 'Las contraseñas no coinciden'),
+});
+
+const useStyles = makeStyles((theme) => ({
+    fixed: {
+        position: 'fixed',
+        bottom: theme.spacing(2),
+        right: theme.spacing(3),
+    },
+    wrapper: {
+        margin: theme.spacing(1),
+        position: 'relative',
+    },
+    buttonProgress: {
+        color: '#0d47a1',
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        marginTop: -12,
+        marginLeft: -12,
+    },
+}));
 
 const Register = () => {
 
-    const { register, handleSubmit, reset } = useForm();
+    const router = useRouter();
+    const classes = useStyles();
     const { register: newUser } = useAuth();
+    //const { register, handleSubmit, reset } = useForm();
+    const { register, handleSubmit, reset, formState:{ errors } } = useForm({
+        resolver: yupResolver(schema)
+    });
+    const [modal, setModal] = useState(false);
+    const [selectRole, setSelectRole] = useState(null);
+    const [createSuccess, setCreateSuccess] = useState(false);
+    const [createError, setCreateError] = useState(false);
+    const [processing, setProcessing] = useState(false);
 
+    const handleOpen = () => {
+        reset();
+        setCreateSuccess(false);
+        setCreateError(false);
+        setModal(true);
+    };
+
+    const handleClose = () => {
+        setProcessing(false);
+        setModal(false);
+    };
+
+    const handleChangeRole = () => {
+        setSelectRole({selectRole});
+    };
 
     const onSubmit = async (data) =>{
+        console.log('userData', data);
+
         try {
+            setProcessing(true);
+            //console.log('userData', data);
             const userData = await newUser(data);
-            console.log('userData', data);
+            handleClose();
+            setCreateSuccess(true);
+            router.push('/');
 
         }catch (error) {
+            setCreateError(true);
+            setProcessing(false);
+            handleClose();
             if (error.response) {
                 // The request was made and the server responded with a status code
                 // that falls out of the range of 2xx
+                //alert(translateMessage(error.response));
                 console.log(error.response);
             } else if (error.request) {
                 // The request was made but no response was received
@@ -46,7 +114,127 @@ const Register = () => {
 
     return (
         <div>
-            <Paper style={{width: "auto"}}>
+            <Tooltip title="Nuevo" aria-label="add" className={classes.fixed}>
+                <Fab  color="secondary" onClick={handleOpen} > {/*className={classes.fixed}*/}
+                    <AddIcon />
+                </Fab>
+            </Tooltip>
+            <Dialog open={modal} onClose={handleClose} aria-labelledby="form-dialog-title">
+                <form onSubmit={handleSubmit(onSubmit)}>
+
+                    <DialogTitle id="form-dialog-title">InConcerto</DialogTitle>
+
+                    <DialogContent>
+                        <DialogContentText>
+                            Por favor llena los siguientes campos:
+                        </DialogContentText>
+                        <TextField
+                            //autoFocus
+                            // className={classes.title}
+                            disabled={processing}
+                            margin="dense"
+                            id="name"
+                            label="Nombre"
+                            type="text"
+                            {...register('name')}
+                            fullWidth
+                        />
+                        <DialogContentText color="secondary">
+                            {errors.name?.message}
+                        </DialogContentText>
+                    </DialogContent>
+
+                    <DialogContent>
+                        <TextField
+                            //autoFocus
+                            // className={classes.title}
+                            disabled={processing}
+                            margin="dense"
+                            id="email"
+                            label="Correo"
+                            type="text"
+                            {...register('email')}
+                            fullWidth
+                        />
+                        <DialogContentText color="secondary">
+                            {errors.email?.message}
+                        </DialogContentText>
+                    </DialogContent>
+
+                    <DialogContent>
+                        <TextField
+                            //autoFocus
+                            // className={classes.title}
+                            disabled={processing}
+                            margin="dense"
+                            id="password"
+                            label="Contraseña"
+                            type="password"
+                            {...register('password')}
+                            fullWidth
+                        />
+                        <DialogContentText color="secondary">
+                            {errors.password?.message}
+                        </DialogContentText>
+                    </DialogContent>
+
+                    <DialogContent>
+                        <TextField
+                            //autoFocus
+                            // className={classes.title}
+                            disabled={processing}
+                            margin="dense"
+                            id="password_confirmation"
+                            label="Confirmación"
+                            type="password"
+                            {...register('password_confirmation')}
+                            fullWidth
+                        />
+                        <DialogContentText color="secondary">
+                            {errors.password_confirmation?.message}
+                        </DialogContentText>
+                    </DialogContent>
+
+                    <DialogContent>
+                        <InputLabel htmlFor="outlined-age-native-simple">Rol</InputLabel>
+                        <Select
+                            autoFocus={true}
+                            disabled={processing}
+                            fullWidth
+                            native
+                            value={selectRole}
+                            onChange={handleChangeRole}
+                            {...register("role")}
+                        >
+                            <option value={'ROLE_USER'}>Operario</option>
+                            <option value={'ROLE_ADMIN'}>Administrador</option>
+                        </Select>
+                    </DialogContent>
+
+                    <DialogActions>
+                        <Button onClick={handleClose} color="primary">
+                            Cancelar
+                        </Button>
+                        <div className={classes.wrapper}>
+                            <Button
+                                disabled={processing}
+                                //onClick={handleValidate}
+                                color="primary"
+                                type="submit"
+                            >
+                                Crear
+                            </Button>
+                            {processing && <CircularProgress size={24} className={classes.buttonProgress} />}
+                        </div>
+                        {/*<Button type="submit" color="primary" variant="contained">
+                            Crear
+                        </Button>*/}
+                    </DialogActions>
+                </form>
+            </Dialog>
+            {createSuccess && <SnackSuccess/>}
+            {createError && <SnackError/>}
+            {/*   <Paper style={{width: "auto"}}>
                 <form onSubmit={handleSubmit(onSubmit)}>
 
                     <DialogTitle id="form-dialog-title">InConcerto</DialogTitle>
@@ -112,8 +300,8 @@ const Register = () => {
                         </Button>
                     </DialogActions>
                 </form>
-            </Paper>
-          {/*  <form onSubmit={handleSubmit(onSubmit)}>
+            </Paper>*/}
+            {/*  <form onSubmit={handleSubmit(onSubmit)}>
                 <div>
                     <label htmlFor='name'>Nombre</label>
                     <input type='text' id='name' {...register('name')} />

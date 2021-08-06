@@ -9,6 +9,8 @@ import React, {useEffect, useRef, useState} from "react";
 import IconButton from "@material-ui/core/IconButton";
 import {Feeding} from "@/lib/feedings";
 import {mutate as mutateIndex} from "swr";
+import SnackSuccess from "@/components/SnackSuccess";
+import SnackError from "@/components/SnackError";
 
 const useStyles = makeStyles((theme) => ({
     delete: {
@@ -32,47 +34,33 @@ const DeleteFeeding = ({id}) => {
 
     const classes = useStyles();
     const router = useRouter();
-    const [open, setOpen] = useState(false);
-    const [loading, setLoading] = useState(false);
-    const timer = useRef();
-    //const {data: feedings, error} = useSWR(`/feedings`, fetcher);
-
-    useEffect(() => {
-        return () => {
-            clearTimeout(timer.current);
-        };
-    }, []);
+    const [modal, setModal] = useState(false);
+    const [deleteSuccess, setDeleteSuccess] = useState(false);
+    const [deleteError, setDeleteError] = useState(false);
+    const [processing, setProcessing] = useState(false);
 
     const handleOpen = () => {
-        setOpen(true);
+        setDeleteError(false);
+        setModal(true);
     };
 
     const handleClose = () => {
-        setOpen(false);
-        //router.push('/festivales');
-    };
-
-    const handleRedirect = () => {
-        mutateIndex('/feedings');
-        handleClose();
-        router.push('/alimentaciones');
-    };
-
-    const handleConfirm = () => {
-        if (!loading) {
-            setLoading(true);
-            timer.current = window.setTimeout(() => {
-                setLoading(false);
-            }, 4000);
-        }
-        handleDelete();
+        setProcessing(false);
+        setModal(false);
     };
 
     const handleDelete = async () => {
         try {
+            setProcessing(true);
             await Feeding.delete(id);
-            //router.push(Routes.FEEDINGS);
+            setDeleteSuccess(true);
+            handleClose();
+            mutateIndex('/feedings');
+            router.push(Routes.FEEDINGS);
         } catch (error) {
+            setDeleteError(true);
+            setProcessing(false);
+            handleClose();
             if (error.response) {
                 console.log(error.response);
             } else if (error.request) {
@@ -82,9 +70,7 @@ const DeleteFeeding = ({id}) => {
             }
             console.log(error.config);
         }
-        setTimeout(handleRedirect,3000); //Serás redirijodo a index en 3...2...1
     };
-
 
     return (
         <div>
@@ -93,7 +79,7 @@ const DeleteFeeding = ({id}) => {
             </IconButton>
 
             <Dialog
-                open={open}
+                open={modal}
                 onClose={handleClose}
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
@@ -108,15 +94,17 @@ const DeleteFeeding = ({id}) => {
                     <div className={classes.wrapper}>
                         <Button
                             color="primary"
-                            disabled={loading}
-                            onClick={handleConfirm}
+                            disabled={processing}
+                            onClick={handleDelete}
                         >
                             Confirmar
                         </Button>
-                        {loading && <CircularProgress size={24} className={classes.buttonProgress} />}
+                        {processing && <CircularProgress size={24} className={classes.buttonProgress} />}
                     </div>
                 </DialogActions>
             </Dialog>
+            {deleteSuccess && <SnackSuccess/>}
+            {deleteError && <SnackError/>}
         </div>
     );
 

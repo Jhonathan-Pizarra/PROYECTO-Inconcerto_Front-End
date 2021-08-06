@@ -26,6 +26,7 @@ import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from "yup";
 import MySnacks from "@/components/SnackSuccess";
 import SnackSuccess from "@/components/SnackSuccess";
+import SnackError from "@/components/SnackError";
 
 const schema = yup.object().shape({
     name: yup.string().required("Este campo es necesario..."),
@@ -73,6 +74,7 @@ const CreateConcert = () => {
     const [selectPlace, setSelectPlace] = useState(null);
     const [selectFestival, setSelectFestival] = useState(null);
     const [createSuccess, setCreateSuccess] = useState(false);
+    const [createError, setCreateError] = useState(false);
     const [processing, setProcessing] = useState(false);
 
     if(error) return <div>"No se obtuvo el concierto..."</div>;
@@ -83,6 +85,7 @@ const CreateConcert = () => {
     const handleOpen = () => {
         reset(); //Limpiar los imput después del submit
         setCreateSuccess(false);
+        setCreateError(false);
         setModal(true);
     };
 
@@ -137,6 +140,9 @@ const CreateConcert = () => {
             setCreateSuccess(true);
             // console.log("file", fileInputRef.current.files[0]);
         } catch (error) {
+            setCreateError(true);
+            setProcessing(false);
+            handleClose();
             if (error.response) {
                 // The request was made and the server responded with a status code
                 // that falls out of the range of 2xx
@@ -313,6 +319,7 @@ const CreateConcert = () => {
                 </form>
             </Dialog>
             {createSuccess && <SnackSuccess/>}
+            {createError && <SnackError/>}
         </div>
     );
 };
