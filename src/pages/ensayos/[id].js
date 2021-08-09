@@ -3,16 +3,20 @@ import {useRouter} from "next/router";
 import Loading from "@/components/Loading";
 import {fetcher} from "../../utils";
 import withAuth from "@/hocs/withAuth";
-import {CardActions, Grid, Link as MuiLink, makeStyles, Paper, Typography} from "@material-ui/core";
+import {CardActions, Grid, IconButton, Link as MuiLink, makeStyles, Paper, Typography} from "@material-ui/core";
 import Link from "next/link";
 import UpdateEssay from "@/components/essays/UpdateEssay";
 import React from "react";
 import DeleteEssay from "@/components/essays/DeleteEssay";
 import NotFound from "../404";
+import FindInPageIcon from "@material-ui/icons/FindInPage";
 
 const useStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
+    },
+    detail:{
+        color: "#3f51b5",
     },
     paper: {
         padding: theme.spacing(2),
@@ -50,11 +54,11 @@ const EnsayosID = () => {
                                         <p><b>Lugar:</b> {essay.place}</p>
                                     </Typography>
                                     <Typography variant="body2" gutterBottom>
-                                        <b>Festival:</b>&nbsp;
-                                        <Link href={essay.festival} passHref>
-                                            <MuiLink>
-                                                Ver
-                                            </MuiLink>
+                                        <b>Festival:</b> {essay.festival}
+                                        <Link href={essay.festival_id} passHref>
+                                            <IconButton aria-label="ver"  size="small" className={classes.detail}>
+                                                <FindInPageIcon />
+                                            </IconButton>
                                         </Link>
                                     </Typography>
 

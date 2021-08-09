@@ -51,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const CreateActivity = () => {
+const CreateCalendar = () => {
 
     const classes = useStyles();
     const {data: calendar, error, mutate} = useSWR(`/calendars`, fetcher);
@@ -217,4 +217,4 @@ const CreateActivity = () => {
     );
 };
 
-export default CreateActivity;
+export default CreateCalendar;

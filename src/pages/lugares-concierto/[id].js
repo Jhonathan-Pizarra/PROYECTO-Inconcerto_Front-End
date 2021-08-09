@@ -8,6 +8,9 @@ import DeleteConcertPlace from "@/components/concert-places/DeleteConcertPlace";
 import {CardActions, Grid, Link as MuiLink, makeStyles, Paper} from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import React from "react";
+import NotFound from "../404";
+import ReadPlaceConcerts from "@/components/concert-places/concerts/ReadConcertPlaceConcerts";
+import ReadConcertPlaceConcerts from "@/components/concert-places/concerts/ReadConcertPlaceConcerts";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -20,14 +23,14 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const PlaceConcertsID= () =>{
+const PlaceConcertsID = () =>{
 
     const classes = useStyles();
     const router = useRouter();
     const {id} = router.query;
     const {data: place, error} = useSWR(`/places/${id}`, fetcher);
 
-    if(error) return <div>"No se obtuvo el lugar"</div>;
+    if(error) return <div><NotFound/></div>;
     if(!place) return <Loading/>;
 
     return (
@@ -91,6 +94,8 @@ const PlaceConcertsID= () =>{
 
                 </Paper>
             </div>
+            <ReadConcertPlaceConcerts id={place.id}/>
+            {/*  <ReadResourceConcerts id={resource.id}/>*/}
         </div>
     );
 

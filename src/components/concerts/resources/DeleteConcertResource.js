@@ -1,27 +1,79 @@
 import {fetcher} from "../../../utils";
-import useSWR from "swr";
+import useSWR, {mutate as mutateID} from "swr";
 import {useRouter} from "next/router";
 import Loading from "@/components/Loading";
 import Routes from "@/constants/routes";
 import DeleteIcon from "@material-ui/icons/Delete";
-import {Button, IconButton, makeStyles} from "@material-ui/core";
-import React from "react";
+import {
+    Button, CircularProgress,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    IconButton,
+    makeStyles
+} from "@material-ui/core";
+import React, {useState} from "react";
 import {ConcertResource} from "@/lib/concert_resources";
 import translateMessage from "@/constants/messages";
+import SnackSuccess from "@/components/SnackSuccess";
+import SnackError from "@/components/SnackError";
+import BackspaceIcon from "@material-ui/icons/Backspace";
 
+const useStyles = makeStyles((theme) => ({
+    delete: {
+        color: "#f50057",
+    },
+    wrapper: {
+        margin: theme.spacing(1),
+        position: 'relative',
+    },
+    buttonProgress: {
+        color: '#0d47a1',
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        marginTop: -12,
+        marginLeft: -12,
+    },
+}));
 
 const DeleteConcertResource = ({idResource}) => {
 
+    const classes = useStyles();
     const router = useRouter();
     const {id} = router.query;
     const {data: concertResource, error} = useSWR(`/concerts/${id}/resources/${idResource}`, fetcher);
+    const [modal, setModal] = useState(false);
+    const [deleteSuccess, setDeleteSuccess] = useState(false);
+    const [deleteError, setDeleteError] = useState(false);
+    const [processing, setProcessing] = useState(false);
+
+    const handleOpen = () => {
+        setDeleteError(false);
+        setModal(true);
+    };
+
+    const handleClose = () => {
+        setProcessing(false);
+        setModal(false);
+        //router.push('/festivales');
+    };
 
     const handleDelete = async () => {
         try {
+            setProcessing(true);
             await ConcertResource.delete(id, idResource);
-            router.push(Routes.CONCERTS);
+            setDeleteSuccess(true);
+            handleClose();
+            mutateID(`/concerts/${id}/resources`);
         } catch (error) {
+            setDeleteError(true);
+            setProcessing(false);
+            handleClose();
             if (error.response) {
+                alert(error.response);
                 console.log(error.response);
             } else if (error.request) {
                 console.log(error.request);
@@ -32,8 +84,6 @@ const DeleteConcertResource = ({idResource}) => {
         }
     };
 
-    if(error) return <div>"No se puede remover el recurso..."</div>;
-    if(!concertResource) return <Loading/>;
 
     return (
         <div>
@@ -43,11 +93,37 @@ const DeleteConcertResource = ({idResource}) => {
             <Button
                 variant="outlined"
                 color="primary"
-                startIcon={<DeleteIcon />}
-                onClick={handleDelete}
+                startIcon={<BackspaceIcon />}
+                onClick={handleOpen}
             >
                 Remover
             </Button>
+            <Dialog
+                open={modal}
+                onClose={handleClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">{"¿Deseas remover este recurso?"}</DialogTitle>
+                <DialogActions>
+                    <Button onClick={handleClose} color="primary">
+                        Cancelar
+                    </Button>
+
+                    <div className={classes.wrapper}>
+                        <Button
+                            color="primary"
+                            disabled={processing}
+                            onClick={handleDelete}
+                        >
+                            Confirmar
+                        </Button>
+                        {processing && <CircularProgress size={24} className={classes.buttonProgress} />}
+                    </div>
+                </DialogActions>
+            </Dialog>
+            {deleteSuccess && <SnackSuccess/>}
+            {deleteError && <SnackError/>}
         </div>
     );
 

@@ -17,6 +17,7 @@ import {Resource} from "@/lib/resources";
 import {mutate as mutateIndex} from "swr";
 import SnackInfo from "@/components/SnackInfo";
 import SnackError from "@/components/SnackError";
+import translateMessage from "@/constants/messages";
 
 const useStyles = makeStyles((theme) => ({
     edit:{
@@ -81,6 +82,7 @@ const UpdateResource = ({id}) => {
             setProcessing(false);
             handleClose();
             if (error.response) {
+                alert(translateMessage(error.response.data.errors.name));
                 console.error(error.response);
             } else if (error.request) {
                 console.error(error.request);

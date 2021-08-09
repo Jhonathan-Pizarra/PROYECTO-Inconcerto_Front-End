@@ -3,7 +3,7 @@ import {useForm} from "react-hook-form";
 import useSWR, {mutate} from "swr";
 import {
     Button,
-    Checkbox,
+    Checkbox, CircularProgress,
     Dialog,
     DialogActions,
     DialogContent,
@@ -23,6 +23,7 @@ import * as yup from "yup";
 import SnackSuccess from "@/components/SnackSuccess";
 import {fetcher} from "../../../../utils";
 import DeleteIcon from "@material-ui/icons/Delete";
+import SnackError from "@/components/SnackError";
 
 const schema = yup.object().shape({
     name: yup.string().required("Este campo es necesario..."),
@@ -39,8 +40,19 @@ const useStyles = makeStyles((theme) => ({
             backgroundColor: "#ffeb33",
         },
     },
+    wrapper: {
+        margin: theme.spacing(1),
+        position: 'relative',
+    },
+    buttonProgress: {
+        color: '#0d47a1',
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        marginTop: -12,
+        marginLeft: -12,
+    },
 }));
-
 
 const CreatePlaceConcert = () => {
 
@@ -50,10 +62,29 @@ const CreatePlaceConcert = () => {
         resolver: yupResolver(schema)
     });
     const [checkedPermission, setCheckedPermission] = useState(true);
-    const [open, setOpen] = React.useState(false);
+    const [modal, setModal] = useState(false);
+    const [createSuccess, setCreateSuccess] = useState(false);
+    const [createError, setCreateError] = useState(false);
+    const [processing, setProcessing] = useState(false);
 
     if(error) return <div>"No se pudo crear el lugar del concierto..."</div>;
     if(!place) return <Loading/>;
+
+    const handleOpen = () => {
+        reset();
+        setCreateSuccess(false);
+        setCreateError(false);
+        setModal(true);
+    };
+
+    const handleClose = () => {
+        setProcessing(false);
+        setModal(false);
+    };
+
+    const handleCheckPermission = (event) => {
+        setCheckedPermission(event.target.checked);
+    };
 
     const onSubmit = async (data) => {
         console.log('data', data);
@@ -74,10 +105,15 @@ const CreatePlaceConcert = () => {
         formData.append("description", newConcertPlace.description);
 
         try {
+            setProcessing(true);
             await PlaceConcert.create(formData);
             mutate("/places");
             handleClose();
+            setCreateSuccess(true);
         } catch (error) {
+            setCreateError(true);
+            setProcessing(false);
+            handleClose();
             if (error.response) {
                 console.error(error.response);
             } else if (error.request) {
@@ -89,24 +125,6 @@ const CreatePlaceConcert = () => {
         }
         reset();
     };
-
-    const handleOpen = () => {
-        reset();
-        setOpen(true);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-    };
-
-    const handleCheckPermission = (event) => {
-        setCheckedPermission(event.target.checked);
-    };
-
-    const handleValidate = () =>{
-        setTimeout(handleClose,500000);
-    };
-
 
     return (
         <div>
@@ -126,7 +144,7 @@ const CreatePlaceConcert = () => {
             {/*    </Fab>*/}
             {/*</Tooltip>*/}
 
-            <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+            <Dialog open={modal} onClose={handleClose} aria-labelledby="form-dialog-title">
                 <form onSubmit={handleSubmit(onSubmit)}>
 
                     <DialogTitle id="form-dialog-title">InConcerto</DialogTitle>
@@ -137,6 +155,7 @@ const CreatePlaceConcert = () => {
                         <TextField
                             //autoFocus
                             // className={classes.title}
+                            disabled={processing}
                             margin="dense"
                             id="name"
                             label="Nombre"
@@ -153,6 +172,7 @@ const CreatePlaceConcert = () => {
                         <TextField
                             //autoFocus
                             // className={classes.title}
+                            disabled={processing}
                             margin="dense"
                             id="address"
                             label="Dirección"
@@ -170,6 +190,7 @@ const CreatePlaceConcert = () => {
 
                     <DialogContent>
                         <TextField
+                            disabled={processing}
                             margin="dense"
                             id="aforo"
                             label="Aforo"
@@ -189,6 +210,7 @@ const CreatePlaceConcert = () => {
                             control={
                                 <Checkbox
                                     autoFocus={true}
+                                    disabled={processing}
                                     checked={checkedPermission}
                                     onChange={handleCheckPermission}
                                 />
@@ -202,6 +224,7 @@ const CreatePlaceConcert = () => {
                         <TextField
                             //autoFocus
                             // className={classes.title}
+                            disabled={processing}
                             margin="dense"
                             id="description"
                             label="Descripción"
@@ -221,13 +244,22 @@ const CreatePlaceConcert = () => {
                         <Button onClick={handleClose} color="primary">
                             Cancelar
                         </Button>
-                        <Button onClick={handleValidate} color="primary" type="submit">
-                            Crear
-                        </Button>
+                        <div className={classes.wrapper}>
+                            <Button
+                                disabled={processing}
+                                //onClick={handleValidate}
+                                color="primary"
+                                type="submit"
+                            >
+                                Crear
+                            </Button>
+                            {processing && <CircularProgress size={24} className={classes.buttonProgress} />}
+                        </div>
                     </DialogActions>
-
                 </form>
             </Dialog>
+            {createSuccess && <SnackSuccess/>}
+            {createError && <SnackError/>}
         </div>
     );
 };

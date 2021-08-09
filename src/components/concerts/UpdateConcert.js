@@ -51,8 +51,8 @@ const useStyles = makeStyles((theme) => ({
 
 const UpdateConcert = ({id}) => {
 
-    // const {id} = router.query;
     const router = useRouter();
+    // const {id} = router.query;
     const classes = useStyles();
     const {data: concert, error, mutate} = useSWR(`/concerts/${id}`, fetcher);
     const {data: festivals} = useSWR(`/festivals`, fetcher);
@@ -114,7 +114,7 @@ const UpdateConcert = ({id}) => {
                 place_id: data.place_id,
                 festival_id: data.festival_id,
             });
-            mutateIndex('/concerts');
+            mutateIndex(`/concerts`);
             mutate();
             handleClose();
             setUpdateInfo(true);

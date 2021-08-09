@@ -4,7 +4,7 @@ import {useForm} from "react-hook-form";
 import useSWR from "swr";
 import {
     Button,
-    Checkbox,
+    Checkbox, CircularProgress,
     Dialog,
     DialogActions,
     DialogContent,
@@ -29,32 +29,72 @@ import {useRouter} from "next/router";
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import LinkIcon from '@material-ui/icons/Link';
 import {LodgingArtist} from "@/lib/lodging_artists";
+import SnackError from "@/components/SnackError";
 
 const useStyles = makeStyles((theme) => ({
-    fixed: {
+    addartists: {
         /*display: 'inline-flex',*/
         //position: '-moz-initial',//a la derecha
-        position: 'fixed', //a la izquierda...
-        bottom: theme.spacing(12),
-        right: theme.spacing(2),
+        //bottom: theme.spacing(3),
+        backgroundColor: "#ffeb33",
+        "&:hover, &:focus": {
+            backgroundColor: "#ffeb33",
+        },
+    },
+    wrapper: {
+        margin: theme.spacing(1),
+        position: 'relative',
+    },
+    buttonProgress: {
+        color: '#0d47a1',
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        marginTop: -12,
+        marginLeft: -12,
     },
 }));
 
 const CreateLodgingArtist = () => {
 
     const classes = useStyles();
-
     const router = useRouter();
     const {id} = router.query;
-
     const {data: lodgings} = useSWR(`/lodgings`, fetcher);
     const {data: artists} = useSWR(`/artists`, fetcher);
     const {data: lodgingArtists, mutate, error} = useSWR(`/lodgings/${id}/artists`, fetcher);
-
     const { register, handleSubmit, reset} = useForm();
     const [lodgingSelected, setLodgingSelected] = useState(null);
     const [artistSelected, setArtistSelected] = useState(null);
-    const [open, setOpen] = useState(false);
+    const [modal, setModal] = useState(false);
+    const [createSuccess, setCreateSuccess] = useState(false);
+    const [createError, setCreateError] = useState(false);
+    const [processing, setProcessing] = useState(false);
+
+    if(error) return <div>"Recarga la página para continuar..."</div>;
+    if(!lodgingArtists) return <Loading/>;
+    if(!lodgings) return <Loading/>;
+    if(!artists) return <Loading/>;
+
+    const handleOpen = () => {
+        reset();
+        setCreateSuccess(false);
+        setCreateError(false);
+        setModal(true);
+    };
+
+    const handleClose = () => {
+        setProcessing(false);
+        setModal(false);
+    };
+
+    const handleChangeLodging = () => {
+        setLodgingSelected({lodgingSelected});
+    };
+
+    const handleChangeArtist = () => {
+        setArtistSelected({artistSelected});
+    };
 
     const onSubmit = async (data) => {
         console.log('data', data);
@@ -69,10 +109,15 @@ const CreateLodgingArtist = () => {
         formData.append("lodging_id", newLodgingArtist.lodging_id);
 
         try {
+            setProcessing(true);
             await LodgingArtist.create(id,formData);
             mutate(`/lodgings/${id}/artists`);
             handleClose();
+            setCreateSuccess(true);
         } catch (error) {
+            setCreateError(true);
+            setProcessing(false);
+            handleClose();
             if (error.response) {
                 // The request was made and the server responded with a status code
                 // that falls out of the range of 2xx
@@ -92,43 +137,22 @@ const CreateLodgingArtist = () => {
         reset();
     };
 
-    const handleOpen = () => {
-        reset();
-        setOpen(true);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-    };
-
-    const handleChangeLodging = () => {
-        setLodgingSelected({lodgingSelected});
-    };
-
-    const handleChangeArtist = () => {
-        setArtistSelected({artistSelected});
-    };
-
-    const handleValidate = () =>{
-        setTimeout(handleClose,500000);
-    };
-
-    if(error) return <div>"Recarga la página para continuar..."</div>;
-    if(!lodgingArtists) return <Loading/>;
-    if(!lodgings) return <Loading/>;
-    if(!artists) return <Loading/>;
 
     return (
         <div>
 
-            <Tooltip title="Vincular" aria-label="add" className={classes.fixed}>
-                <Fab  color="secondary" onClick={handleOpen} > {/*className={classes.fixed}*/}
-                    <LinkIcon />
-                </Fab>
-            </Tooltip>
+            <Button
+                className={classes.addartists}
+                variant="contained"
+                //color="secondary"
+                startIcon={<AddIcon />}
+                onClick={handleOpen}
+            >
+                Artista
+            </Button>
 
 
-            <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+            <Dialog open={modal} onClose={handleClose} aria-labelledby="form-dialog-title">
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <DialogTitle id="form-dialog-title">InConcerto</DialogTitle>
 
@@ -140,8 +164,10 @@ const CreateLodgingArtist = () => {
                         <Select
                             fullWidth
                             autoFocus
+                            disabled={processing}
                             native
                             value={lodgingSelected}
+                            defaultValue={id}
                             onChange={handleChangeLodging}
                             {...register("lodging_id")}
                         >
@@ -156,6 +182,7 @@ const CreateLodgingArtist = () => {
                         <Select
                             fullWidth
                             autoFocus
+                            disabled={processing}
                             native
                             value={artistSelected}
                             onChange={handleChangeArtist}
@@ -172,12 +199,22 @@ const CreateLodgingArtist = () => {
                         <Button onClick={handleClose} color="primary">
                             Cancelar
                         </Button>
-                        <Button onClick={handleValidate} color="primary" type="submit">
-                            Vincular
-                        </Button>
+                        <div className={classes.wrapper}>
+                            <Button
+                                disabled={processing}
+                                //onClick={handleValidate}
+                                color="primary"
+                                type="submit"
+                            >
+                                Vincular
+                            </Button>
+                            {processing && <CircularProgress size={24} className={classes.buttonProgress} />}
+                        </div>
                     </DialogActions>
                 </form>
             </Dialog>
+            {createSuccess && <SnackSuccess/>}
+            {createError && <SnackError/>}
         </div>
     );
 };

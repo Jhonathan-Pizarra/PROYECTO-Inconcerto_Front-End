@@ -16,9 +16,11 @@ async function create(idConcert, data) {
     });
 }
 
-/*async function update(idCalendar, idArtist, data) {
-    return await api.put(`/calendars/${idCalendar}/artists/${idArtist}`, data);
-}*/
+/*
+async function update(idConcert, idArtist, data) {
+    return await api.put(`/concerts/${idConcert}/artists/${idArtist}`, data);
+}
+*/
 
 async function deleteConcertArtist(idConcert, idArtist) {
     return await api.delete(`/concerts/${idConcert}/artists/${idArtist}`);

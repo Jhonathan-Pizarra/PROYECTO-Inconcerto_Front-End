@@ -21,6 +21,8 @@ import UpdateConcert from "@/components/concerts/UpdateConcert";
 import DeleteConcert from "@/components/concerts/DeleteConcert";
 import FindInPageIcon from "@material-ui/icons/FindInPage";
 import IconButton from "@material-ui/core/IconButton";
+import DeleteFestivalConcert from "@/components/festivals/concerts/DeleteFestivalConcert";
+import UpdateFestivalConcert from "@/components/festivals/concerts/UpdateFestivalConcert";
 
 const useStyles = makeStyles((theme) => ({
     detail:{
@@ -49,7 +51,6 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-
 const ReadFestivalConcerts = ({id}) => {
 
     const classes = useStyles();
@@ -59,6 +60,9 @@ const ReadFestivalConcerts = ({id}) => {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
 
+    if(error) return <p>No se pudieron cargar los conciertos...</p>;
+    if (!festconcerts) return <Loading/>;
+
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
@@ -67,9 +71,6 @@ const ReadFestivalConcerts = ({id}) => {
         setRowsPerPage(parseInt(event.target.value, 10));
         setPage(0);
     };
-
-    if(error) return <p>No se pudieron cargar los conciertos...</p>;
-    if (!festconcerts) return <Loading/>;
 
     return (
         <div>
@@ -113,10 +114,12 @@ const ReadFestivalConcerts = ({id}) => {
                                             </Link>
                                         </td>
                                         <td>
-                                            <UpdateConcert id={festconcert.id}/>
+                                            <UpdateFestivalConcert id={festconcert.id} idFestival={id}/>
+                                            {/*<UpdateConcert id={festconcert.id}/>*/}
                                         </td>
                                         <td>
-                                            <DeleteConcert id={festconcert.id}/>
+                                            <DeleteFestivalConcert id={festconcert.id} idFestival={id}/>
+                                            {/*<DeleteConcert id={festconcert.id}/>*/}
                                         </td>
                                     </TableCell>
                                 </TableRow>

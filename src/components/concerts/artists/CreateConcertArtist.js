@@ -4,7 +4,7 @@ import {useForm} from "react-hook-form";
 import useSWR from "swr";
 import {
     Button,
-    Checkbox,
+    Checkbox, CircularProgress,
     Dialog,
     DialogActions,
     DialogContent,
@@ -30,41 +30,72 @@ import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import {ConcertArtist} from "@/lib/concert_artists";
 import LinkIcon from "@material-ui/icons/Link";
 import DeleteIcon from "@material-ui/icons/Delete";
+import SnackError from "@/components/SnackError";
 
 const useStyles = makeStyles((theme) => ({
-
-    addartists:{
+    addartists: {
         /*display: 'inline-flex',*/
         //position: '-moz-initial',//a la derecha
-        //display: 'inline-block',
-        //position: 'static',
-        //verticalAlign: 'bottom',
-        //justifyContent: 'flex-end',
-        //position: 'fixed', //a la izquierda...
-        //bottom: theme.spacing(12),
-        //right: theme.spacing(2),
+        //bottom: theme.spacing(3),
         backgroundColor: "#ffeb33",
         "&:hover, &:focus": {
             backgroundColor: "#ffeb33",
         },
+    },
+    wrapper: {
+        margin: theme.spacing(1),
+        position: 'relative',
+    },
+    buttonProgress: {
+        color: '#0d47a1',
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        marginTop: -12,
+        marginLeft: -12,
     },
 }));
 
 const CreateConcertArtist = () => {
 
     const classes = useStyles();
-
     const router = useRouter();
     const {id} = router.query;
-
     const {data: concerts} = useSWR(`/concerts`, fetcher);
     const {data: artists} = useSWR(`/artists`, fetcher);
     const {data: concertArtists, mutate, error} = useSWR(`/concerts/${id}/artists`, fetcher);
-
     const { register, handleSubmit, reset} = useForm();
+    const [modal, setModal] = useState(false);
     const [concertSelected, setConcertSelected] = useState(null);
     const [artistSelected, setArtistSelected] = useState(null);
-    const [open, setOpen] = useState(false);
+    const [createSuccess, setCreateSuccess] = useState(false);
+    const [createError, setCreateError] = useState(false);
+    const [processing, setProcessing] = useState(false);
+
+    if(error) return <div>"Recarga la página para continuar..."</div>;
+    if(!concertArtists) return <Loading/>;
+    if(!concerts) return <Loading/>;
+    if(!artists) return <Loading/>;
+
+    const handleOpen = () => {
+        reset();
+        setCreateSuccess(false);
+        setCreateError(false);
+        setModal(true);
+    };
+
+    const handleClose = () => {
+        setProcessing(false);
+        setModal(false);
+    };
+
+    const handleChangeConcert = () => {
+        setConcertSelected({concertSelected});
+    };
+
+    const handleChangeArtist = () => {
+        setArtistSelected({artistSelected});
+    };
 
     const onSubmit = async (data) => {
         console.log('data', data);
@@ -79,11 +110,16 @@ const CreateConcertArtist = () => {
         formData.append("concert_id", newConcertArtist.concert_id);
 
         try {
+            setProcessing(true);
             await ConcertArtist.create(id,formData);
             mutate(`/concerts/${id}/artists`);
             handleClose();
+            setCreateSuccess(true);
         } catch (error) {
             if (error.response) {
+                setCreateError(true);
+                setProcessing(false);
+                handleClose();
                 // The request was made and the server responded with a status code
                 // that falls out of the range of 2xx
                 alert(error.response.message);
@@ -102,31 +138,9 @@ const CreateConcertArtist = () => {
         reset();
     };
 
-    const handleOpen = () => {
-        reset();
-        setOpen(true);
-    };
 
-    const handleClose = () => {
-        setOpen(false);
-    };
 
-    const handleChangeConcert = () => {
-        setConcertSelected({concertSelected});
-    };
 
-    const handleChangeArtist = () => {
-        setArtistSelected({artistSelected});
-    };
-
-    const handleValidate = () =>{
-        setTimeout(handleClose,500000);
-    };
-
-    if(error) return <div>"Recarga la página para continuar..."</div>;
-    if(!concertArtists) return <Loading/>;
-    if(!concerts) return <Loading/>;
-    if(!artists) return <Loading/>;
 
     return (
         <div>
@@ -146,7 +160,7 @@ const CreateConcertArtist = () => {
             {/*    </Fab>*/}
             {/*</Tooltip>*/}
 
-            <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+            <Dialog open={modal} onClose={handleClose} aria-labelledby="form-dialog-title">
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <DialogTitle id="form-dialog-title">InConcerto</DialogTitle>
 
@@ -158,8 +172,10 @@ const CreateConcertArtist = () => {
                         <Select
                             fullWidth
                             autoFocus
+                            disabled={processing}
                             native
                             value={concertSelected}
+                            defaultValue={id}
                             onChange={handleChangeConcert}
                             {...register("concert_id")}
                         >
@@ -174,6 +190,7 @@ const CreateConcertArtist = () => {
                         <Select
                             fullWidth
                             autoFocus
+                            disabled={processing}
                             native
                             value={artistSelected}
                             onChange={handleChangeArtist}
@@ -189,12 +206,22 @@ const CreateConcertArtist = () => {
                         <Button onClick={handleClose} color="primary">
                             Cancelar
                         </Button>
-                        <Button onClick={handleValidate} color="primary" type="submit">
-                            Vincular
-                        </Button>
+                        <div className={classes.wrapper}>
+                            <Button
+                                disabled={processing}
+                                //onClick={handleValidate}
+                                color="primary"
+                                type="submit"
+                            >
+                                Vincular
+                            </Button>
+                            {processing && <CircularProgress size={24} className={classes.buttonProgress} />}
+                        </div>
                     </DialogActions>
                 </form>
             </Dialog>
+            {createSuccess && <SnackSuccess/>}
+            {createError && <SnackError/>}
         </div>
     );
 };

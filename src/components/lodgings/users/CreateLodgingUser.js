@@ -4,7 +4,7 @@ import {useForm} from "react-hook-form";
 import useSWR from "swr";
 import {
     Button,
-    Checkbox,
+    Checkbox, CircularProgress,
     Dialog,
     DialogActions,
     DialogContent,
@@ -25,32 +25,73 @@ import {useRouter} from "next/router";
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import LinkIcon from "@material-ui/icons/Link";
 import {LodgingUser} from "@/lib/lodging_users";
+import SnackSuccess from "@/components/SnackSuccess";
+import SnackError from "@/components/SnackError";
 
 const useStyles = makeStyles((theme) => ({
-    fixed: {
+    addusers: {
         /*display: 'inline-flex',*/
         //position: '-moz-initial',//a la derecha
-        position: 'fixed', //a la izquierda...
-        bottom: theme.spacing(2),
-        right: theme.spacing(2),
+        //bottom: theme.spacing(3),
+        backgroundColor: "#ffeb33",
+        "&:hover, &:focus": {
+            backgroundColor: "#ffeb33",
+        },
+    },
+    wrapper: {
+        margin: theme.spacing(1),
+        position: 'relative',
+    },
+    buttonProgress: {
+        color: '#0d47a1',
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        marginTop: -12,
+        marginLeft: -12,
     },
 }));
 
 const CreateLodgingUser = () => {
 
     const classes = useStyles();
-
     const router = useRouter();
     const {id} = router.query;
-
     const {data: lodgings} = useSWR(`/lodgings`, fetcher);
     const {data: users} = useSWR(`/users`, fetcher);
     const {data: lodgingUsers, mutate, error} = useSWR(`/lodgings/${id}/users`, fetcher);
-
     const { register, handleSubmit, reset} = useForm();
+    const [modal, setModal] = useState(false);
     const [lodgingSelected, setLodgingSelected] = useState(null);
     const [userSelected, setUserSelected] = useState(null);
-    const [open, setOpen] = useState(false);
+    const [createSuccess, setCreateSuccess] = useState(false);
+    const [createError, setCreateError] = useState(false);
+    const [processing, setProcessing] = useState(false);
+
+    if(error) return <div>"Recarga la página para continuar..."</div>;
+    if(!lodgingUsers) return <Loading/>;
+    if(!lodgings) return <Loading/>;
+    if(!users) return <Loading/>;
+
+    const handleOpen = () => {
+        reset();
+        setCreateSuccess(false);
+        setCreateError(false);
+        setModal(true);
+    };
+
+    const handleClose = () => {
+        setProcessing(false);
+        setModal(false);
+    };
+
+    const handleChangeLodging = () => {
+        setLodgingSelected({lodgingSelected});
+    };
+
+    const handleChangeUser = () => {
+        setUserSelected({userSelected});
+    };
 
     const onSubmit = async (data) => {
         console.log('data', data);
@@ -65,10 +106,15 @@ const CreateLodgingUser = () => {
         formData.append("user_id", newLodgingUser.user_id);
 
         try {
+            setProcessing(true);
             await LodgingUser.create(id, formData);
             mutate(`/lodgings/${id}/users`);
             handleClose();
+            setCreateSuccess(true);
         } catch (error) {
+            setCreateError(true);
+            setProcessing(false);
+            handleClose();
             if (error.response) {
                 // The request was made and the server responded with a status code
                 // that falls out of the range of 2xx
@@ -88,42 +134,21 @@ const CreateLodgingUser = () => {
         reset();
     };
 
-    const handleOpen = () => {
-        reset();
-        setOpen(true);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-    };
-
-    const handleChangeLodging = () => {
-        setLodgingSelected({lodgingSelected});
-    };
-
-    const handleChangeUser = () => {
-        setUserSelected({userSelected});
-    };
-
-    const handleValidate = () =>{
-        setTimeout(handleClose,500000);
-    };
-
-    if(error) return <div>"Recarga la página para continuar..."</div>;
-    if(!lodgingUsers) return <Loading/>;
-    if(!lodgings) return <Loading/>;
-    if(!users) return <Loading/>;
 
     return (
         <div>
 
-            <Tooltip title="Vincular" aria-label="add" className={classes.fixed}>
-                <Fab  color="primary" onClick={handleOpen} > {/*className={classes.fixed}*/}
-                    <LinkIcon />
-                </Fab>
-            </Tooltip>
+            <Button
+                className={classes.addusers}
+                variant="contained"
+                //color="secondary"
+                startIcon={<AddIcon />}
+                onClick={handleOpen}
+            >
+                Usuario
+            </Button>
 
-            <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+            <Dialog open={modal} onClose={handleClose} aria-labelledby="form-dialog-title">
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <DialogTitle id="form-dialog-title">InConcerto</DialogTitle>
 
@@ -135,8 +160,10 @@ const CreateLodgingUser = () => {
                         <Select
                             fullWidth
                             autoFocus
+                            disabled={processing}
                             native
                             value={lodgingSelected}
+                            defaultValue={id}
                             onChange={handleChangeLodging}
                             {...register("lodging_id")}
                         >
@@ -151,6 +178,7 @@ const CreateLodgingUser = () => {
                         <Select
                             fullWidth
                             autoFocus
+                            disabled={processing}
                             native
                             value={userSelected}
                             onChange={handleChangeUser}
@@ -167,12 +195,22 @@ const CreateLodgingUser = () => {
                         <Button onClick={handleClose} color="primary">
                             Cancelar
                         </Button>
-                        <Button onClick={handleValidate} color="primary" type="submit">
-                            Vincular
-                        </Button>
+                        <div className={classes.wrapper}>
+                            <Button
+                                disabled={processing}
+                                //onClick={handleValidate}
+                                color="primary"
+                                type="submit"
+                            >
+                                Vincular
+                            </Button>
+                            {processing && <CircularProgress size={24} className={classes.buttonProgress} />}
+                        </div>
                     </DialogActions>
                 </form>
             </Dialog>
+            {createSuccess && <SnackSuccess/>}
+            {createError && <SnackError/>}
         </div>
     );
 };

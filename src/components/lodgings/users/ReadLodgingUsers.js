@@ -19,6 +19,7 @@ import {
 import React, {useState} from "react";
 import Routes from "@/constants/routes";
 import DeleteLodgingUser from "@/components/lodgings/users/DeleteLodgingUser";
+import CreateLodgingUser from "@/components/lodgings/users/CreateLodgingUser";
 
 const useStyles = makeStyles((theme) => ({
     detail:{
@@ -66,6 +67,10 @@ const ReadLodgingUsers = ({id}) => {
     return (
         <div>
             <h1>Usuarios Hospedados</h1>
+
+            <Grid container alignItems="flex-start" justify="flex-end" direction="row">
+                <CreateLodgingUser/>
+            </Grid>
             <TableContainer component={Paper}>
                 <Table size="small" aria-label="a dense table">
                     <TableHead className={classes.head}>

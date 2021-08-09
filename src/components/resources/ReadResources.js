@@ -1,7 +1,15 @@
 import {fetcher} from "../../utils";
 import useSWR from "swr";
 import Loading from "@/components/Loading";
-import {Accordion, AccordionDetails, AccordionSummary, Grid, Paper} from "@material-ui/core";
+import {
+    Accordion,
+    AccordionDetails,
+    AccordionSummary, Button,
+    Grid,
+    IconButton,
+    Link as MuiLink,
+    Paper
+} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import React, {useState} from "react";
@@ -10,6 +18,9 @@ import UpdateResource from "@/components/resources/UpdateResource";
 import DeleteResource from "@/components/resources/DeleteResource";
 import CreateResource from "@/components/resources/CreateResource";
 import SnackSuccess from "@/components/SnackSuccess";
+import FindInPageIcon from "@material-ui/icons/FindInPage";
+import Link from "next/link";
+import Routes from "@/constants/routes";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -25,6 +36,9 @@ const useStyles = makeStyles((theme) => ({
     secondaryHeading: {
         fontSize: theme.typography.pxToRem(15),
         color: theme.palette.text.secondary,
+    },
+    detail:{
+        color: "#3f51b5",
     },
 }));
 
@@ -68,6 +82,16 @@ const ReadResources = () => {
                                             alignItems="center"
                                         >
                                             <Grid container  item >
+                                                {/*<Link href={resource.id} passHref>*/}
+                                                {/*    <IconButton aria-label="ver"  size="small" className={classes.detail}>*/}
+                                                {/*        <FindInPageIcon />*/}
+                                                {/*    </IconButton>*/}
+                                                {/*</Link>*/}
+                                                <Link href={`${Routes.RESOURCES}/${resource.id}`} passHref >
+                                                    <IconButton aria-label="ver"  size="small" className={classes.detail}>
+                                                        <FindInPageIcon />
+                                                    </IconButton>
+                                                </Link>
                                                 <Typography className={classes.heading}>{resource.name}</Typography>
                                             </Grid>
                                             <Grid container  item>

@@ -2,7 +2,7 @@ import {fetcher} from "../../../utils";
 import useSWR from "swr";
 import Loading from "@/components/Loading";
 import {
-    Button,
+    Button, Grid,
     makeStyles,
     Paper,
     Table,
@@ -23,6 +23,10 @@ import IconButton from "@material-ui/core/IconButton";
 import FindInPageIcon from "@material-ui/icons/FindInPage";
 import UpdateFeeding from "@/components/feedings/UpdateFeeding";
 import DeleteFeeding from "@/components/feedings/DeleteFeeding";
+import CreateUserFeeding from "@/components/users/feedings/CreateUserFeeding";
+import CreateArtistFeeding from "@/components/artists/feedings/CreateArtistFeeding";
+import UpdateArtistFeeding from "@/components/artists/feedings/UpdateArtistFeeding";
+import DeleteArtistFeeding from "@/components/artists/feedings/DeleteArtistFeeding";
 
 const useStyles = makeStyles((theme) => ({
     detail:{
@@ -51,7 +55,6 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-
 const ReadArtistFeedings = ({id}) => {
 
     const classes = useStyles();
@@ -76,11 +79,15 @@ const ReadArtistFeedings = ({id}) => {
     return (
         <div>
             <h1>Cuadro de Alimentación</h1>
+            <Grid container alignItems="flex-start" justify="flex-end" direction="row">
+                <CreateArtistFeeding/>
+            </Grid>
             <TableContainer component={Paper}>
                 <Table size="small" aria-label="a dense table">
                     <TableHead className={classes.head}>
                         <TableRow>
                             <TableCell className={classes.titles}>Fecha</TableCell>
+                            <TableCell className={classes.titles}>Responsable &nbsp;</TableCell>
                             <TableCell className={classes.titles}>Nombre</TableCell>
                             <TableCell className={classes.titles}>Cantidad</TableCell>
                             <TableCell className={classes.titles}>Observación</TableCell>
@@ -91,13 +98,14 @@ const ReadArtistFeedings = ({id}) => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {artistfeedings ? <SnackSuccess/> : <Loading/>}
+                        {/*{artistfeedings ? <SnackSuccess/> : <Loading/>}*/}
                         {artistfeedings && artistfeedings.map((artistfeeding => {
                             //var passage = ((artist.passage) === 0) ? "No" : "Si" ;
 
                             return(
                                 <TableRow key={artistfeeding.id}>
                                     <TableCell align="left">{artistfeeding.date}</TableCell>
+                                    <TableCell align="left">{artistfeeding.user}</TableCell>
                                     <TableCell align="left">{artistfeeding.food}</TableCell>
                                     <TableCell align="left">{artistfeeding.quantityLunchs}</TableCell>
                                     <TableCell align="left">{artistfeeding.observation}</TableCell>
@@ -113,10 +121,12 @@ const ReadArtistFeedings = ({id}) => {
                                             </Link>
                                         </td>
                                         <td>
-                                            <UpdateFeeding id={artistfeeding.id}/>
+                                            <UpdateArtistFeeding id={artistfeeding.id} idArtist={id}/>
+                                            {/*<UpdateFeeding id={artistfeeding.id}/>*/}
                                         </td>
                                         <td>
-                                            <DeleteFeeding id={artistfeeding.id}/>
+                                            <DeleteArtistFeeding id={artistfeeding.id} idArtist={id}/>
+                                            {/*<DeleteFeeding id={artistfeeding.id}/>*/}
                                         </td>
                                     </TableCell>
                                 </TableRow>
