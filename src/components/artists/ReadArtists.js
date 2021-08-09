@@ -23,7 +23,6 @@ import DeleteArtist from "@/components/artists/DeleteArtist";
 import CreateArtist from "@/components/artists/CreateArtist";
 import SnackSuccess from "@/components/SnackSuccess";
 
-
 const useStyles = makeStyles((theme) => ({
     detail:{
         color: "#3f51b5",
@@ -50,10 +49,10 @@ const useStyles = makeStyles((theme) => ({
 
 const ReadArtists = () => {
 
-    const {data: artists, error} = useSWR(`/artists`, fetcher);
-    const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(5);
     const classes = useStyles();
+    const {data: artists, error} = useSWR(`/artists`, fetcher);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [page, setPage] = useState(0);
 
     if(error) return <p>No se pudieron cargar los artistas...</p>;
     if (!artists) return <Loading/>;
@@ -69,6 +68,7 @@ const ReadArtists = () => {
 
     return (
         <div>
+            <h1>Artistas InConcerto</h1>
             <TableContainer component={Paper}>
                     <Table size="small" aria-label="a dense table">
                         <TableHead className={classes.head}>
@@ -94,7 +94,7 @@ const ReadArtists = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {artists.data ? <SnackSuccess/> : <Loading/>}
+                            {/*{artists.data ? <SnackSuccess/> : <Loading/>}*/}
                             {artists.data && artists.data.map((artist => {
                                 var passage = ((artist.passage) === 0) ? "No" : "Si" ;
 

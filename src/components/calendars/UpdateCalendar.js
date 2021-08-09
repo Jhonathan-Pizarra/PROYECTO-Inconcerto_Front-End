@@ -1,8 +1,8 @@
 import React, {useState} from "react";
 import {useForm} from "react-hook-form";
-import useSWR from "swr";
+import useSWR, {mutate as mutateIndex} from "swr";
 import {
-    Button,
+    Button, CircularProgress,
     Dialog,
     DialogActions,
     DialogContent,
@@ -15,10 +15,24 @@ import {fetcher} from "../../utils";
 import Loading from "@/components/Loading";
 import EditIcon from "@material-ui/icons/Edit";
 import {Calendar} from "@/lib/calendars";
+import SnackInfo from "@/components/SnackInfo";
+import SnackError from "@/components/SnackError";
 
 const useStyles = makeStyles((theme) => ({
     edit:{
         color: "#FAC800",
+    },
+    wrapper: {
+        margin: theme.spacing(1),
+        position: 'relative',
+    },
+    buttonProgress: {
+        color: '#0d47a1',
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        marginTop: -12,
+        marginLeft: -12,
     },
 }));
 
@@ -28,7 +42,10 @@ const UpdateCalendar = ({id}) => {
     const classes = useStyles();
     const {data: calendar, mutate, error} = useSWR(`/calendars/${id}`, fetcher);
     const { register, handleSubmit, reset } = useForm();
-    const [open, setOpen] = useState(false);
+    const [modal, setModal] = useState(false);
+    const [updateInfo, setUpdateInfo] = useState(false);
+    const [updateError, setUpdateError] = useState(false);
+    const [processing, setProcessing] = useState(false);
 
     if(error) return <div>"No se pudo editar el calendario..."</div>;
     if(!calendar) return <Loading/>;
@@ -49,10 +66,22 @@ const UpdateCalendar = ({id}) => {
     var minOut = outArtist.getMinutes().toString().padStart(2, "0");
     const dateOut = yearOut+'-'+monthOut+'-'+dayOut+'T'+hoursOut+':'+minOut;
 
+    const handleOpen = () => {
+        setUpdateInfo(false);
+        setUpdateError(false);
+        setModal(true);
+    };
+
+    const handleClose = () => {
+        setProcessing(false);
+        setModal(false);
+    };
+
     const onSubmit = async (data) => {
         console.log('data', data);
 
         try {
+            setProcessing(true);
             await Calendar.update(id, {
                 ...data,
                 checkIn_Artist: ((data.checkIn_Artist) === "") ? dateIn : data.checkIn_Artist,
@@ -61,8 +90,13 @@ const UpdateCalendar = ({id}) => {
                 flyNumber:  ((data.flyNumber) === "") ? `Vacío (${calendar.id})` : data.flyNumber,
             });
             mutate();
+            mutateIndex('/calendars');
             handleClose();
+            setUpdateInfo(true);
         } catch (error) {
+            setUpdateError(true);
+            setProcessing(false);
+            handleClose();
             if (error.response) {
                 console.error(error.response);
             } else if (error.request) {
@@ -73,14 +107,6 @@ const UpdateCalendar = ({id}) => {
             console.error(error.config);
         }
         reset();
-    };
-
-    const handleOpen = () => {
-        setOpen(true);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
     };
 
 
@@ -100,7 +126,7 @@ const UpdateCalendar = ({id}) => {
                 <EditIcon />
             </IconButton>*/}
 
-            <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+            <Dialog open={modal} onClose={handleClose} aria-labelledby="form-dialog-title">
                 <form onSubmit={handleSubmit(onSubmit)}>
 
                     <DialogTitle id="form-dialog-title">InConcerto</DialogTitle>
@@ -109,6 +135,7 @@ const UpdateCalendar = ({id}) => {
                             Por favor llena los siguientes campos:
                         </DialogContentText>
                         <TextField
+                            disabled={processing}
                             id="datetime-local"
                             label="Fecha de llegada"
                             type="datetime-local"
@@ -123,6 +150,7 @@ const UpdateCalendar = ({id}) => {
 
                     <DialogContent>
                         <TextField
+                            disabled={processing}
                             id="datetime-local"
                             label="Fecha de salida"
                             type="datetime-local"
@@ -135,6 +163,7 @@ const UpdateCalendar = ({id}) => {
 
                     <DialogContent>
                         <TextField
+                            disabled={processing}
                             margin="dense"
                             id="name"
                             label="País del que proviene"
@@ -147,6 +176,7 @@ const UpdateCalendar = ({id}) => {
 
                     <DialogContent>
                         <TextField
+                            disabled={processing}
                             margin="dense"
                             id="name"
                             label="# de vuelo"
@@ -161,12 +191,22 @@ const UpdateCalendar = ({id}) => {
                         <Button onClick={handleClose} color="primary">
                             Cancelar
                         </Button>
-                        <Button onClick={handleClose} color="primary" type="submit">
-                            Editar
-                        </Button>
+                        <div className={classes.wrapper}>
+                            <Button
+                                color="primary"
+                                disabled={processing}
+                                //onClick={handlePreUpdate}
+                                type="submit"
+                            >
+                                Editar
+                            </Button>
+                            {processing && <CircularProgress size={24} className={classes.buttonProgress} />}
+                        </div>
                     </DialogActions>
                 </form>
             </Dialog>
+            {updateInfo && <SnackInfo/>}
+            {updateError && <SnackError/>}
         </div>
     );
 };

@@ -5,7 +5,7 @@ import {
     Avatar,
     Button, CardActions,
     Divider,
-    Grid,
+    Grid, IconButton,
     Link as MuiLink,
     ListItem,
     ListItemAvatar,
@@ -19,15 +19,21 @@ import CreateActivity from "@/components/activities/CreateActivity";
 import FormatListNumberedRtlIcon from '@material-ui/icons/FormatListNumberedRtl';
 import Routes from "@/constants/routes";
 import SnackSuccess from "@/components/SnackSuccess";
+import FindInPageIcon from "@material-ui/icons/FindInPage";
+import UpdateActivity from "@/components/activities/UpdateActivity";
+import DeleteActivity from "@/components/activities/DeleteActivity";
 
 const useStyles = makeStyles((theme) => ({
     root: {
         //flexGrow: 1,
         display: 'flex',
+        maxWidth: 400,
         width: '100%',
     },
+    detail:{
+        color: "#3f51b5",
+    },
 }));
-
 
 const ReadActivity = () => {
 
@@ -41,33 +47,46 @@ const ReadActivity = () => {
     return (
         <div>
             <h1>Tareas InConcerto</h1>
-            <div>
-                <Grid container className={classes.root} spacing={3} direction='column' justify='flex-start' component={Paper}>
-                    {activities.data ? <SnackSuccess/> : <Loading/>}
+            <Grid
+                container
+                direction="row"
+                justify="center"
+                alignItems="center"
+            >
+                {/*justify='flex-start'*/}
+                <Grid container className={classes.root} spacing={3} direction="column"  justifyContent="flex-start"  alignItems="stretch" component={Paper}>
+                {/*{activities.data ? <SnackSuccess/> : <Loading/>}*/}
                     {activities.data && activities.data.map(activity => {
-                        return(
-                            <div key={activity.id}>
-                                <ListItem>
-                                    <ListItemAvatar>
-                                        <Avatar>
-                                            <FormatListNumberedRtlIcon />
-                                        </Avatar>
-                                    </ListItemAvatar>
-                                    <ListItemText primary={activity.name} secondary={activity.date} />
-                                    <Link href={`${Routes.ACTIVITIES}/${activity.id}`} passHref >
-                                        <MuiLink>
-                                            <Button size="small" color="primary">
-                                                Ver Detalle
-                                            </Button>
-                                        </MuiLink>
-                                    </Link>
-                                </ListItem>
-                                <Divider variant="inset" />
-                            </div>
-                        )
-                    })}
+                    return(
+                        <div key={activity.id}>
+                            <ListItem>
+                                <ListItemAvatar>
+                                    <Avatar>
+                                        <FormatListNumberedRtlIcon />
+                                    </Avatar>
+                                </ListItemAvatar>
+                                <ListItemText primary={activity.name} secondary={activity.date} />
+                                <Link href={`${Routes.ACTIVITIES}/${activity.id}`} passHref>
+                                    <IconButton aria-label="ver"  size="small" className={classes.detail}>
+                                        <FindInPageIcon />
+                                    </IconButton>
+                                </Link>
+                                <UpdateActivity id={activity.id}/>
+                                <DeleteActivity id={activity.id}/>
+                                {/*<Link href={`${Routes.ACTIVITIES}/${activity.id}`} passHref >
+                                    <MuiLink>
+                                        <Button size="small" color="primary">
+                                            Ver Detalle
+                                        </Button>
+                                    </MuiLink>
+                                </Link>*/}
+                            </ListItem>
+                            <Divider variant="inset" />
+                        </div>
+                    )
+                })}
                 </Grid>
-            </div>
+            </Grid>
             <CreateActivity/>
         </div>
     )

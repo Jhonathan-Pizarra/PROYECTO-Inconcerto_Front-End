@@ -1,9 +1,9 @@
 import React, {useState} from "react";
 import {useForm} from "react-hook-form";
-import useSWR from "swr";
+import useSWR, {mutate} from "swr";
 import {
     Button,
-    Checkbox, CircularProgress,
+    Checkbox,
     Dialog,
     DialogActions,
     DialogContent,
@@ -15,97 +15,68 @@ import {
     TextField,
     Tooltip
 } from "@material-ui/core";
-import {fetcher} from "../../utils";
 import AddIcon from "@material-ui/icons/Add";
 import Loading from "@/components/Loading";
-import {FeedingPlace} from "@/lib/feeding_places";
+import {PlaceConcert} from "@/lib/concert_places";
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from "yup";
 import SnackSuccess from "@/components/SnackSuccess";
-import SnackError from "@/components/SnackError";
+import {fetcher} from "../../../../utils";
+import DeleteIcon from "@material-ui/icons/Delete";
 
 const schema = yup.object().shape({
     name: yup.string().required("Este campo es necesario..."),
     address: yup.string().required("Este campo es necesario..."),
-    aforo: yup.number().typeError('Debes escribir un número').positive('La cantidad no es válida').min(1, 'Capacidad mínima es 1').required("Este campo es necesario..."),
+    //permit: yup.string().required("Este campo es necesario..."),
+    aforo: yup.number().typeError('Debes escribir un número').positive('Esa cantidad no es válida').min(1, 'Lo mínimo es 1').required("Este campo es necesario..."),
+    description: yup.string().required("Este campo es necesario..."),
 });
 
 const useStyles = makeStyles((theme) => ({
-    fixed: {
-        /*display: 'inline-flex',*/
-        //position: '-moz-initial',//a la derecha
-        position: 'fixed', //a la izquierda...
-        bottom: theme.spacing(2),
-        right: theme.spacing(2),
-    },
-    wrapper: {
-        margin: theme.spacing(1),
-        position: 'relative',
-    },
-    buttonProgress: {
-        color: '#0d47a1',
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        marginTop: -12,
-        marginLeft: -12,
+    add: {
+        backgroundColor: "#ffeb33",
+        "&:hover, &:focus": {
+            backgroundColor: "#ffeb33",
+        },
     },
 }));
 
-const CreateFeedingPlace = () => {
+
+const CreatePlaceConcert = () => {
 
     const classes = useStyles();
-    const {data: fplace, error, mutate} = useSWR(`/feeding_places`, fetcher);
+    const {data: place, error} = useSWR(`/places`, fetcher);
     const { register, handleSubmit, reset, formState:{ errors } } = useForm({
         resolver: yupResolver(schema)
     });
-    const [modal, setModal] = React.useState(false);
     const [checkedPermission, setCheckedPermission] = useState(true);
-    const [createSuccess, setCreateSuccess] = useState(false);
-    const [createError, setCreateError] = useState(false);
-    const [processing, setProcessing] = useState(false);
+    const [open, setOpen] = React.useState(false);
 
-    if(error) return <div>"No se pudo crear el lugar..."</div>;
-    if(!fplace) return <Loading/>;
-
-    const handleOpen = () => {
-        reset();
-        setCreateSuccess(false);
-        setCreateError(false);
-        setModal(true);
-    };
-
-    const handleClose = () => {
-        setProcessing(false);
-        setModal(false);
-    };
-
-    const handleCheckPermission = (event) => {
-        setCheckedPermission(event.target.checked);
-    };
+    if(error) return <div>"No se pudo crear el lugar del concierto..."</div>;
+    if(!place) return <Loading/>;
 
     const onSubmit = async (data) => {
         console.log('data', data);
 
-        const newFeedingPlace = {
+        const newConcertPlace = {
             name: data.name,
             address: data.address,
             permit: data.permit,
             aforo: data.aforo,
+            description: data.description,
         };
 
         const formData = new FormData();
-        formData.append("name", newFeedingPlace.name);
-        formData.append("address", newFeedingPlace.address);
-        formData.append("permit", newFeedingPlace.permit);
-        formData.append("aforo", newFeedingPlace.aforo);
+        formData.append("name", newConcertPlace.name);
+        formData.append("address", newConcertPlace.address);
+        formData.append("permit", newConcertPlace.permit);
+        formData.append("aforo", newConcertPlace.aforo);
+        formData.append("description", newConcertPlace.description);
 
         try {
-            setProcessing(true);
-            await FeedingPlace.create(formData);
-            mutate("/feeding_places");
+            await PlaceConcert.create(formData);
+            mutate("/places");
             handleClose();
-            setCreateSuccess(true);
         } catch (error) {
             if (error.response) {
                 console.error(error.response);
@@ -119,14 +90,43 @@ const CreateFeedingPlace = () => {
         reset();
     };
 
+    const handleOpen = () => {
+        reset();
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    const handleCheckPermission = (event) => {
+        setCheckedPermission(event.target.checked);
+    };
+
+    const handleValidate = () =>{
+        setTimeout(handleClose,500000);
+    };
+
+
     return (
         <div>
-            <Tooltip title="Nuevo" aria-label="add" className={classes.fixed}>
-                <Fab  color="secondary" onClick={handleOpen} > {/*className={classes.fixed}*/}
-                    <AddIcon />
-                </Fab>
-            </Tooltip>
-            <Dialog open={modal} onClose={handleClose} aria-labelledby="form-dialog-title">
+            <Button
+                size="small"
+                variant="contained"
+                //color="primary"
+                className={classes.add}
+                //startIcon={<AddIcon />}
+                onClick={handleOpen}
+            >
+                <AddIcon/>
+            </Button>
+            {/*<Tooltip size="small" title="Nuevo" aria-label="add" >*/}
+            {/*    <Fab color="secondary" onClick={handleOpen} > /!*className={classes.fixed}*!/*/}
+            {/*        <AddIcon />*/}
+            {/*    </Fab>*/}
+            {/*</Tooltip>*/}
+
+            <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
                 <form onSubmit={handleSubmit(onSubmit)}>
 
                     <DialogTitle id="form-dialog-title">InConcerto</DialogTitle>
@@ -135,7 +135,8 @@ const CreateFeedingPlace = () => {
                             Por favor llena los siguientes campos:
                         </DialogContentText>
                         <TextField
-                            disabled={processing}
+                            //autoFocus
+                            // className={classes.title}
                             margin="dense"
                             id="name"
                             label="Nombre"
@@ -152,7 +153,6 @@ const CreateFeedingPlace = () => {
                         <TextField
                             //autoFocus
                             // className={classes.title}
-                            disabled={processing}
                             margin="dense"
                             id="address"
                             label="Dirección"
@@ -168,6 +168,20 @@ const CreateFeedingPlace = () => {
                         </DialogContentText>
                     </DialogContent>
 
+                    <DialogContent>
+                        <TextField
+                            margin="dense"
+                            id="aforo"
+                            label="Aforo"
+                            type="number"
+                            defaultValue={0}
+                            {...register('aforo')}
+                        />
+                        <DialogContentText color="secondary">
+                            {errors.aforo?.message}
+                        </DialogContentText>
+                    </DialogContent>
+
                     <DialogContent style={{textAlign: 'center'}}>
                         <FormControlLabel
                             value={checkedPermission ? "1" : "0"}
@@ -179,23 +193,27 @@ const CreateFeedingPlace = () => {
                                     onChange={handleCheckPermission}
                                 />
                             }
-                            label="Disponible"
+                            label="Permiso"
                             labelPlacement="top"
                         />
                     </DialogContent>
 
                     <DialogContent>
                         <TextField
-                            disabled={processing}
+                            //autoFocus
+                            // className={classes.title}
                             margin="dense"
-                            id="aforo"
-                            label="Aforo"
-                            type="number"
-                            {...register('aforo')}
-                            //helperText="(Déjelo en 0 si no aplica)"
+                            id="description"
+                            label="Descripción"
+                            type="text"
+                            multiline
+                            rows={3}
+                            rowsMax={6}
+                            {...register('description')}
+                            fullWidth
                         />
                         <DialogContentText color="secondary">
-                            {errors.aforo?.message}
+                            {errors.description?.message}
                         </DialogContentText>
                     </DialogContent>
 
@@ -203,24 +221,15 @@ const CreateFeedingPlace = () => {
                         <Button onClick={handleClose} color="primary">
                             Cancelar
                         </Button>
-                        <div className={classes.wrapper}>
-                            <Button
-                                disabled={processing}
-                                //onClick={handleValidate}
-                                color="primary"
-                                type="submit"
-                            >
-                                Crear
-                            </Button>
-                            {processing && <CircularProgress size={24} className={classes.buttonProgress} />}
-                        </div>
+                        <Button onClick={handleValidate} color="primary" type="submit">
+                            Crear
+                        </Button>
                     </DialogActions>
+
                 </form>
             </Dialog>
-            {createSuccess && <SnackSuccess/>}
-            {createError && <SnackError/>}
         </div>
     );
 };
 
-export default CreateFeedingPlace;
+export default CreatePlaceConcert;

@@ -1,14 +1,14 @@
 import React, {useState} from "react";
 import {useForm} from "react-hook-form";
-import useSWR from "swr";
+import useSWR, {mutate as mutateIndex} from "swr";
 import {
-    Button,
+    Button, CircularProgress,
     Dialog,
     DialogActions,
     DialogContent,
     DialogContentText,
     DialogTitle,
-    InputLabel,
+    InputLabel, makeStyles,
     Select,
     TextField
 } from "@material-ui/core";
@@ -17,16 +17,40 @@ import {Essay} from "@/lib/essays";
 import Loading from "@/components/Loading";
 import {useRouter} from "next/router";
 import EditIcon from "@material-ui/icons/Edit";
+import SnackInfo from "@/components/SnackInfo";
+import SnackError from "@/components/SnackError";
 
-const UpdateEssay = () => {
+const useStyles = makeStyles((theme) => ({
+    edit:{
+        color: "#FAC800",
+    },
+    wrapper: {
+        margin: theme.spacing(1),
+        position: 'relative',
+    },
+    buttonProgress: {
+        color: '#0d47a1',
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        marginTop: -12,
+        marginLeft: -12,
+    },
+}));
 
-    const router = useRouter();
-    const {id} = router.query;
+const UpdateEssay = ({id}) => {
+
+    //const {id} = router.query;
+    //const router = useRouter();
+    const classes = useStyles();
     const {data: essay, error, mutate} = useSWR(`/essays/${id}`, fetcher);
     const {data: festivals} = useSWR(`/festivals`, fetcher);
     const { register, handleSubmit, reset } = useForm();
-    const [state, setState] = useState(null);
-    const [open, setOpen] = useState(false);
+    const [modal, setModal] = useState(false);
+    const [selectFestival, setSelectFestival] = useState(null);
+    const [updateInfo, setUpdateInfo] = useState(false);
+    const [updateError, setUpdateError] = useState(false);
+    const [processing, setProcessing] = useState(false);
 
     if(error) return <div>"No se pudo editar el ensayo..."</div>;
     if(!essay) return <Loading/>;
@@ -40,10 +64,26 @@ const UpdateEssay = () => {
     var min = d.getMinutes().toString().padStart(2, "0");
     const fulldate = year+'-'+month+'-'+day+'T'+hours+':'+min;
 
+    const handleOpen = () => {
+        setUpdateInfo(false);
+        setUpdateError(false);
+        setModal(true);
+    };
+
+    const handleClose = () => {
+        setProcessing(false);
+        setModal(false);
+    };
+
+    const handleChangeFestival = () => {
+        setSelectFestival({selectFestival});
+    };
+
     const onSubmit = async (data) => {
         console.log('data', data);
 
         try {
+            setProcessing(true);
             await Essay.update(id, {
                 ...data,
                 name: ((data.name) === "") ? `Vacío (${essay.id})` : data.name,
@@ -51,13 +91,19 @@ const UpdateEssay = () => {
                 place: ((data.place) === "") ? `Vacío (${essay.id})` : data.place,
                 festival_id: data.festival_id,
             });
+            mutateIndex('/essays');
             mutate();
+            handleClose();
+            setUpdateInfo(true);
             //alert("Editado!");
         } catch (error) {
+            setUpdateError(true);
+            setProcessing(false);
+            handleClose();
             if (error.response) {
                 // The request was made and the server responded with a status code
                 // that falls out of the range of 2xx
-                alert(error.response.message);
+                //alert(error.response.message);
                 console.log(error.response);
             } else if (error.request) {
                 // The request was made but no response was received
@@ -73,19 +119,6 @@ const UpdateEssay = () => {
         reset(); //Limpiar los imput después del submit
     };
 
-    const handleOpen = () => {
-        setOpen(true);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-    };
-
-    const handleChangeSelection = () => {
-        setState({state});
-    };
-
-
     return (
         <div>
 
@@ -98,7 +131,7 @@ const UpdateEssay = () => {
                 Editar
             </Button>
 
-            <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+            <Dialog open={modal} onClose={handleClose} aria-labelledby="form-dialog-title">
                 <form onSubmit={handleSubmit(onSubmit)}>
 
                     <DialogTitle id="form-dialog-title">InConcerto</DialogTitle>
@@ -109,6 +142,8 @@ const UpdateEssay = () => {
                         <TextField
                             //autoFocus
                             // className={classes.title}
+                            autoFocus={true}
+                            disabled={processing}
                             margin="dense"
                             id="name"
                             label="Nombre"
@@ -121,6 +156,8 @@ const UpdateEssay = () => {
                     <DialogContent>
                         <TextField
                             //autoFocus
+                            autoFocus={true}
+                            disabled={processing}
                             id="datetime-local"
                             label="Fecha"
                             type="datetime-local"
@@ -137,6 +174,8 @@ const UpdateEssay = () => {
                         <TextField
                             //autoFocus
                             // className={classes.title}
+                            autoFocus={true}
+                            disabled={processing}
                             margin="dense"
                             id="place"
                             label="Lugar"
@@ -151,13 +190,16 @@ const UpdateEssay = () => {
                         <InputLabel htmlFor="outlined-age-native-simple">Festival</InputLabel>
                         <Select
                             //autoFocus
+                            autoFocus={true}
+                            disabled={processing}
                             fullWidth
                             native
-                            value={state}
-                            defaultValue={essay.festival}
-                            onChange={handleChangeSelection}
+                            value={selectFestival}
+                            defaultValue={essay.festival_pk}
+                            onChange={handleChangeFestival}
                             {...register("festival_id")}
                         >
+                            <option key={essay.festival_pk}  value={essay.festival_pk} disabled={true}>{essay.festival}</option>
                             {festivals.data.map((festival) => (
                                 <option key={festival.id}  value={festival.id}>{festival.name}</option>
                             ))}
@@ -168,12 +210,21 @@ const UpdateEssay = () => {
                         <Button onClick={handleClose} color="primary">
                             Cancelar
                         </Button>
-                        <Button onClick={handleClose} color="primary" type="submit">
-                            Editar
-                        </Button>
+                        <div className={classes.wrapper}>
+                            <Button
+                                disabled={processing}
+                                //onClick={handleClose}
+                                color="primary"
+                                type="submit">
+                                Editar
+                            </Button>
+                            {processing && <CircularProgress size={24} className={classes.buttonProgress} />}
+                        </div>
                     </DialogActions>
                 </form>
             </Dialog>
+            {updateInfo && <SnackInfo/>}
+            {updateError && <SnackError/>}
         </div>
     );
 };

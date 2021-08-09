@@ -1,8 +1,8 @@
 import React, {useState} from "react";
 import {useForm} from "react-hook-form";
-import useSWR from "swr";
+import useSWR, {mutate as mutateIndex} from "swr";
 import {
-    Button,
+    Button, CircularProgress,
     Dialog,
     DialogActions,
     DialogContent,
@@ -16,10 +16,24 @@ import Loading from "@/components/Loading";
 import EditIcon from "@material-ui/icons/Edit";
 import IconButton from "@material-ui/core/IconButton";
 import {Lodging} from "@/lib/lodgings";
+import SnackInfo from "@/components/SnackInfo";
+import SnackError from "@/components/SnackError";
 
 const useStyles = makeStyles((theme) => ({
     edit:{
         color: "#FAC800",
+    },
+    wrapper: {
+        margin: theme.spacing(1),
+        position: 'relative',
+    },
+    buttonProgress: {
+        color: '#0d47a1',
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        marginTop: -12,
+        marginLeft: -12,
     },
 }));
 
@@ -27,9 +41,12 @@ const useStyles = makeStyles((theme) => ({
 const UpdateLodging = ({id}) => {
 
     const classes = useStyles();
-    const { register, handleSubmit, reset } = useForm();
-    const [open, setOpen] = useState(false);
     const {data: lodging, error, mutate} = useSWR(`/lodgings/${id}`, fetcher);
+    const { register, handleSubmit, reset } = useForm();
+    const [modal, setModal] = useState(false);
+    const [updateInfo, setUpdateInfo] = useState(false);
+    const [updateError, setUpdateError] = useState(false);
+    const [processing, setProcessing] = useState(false);
 
     if(error) return <div>"Recarga la página para continuar..."</div>;
     if(!lodging) return <Loading/>;
@@ -50,11 +67,22 @@ const UpdateLodging = ({id}) => {
     var minOut = outLodging.getMinutes().toString().padStart(2, "0");
     const dateOut = yearOut+'-'+monthOut+'-'+dayOut+'T'+hoursOut+':'+minOut;
 
+    const handleOpen = () => {
+        setUpdateInfo(false);
+        setUpdateError(false);
+        setModal(true);
+    };
+
+    const handleClose = () => {
+        setProcessing(false);
+        setModal(false);
+    };
 
     const onSubmit = async (data) => {
         console.log('data', data);
 
         try {
+            setProcessing(true);
             await Lodging.update(id, {
                 ...data,
                 name:  ((data.name) === "") ? `Vacío (${lodging.id})` : data.name,
@@ -64,8 +92,14 @@ const UpdateLodging = ({id}) => {
                 checkIn: ((data.checkIn) === "") ? dateIn : data.checkIn,
                 checkOut: ((data.checkOut) === "") ? dateOut : data.checkOut,
             });
+            mutateIndex('/lodgings');
             mutate();
+            handleClose();
+            setUpdateInfo(true);
         } catch (error) {
+            setUpdateError(true);
+            setProcessing(false);
+            handleClose();
             if (error.response) {
                 console.error(error.response);
             } else if (error.request) {
@@ -78,23 +112,13 @@ const UpdateLodging = ({id}) => {
         reset();
     };
 
-    const handleOpen = () => {
-        setOpen(true);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-    };
-
-
     return (
         <div>
 
             <IconButton aria-label="editar"  className={classes.edit} size="small" onClick={handleOpen} >
                 <EditIcon />
             </IconButton>
-
-            <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+            <Dialog open={modal} onClose={handleClose} aria-labelledby="form-dialog-title">
                 <form onSubmit={handleSubmit(onSubmit)}>
 
                     <DialogTitle id="form-dialog-title">InConcerto</DialogTitle>
@@ -103,6 +127,8 @@ const UpdateLodging = ({id}) => {
                             Por favor llena los siguientes campos:
                         </DialogContentText>
                         <TextField
+                            autoFocus={true}
+                            disabled={processing}
                             margin="dense"
                             id="name"
                             label="Nombre"
@@ -115,6 +141,8 @@ const UpdateLodging = ({id}) => {
 
                     <DialogContent>
                         <TextField
+                            autoFocus={true}
+                            disabled={processing}
                             margin="dense"
                             id="name"
                             label="Tipo de hospedaje"
@@ -127,6 +155,8 @@ const UpdateLodging = ({id}) => {
 
                     <DialogContent>
                         <TextField
+                            autoFocus={true}
+                            disabled={processing}
                             margin="dense"
                             id="name"
                             label="Característica"
@@ -142,6 +172,8 @@ const UpdateLodging = ({id}) => {
 
                     <DialogContent>
                         <TextField
+                            autoFocus={true}
+                            disabled={processing}
                             margin="dense"
                             id="name"
                             label="Observación"
@@ -157,6 +189,8 @@ const UpdateLodging = ({id}) => {
 
                     <DialogContent>
                         <TextField
+                            autoFocus={true}
+                            disabled={processing}
                             id="datetime-local"
                             label="Check In"
                             type="datetime-local"
@@ -172,6 +206,8 @@ const UpdateLodging = ({id}) => {
 
                     <DialogContent>
                         <TextField
+                            autoFocus={true}
+                            disabled={processing}
                             id="datetime-local"
                             label="Check Out"
                             type="datetime-local"
@@ -189,13 +225,21 @@ const UpdateLodging = ({id}) => {
                         <Button onClick={handleClose} color="primary">
                             Cancelar
                         </Button>
-                        <Button onClick={handleClose} color="primary" type="submit">
-                            Editar
-                        </Button>
+                        <div className={classes.wrapper}>
+                            <Button
+                                disabled={processing}
+                                //onClick={handleClose}
+                                color="primary"
+                                type="submit">
+                                Editar
+                            </Button>
+                            {processing && <CircularProgress size={24} className={classes.buttonProgress} />}
+                        </div>
                     </DialogActions>
                 </form>
-
             </Dialog>
+            {updateInfo && <SnackInfo/>}
+            {updateError && <SnackError/>}
         </div>
     );
 };

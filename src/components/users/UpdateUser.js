@@ -1,9 +1,9 @@
 import React, {useState} from "react";
 import {useForm} from "react-hook-form";
 import {Artist} from "@/lib/artists";
-import useSWR, {mutate} from "swr";
+import useSWR, {mutate as mutateIndex} from "swr";
 import {
-    Button, Checkbox,
+    Button, Checkbox, CircularProgress,
     Dialog,
     DialogActions,
     DialogContent,
@@ -22,7 +22,9 @@ import {Concert} from "@/lib/concerts";
 import {User} from "@/lib/users";
 import * as yup from "yup";
 import {yupResolver} from '@hookform/resolvers/yup';
-
+import SnackInfo from "@/components/SnackInfo";
+import translateMessage from "@/constants/messages";
+import SnackError from "@/components/SnackError";
 
 const schema = yup.object().shape({
     //name: yup.string().required("Este campo es necesario..."),
@@ -31,31 +33,61 @@ const schema = yup.object().shape({
     password_confirmation: yup.string().required("Este campo es necesario"),
 });
 
-
 const useStyles = makeStyles((theme) => ({
     edit:{
         color: "#FAC800",
     },
+    wrapper: {
+        margin: theme.spacing(1),
+        position: 'relative',
+    },
+    buttonProgress: {
+        color: '#0d47a1',
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        marginTop: -12,
+        marginLeft: -12,
+    },
 }));
 
 //Este {id} lo recibe desde el componente donde lo llamemos, en este caso sería: <UpdateArtistForm id={artist.id}/>
-
 const UpdateUser = ({id}) => {
 
     const classes = useStyles();
+    const {data: user, mutate, error} = useSWR(`/users/${id}`, fetcher);
     const { register, handleSubmit, reset, formState:{ errors } } = useForm({
         resolver: yupResolver(schema)
     });
-    const [open, setOpen] = useState(false);
-    const {data: user, mutate, error} = useSWR(`/users/${id}`, fetcher);
+    const [modal, setModal] = useState(false);
+    const [selectRole, setSelectRole] = useState(null);
+    const [updateInfo, setUpdateInfo] = useState(false);
+    const [updateError, setUpdateError] = useState(false);
+    const [processing, setProcessing] = useState(false);
 
     if(error) return <div>"Recarga la página para continuar..."</div>;
     if(!user) return <Loading/>;
+
+    const handleOpen = () => {
+        setUpdateInfo(false);
+        setUpdateError(false);
+        setModal(true);
+    };
+
+    const handleClose = () => {
+        setProcessing(false);
+        setModal(false);
+    };
+
+    const handleChangeRole = () => {
+        setSelectRole({selectRole});
+    };
 
     const onSubmit = async (data) => {
         console.log('data', data);
 
         try {
+            setProcessing(true);
             await User.update(id, {
                 ...data,
                 name: ((data.name) === "") ? `Vacío (${user.id})` : data.name,
@@ -63,14 +95,24 @@ const UpdateUser = ({id}) => {
                 password: data.password,
                 password_confirmation: data.password_confirmation,
             });
+            mutateIndex('/users');
             mutate();
             handleClose();
+            setUpdateInfo(true);
         } catch (error) {
+            setUpdateError(true);
+            setProcessing(false);
+            handleClose();
             if (error.response) {
+                //alert(translateMessage(error.response.data.message));
+                //alert(translateMessage(error.response.data.message));
+                //alert(translateMessage(error.response));
                 console.error(error.response);
             } else if (error.request) {
+                //alert(translateMessage(error.request));
                 console.error(error.request);
             } else {
+                //alert(translateMessage(error.message));
                 console.error("Error", error.message);
             }
             console.error(error.config);
@@ -78,26 +120,12 @@ const UpdateUser = ({id}) => {
         reset();
     };
 
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-    };
-
-    const handleValidate = () =>{
-        setTimeout(handleClose,500000);
-    };
-
     return (
         <div>
-
-            <IconButton aria-label="editar"  className={classes.edit} size="small" onClick={handleClickOpen} >
+            <IconButton aria-label="editar"  className={classes.edit} size="small" onClick={handleOpen} >
                 <EditIcon />
             </IconButton>
-
-            <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+            <Dialog open={modal} onClose={handleClose} aria-labelledby="form-dialog-title">
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <DialogTitle id="form-dialog-title">InConcerto</DialogTitle>
 
@@ -108,6 +136,8 @@ const UpdateUser = ({id}) => {
                         <TextField
                             //autoFocus
                             // className={classes.title}
+                            autoFocus={true}
+                            disabled={processing}
                             margin="dense"
                             id="name"
                             label="Nombre"
@@ -122,6 +152,8 @@ const UpdateUser = ({id}) => {
                         <TextField
                             //autoFocus
                             // className={classes.title}
+                            autoFocus={true}
+                            disabled={processing}
                             margin="dense"
                             id="email"
                             label="Correo"
@@ -139,6 +171,8 @@ const UpdateUser = ({id}) => {
                         <TextField
                             //autoFocus
                             // className={classes.title}
+                            autoFocus={true}
+                            disabled={processing}
                             margin="dense"
                             id="password"
                             label="Contraseña"
@@ -156,6 +190,8 @@ const UpdateUser = ({id}) => {
                         <TextField
                             //autoFocus
                             // className={classes.title}
+                            autoFocus={true}
+                            disabled={processing}
                             margin="dense"
                             id="password_confirmation"
                             label="Confirmación"
@@ -169,13 +205,42 @@ const UpdateUser = ({id}) => {
                         </DialogContentText>
                     </DialogContent>
 
+                    <DialogContent>
+                        <InputLabel htmlFor="outlined-age-native-simple">Rol</InputLabel>
+                        <Select
+                            autoFocus={true}
+                            disabled={processing}
+                            fullWidth
+                            native
+                            defaultValue={user.role}
+                            value={selectRole}
+                            onChange={handleChangeRole}
+                            {...register("role")}
+                        >
+                            <option value={'ROLE_USER'}>Operario</option>
+                            <option value={'ROLE_ADMIN'}>Administrador</option>
+                        </Select>
+                    </DialogContent>
+
                     <DialogActions>
-                        <Button onClick={handleValidate} color="primary" variant="contained" type="submit">
-                            Editar
+                        <Button onClick={handleClose} color="primary">
+                            Cancelar
                         </Button>
+                        <div className={classes.wrapper}>
+                            <Button
+                                disabled={processing}
+                                //onClick={handleClose}
+                                color="primary"
+                                type="submit">
+                                Editar
+                            </Button>
+                            {processing && <CircularProgress size={24} className={classes.buttonProgress} />}
+                        </div>
                     </DialogActions>
                 </form>
             </Dialog>
+            {updateInfo && <SnackInfo/>}
+            {updateError && <SnackError/>}
         </div>
     );
 };

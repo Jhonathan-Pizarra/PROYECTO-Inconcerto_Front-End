@@ -1,24 +1,24 @@
 import React, {useState} from "react";
 import {useForm} from "react-hook-form";
 import {Concert} from "@/lib/concerts";
-import useSWR from "swr";
+import useSWR, {mutate} from "swr";
 import {
-    Button,
-    Checkbox, CircularProgress,
+    Button, CardActions,
+    Checkbox,
     Dialog,
     DialogActions,
     DialogContent,
     DialogContentText,
     DialogTitle,
     Fab,
-    FormControlLabel,
-    InputLabel,
+    FormControlLabel, FormHelperText, Grid,
+    InputLabel, Link as MuiLink,
     makeStyles,
     Select,
     TextField,
     Tooltip
 } from "@material-ui/core";
-import {fetcher} from "../../utils";
+import Link from "next/link";
 import Loading from "@/components/Loading";
 import AddIcon from "@material-ui/icons/Add";
 import translateMessage from "@/constants/messages";
@@ -26,7 +26,12 @@ import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from "yup";
 import MySnacks from "@/components/SnackSuccess";
 import SnackSuccess from "@/components/SnackSuccess";
-import SnackError from "@/components/SnackError";
+import EditIcon from "@material-ui/icons/Edit";
+import {fetcher} from "../../../utils";
+import {useRouter} from "next/router";
+import Routes from "@/constants/routes";
+import CreateConcertPlace from "@/components/concert-places/CreateConcertPlace";
+import CreatePlaceConcert from "@/components/festivals/concerts/places/CreatePlaceConcert";
 
 const schema = yup.object().shape({
     name: yup.string().required("Este campo es necesario..."),
@@ -43,72 +48,39 @@ const useStyles = makeStyles((theme) => ({
         right: theme.spacing(2),
     },
     checkbox: {
-      textAlign: "center",
+        textAlign: "center",
     },
-    wrapper: {
-        margin: theme.spacing(1),
-        position: 'relative',
-    },
-    buttonProgress: {
-        color: '#0d47a1',
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        marginTop: -12,
-        marginLeft: -12,
+    concerts:{
+        backgroundColor: "#ffeb33",
+        "&:hover, &:focus": {
+            backgroundColor: "#ffeb33",
+        },
     },
 }));
 
-const CreateConcert = () => {
+const CreateFestivalConcert = () => {
 
     const classes = useStyles();
-    const {data: concert, error, mutate} = useSWR(`/concerts`, fetcher);
-    const {data: festivals} = useSWR(`/festivals`, fetcher);
+
+    const router = useRouter();
+    const {id} = router.query;
+
+    const {data: festivalConcerts, error} = useSWR(`/festivals/${id}/concerts`, fetcher);
+    const {data: festival} = useSWR(`/festivals/${id}`, fetcher);
     const {data: places} = useSWR(`/places`, fetcher);
+
     const { register, handleSubmit, reset, formState:{ errors } } = useForm({
         resolver: yupResolver(schema)
     });
-    const [modal, setModal] = useState(false);
     const [checkedInsi, setInsi] = useState(true);
     const [checkedFree, setFree] = useState(true);
-    const [selectPlace, setSelectPlace] = useState(null);
-    const [selectFestival, setSelectFestival] = useState(null);
-    const [createSuccess, setCreateSuccess] = useState(false);
-    const [createError, setCreateError] = useState(false);
-    const [processing, setProcessing] = useState(false);
+    const [state, setState] = useState(null);
+    const [open, setOpen] = useState(false);
 
     if(error) return <div>"No se obtuvo el concierto..."</div>;
-    if(!concert) return <Loading/>;
-    if(!festivals) return <Loading/>;
+    if(!festivalConcerts) return <Loading/>;
+    if(!festival) return <Loading/>;
     if(!places) return <Loading/>;
-
-    const handleOpen = () => {
-        reset(); //Limpiar los imput después del submit
-        setCreateSuccess(false);
-        setCreateError(false);
-        setModal(true);
-    };
-
-    const handleClose = () => {
-        setProcessing(false);
-        setModal(false);
-    };
-
-    const handleChangePlace = () => {
-        setSelectPlace({selectPlace});
-    };
-
-    const handleChangeFestival = () => {
-        setSelectFestival({selectFestival});
-    };
-
-    const handleCheckFree = (event) => {
-        setFree(event.target.checked);
-    };
-
-    const handleCheckInsi = (event) => {
-        setInsi(event.target.checked);
-    };
 
     const onSubmit = async (data) => {
         console.log('data del form:', data);
@@ -121,6 +93,7 @@ const CreateConcert = () => {
             insitu: data.insitu,
             place_id: data.place_id,
             festival_id: data.festival_id,
+            //festival_id: id.toString(),
         };
 
         const formData = new FormData();
@@ -133,16 +106,11 @@ const CreateConcert = () => {
         formData.append("festival_id", newConcert.festival_id);
 
         try {
-            setProcessing(true);
             await Concert.create(formData);
-            mutate("/concerts");
+            mutate(`/festivals/${id}/concerts`);
             handleClose();
-            setCreateSuccess(true);
             // console.log("file", fileInputRef.current.files[0]);
         } catch (error) {
-            setCreateError(true);
-            setProcessing(false);
-            handleClose();
             if (error.response) {
                 // The request was made and the server responded with a status code
                 // that falls out of the range of 2xx
@@ -158,23 +126,48 @@ const CreateConcert = () => {
                 // Something happened in setting up the request that triggered an Error
                 console.error("Error", error.message);
             }
-            console.error(error.config);
         }
         reset(); //Limpiar los imput después del submit
     };
 
-  /*  const handleValidate = () =>{
+    const handleChangeSelection = () => {
+        setState({state});
+    };
+
+    const handleCheckFree = (event) => {
+        setFree(event.target.checked);
+    };
+
+    const handleCheckInsi = (event) => {
+        setInsi(event.target.checked);
+    };
+
+    const handleClickOpen = () => {
+        reset(); //Limpiar los imput después del submit
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    const handleValidate = () =>{
         setTimeout(handleClose,500000);
-    };*/
+    };
+
 
     return (
         <div>
-            <Tooltip title="Nuevo" aria-label="add" className={classes.fixed}>
-                <Fab  color="secondary" onClick={handleOpen} > {/*className={classes.fixed}*/}
-                    <AddIcon />
-                </Fab>
-            </Tooltip>
-            <Dialog open={modal} onClose={handleClose} aria-labelledby="form-dialog-title">
+            <Button
+                variant="contained"
+                className={classes.concerts}
+                startIcon={<AddIcon />}
+                onClick={handleClickOpen}
+            >
+                Concierto
+            </Button>
+
+            <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
                 <form onSubmit={handleSubmit(onSubmit)}>
 
                     <DialogTitle id="form-dialog-title">InConcerto</DialogTitle>
@@ -186,7 +179,6 @@ const CreateConcert = () => {
                         <TextField
                             //autoFocus que al abrir se seleccione solo
                             // className={classes.title}
-                            disabled={processing}
                             id="name"
                             label="Nombre"
                             type="text"
@@ -201,7 +193,6 @@ const CreateConcert = () => {
 
                     <DialogContent>
                         <TextField
-                            disabled={processing}
                             id="date"
                             label="Fecha"
                             type="date"
@@ -219,7 +210,6 @@ const CreateConcert = () => {
 
                     <DialogContent>
                         <TextField
-                            disabled={processing}
                             id="time"
                             label="Hora"
                             type="time"
@@ -266,62 +256,69 @@ const CreateConcert = () => {
                     </DialogContent>
 
                     <DialogContent>
+
                         <InputLabel htmlFor="outlined-age-native-simple">Festival</InputLabel>
                         <Select
                             fullWidth
+                            //disabled
+                            //value={state}
+                            //onChange={handleChangeSelection}
                             autoFocus
                             native
-                            value={selectFestival}
-                            onChange={handleChangeFestival}
+                            value={festival.id}
                             {...register("festival_id")}
+
                         >
-                            {festivals.data.map((festival) => (
+                            <option key={festival.id} value={festival.id}>{festival.name}</option>
+                            {/*{festivals.data.map((festival) => (
                                 <option key={festival.id}  value={festival.id}>{festival.name}</option>
-                            ))}
+                            ))}*/}
                         </Select>
                     </DialogContent>
 
                     <DialogContent>
-                        <InputLabel htmlFor="outlined-age-native-simple">Lugar</InputLabel>
-                        <Select
-                            fullWidth
-                            autoFocus
-                            native
-                            value={selectPlace}
-                            onChange={handleChangePlace}
-                            {...register("place_id")}
+                        <Grid container
+                              spacing={1}
+                              justifyContent="space-between"
+                              alignItems="flex-end"
                         >
-                            {places.data.map((place) => (
-                                <option key={place.id}  value={place.id}>{place.name}</option>
-                            ))}
-                        </Select>
+                            <Grid item xs={8} sm={8} md={8} lg={8}>
+                                <InputLabel htmlFor="outlined-age-native-simple">Lugar</InputLabel>
+                                <Select
+                                    fullWidth
+                                    autoFocus
+                                    native
+                                    value={state}
+                                    onChange={handleChangeSelection}
+                                    {...register("place_id")}
+                                >
+                                    {places.data.map((place) => (
+                                        <option key={place.id}  value={place.id}>{place.name}</option>
+                                    ))}
+                                </Select>
+                            </Grid>
+                            <Grid item >
+                                <CreatePlaceConcert/>
+                            </Grid>
+                        </Grid>
+
 
                     </DialogContent>
+
 
                     <DialogActions>
                         <Button onClick={handleClose}  color="primary">
                             Cancelar
                         </Button>
-
-                        <div className={classes.wrapper}>
-                            <Button
-                                disabled={processing}
-                                //onClick={handleValidate}
-                                color="primary"
-                                type="submit"
-                            >
-                                Crear
-                            </Button>
-                            {processing && <CircularProgress size={24} className={classes.buttonProgress} />}
-                        </div>
-
+                        <Button onClick={handleValidate} color="primary" type="submit">
+                            Crear
+                        </Button>
                     </DialogActions>
+
                 </form>
             </Dialog>
-            {createSuccess && <SnackSuccess/>}
-            {createError && <SnackError/>}
         </div>
     );
 };
 
-export default CreateConcert;
+export default CreateFestivalConcert;

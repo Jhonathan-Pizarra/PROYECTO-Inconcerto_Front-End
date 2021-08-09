@@ -14,7 +14,6 @@ import {
     TableRow
 } from "@material-ui/core";
 import React, {useState} from "react";
-import CreateConcert from "@/components/concerts/CreateConcert";
 import Link from "next/link";
 import Routes from "@/constants/routes";
 import {useRouter} from "next/router";
@@ -83,7 +82,7 @@ const ReadFestivalConcerts = ({id}) => {
                             <TableCell className={classes.titles}>Fecha</TableCell>
                             <TableCell className={classes.titles}>Duración&nbsp;(horas)</TableCell>
                             <TableCell className={classes.titles}>Gratuidad&nbsp;(Si - No)</TableCell>
-                            <TableCell className={classes.titles}>InsiItu&nbsp;(Si - No)</TableCell>
+                            <TableCell className={classes.titles}>Insitu&nbsp;(Si - No)</TableCell>
                             {/*<TableCell align="center">Lugar</TableCell>*/}
                             {/*<TableCell align="center">Festival</TableCell>*/}
                             <TableCell align="center" style={{color: "white"}}>Detalle</TableCell>
@@ -138,7 +137,7 @@ const ReadFestivalConcerts = ({id}) => {
                     onChangeRowsPerPage={handleChangeRowsPerPage}
                 />
             </TableContainer>
-            <CreateConcert/>
+            {/*<CreateConcert/>*/}
         </div>
     );
 }

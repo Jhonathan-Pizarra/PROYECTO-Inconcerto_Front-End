@@ -1,15 +1,15 @@
-import React from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {useForm} from "react-hook-form";
 import {Festival} from "@/lib/festivals";
 import useSWR from "swr";
 import {useRouter} from "next/router";
 import {
-    Button,
+    Button, CircularProgress,
     Dialog,
     DialogActions,
     DialogContent,
     DialogContentText,
-    DialogTitle,
+    DialogTitle, makeStyles,
     TextField
 } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
@@ -18,31 +18,62 @@ import Loading from "@/components/Loading";
 import translateMessage from "@/constants/messages";
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from "yup";
+import SnackInfo from "@/components/SnackInfo";
+import SnackError from "@/components/SnackError";
 
 const schema = yup.object().shape({
     name: yup.string().notRequired(),
     description: yup.string().notRequired(),
 });
 
+const useStyles = makeStyles((theme) => ({
+    wrapper: {
+        margin: theme.spacing(1),
+        position: 'relative',
+    },
+    buttonProgress: {
+        color: '#0d47a1',
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        marginTop: -12,
+        marginLeft: -12,
+    },
+}));
+
 const UpdateFestival = () => {
 
+    const classes = useStyles();
     const router = useRouter();
     const {id} = router.query;
     const {data: festival, error, mutate} = useSWR(`/festivals/${id}`, fetcher);
     const { register, handleSubmit, reset, formState:{ errors }  } = useForm({
         resolver: yupResolver(schema)
     });
-    const [open, setOpen] = React.useState(false);
-    // const fileInputRef = useRef();
+    const [open, setOpen] = useState(false);
+    const [updateInfo, setUpdateInfo] = useState(false);
+    const [updateError, setUpdateError] = useState(false);
+    const [processing, setProcessing] = useState(false);
 
     if(error) return <div>"No se puede editar el festival..."</div>;
     if(!festival) return <Loading/>
 
+    const handleOpen = () => {
+        setUpdateInfo(false);
+        setUpdateError(false);
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setProcessing(false);
+        setOpen(false);
+    };
+
     const onSubmit = async (data) => {
         console.log('data', data);
         //console.log("imagen", data.image[0]);
-
         try {
+            setProcessing(true);
             await Festival.update(id, {
                 ...data,
                 name: ((data.name) === "") ? `Vacío (${festival.id})` : data.name,
@@ -50,13 +81,23 @@ const UpdateFestival = () => {
                 //image: data.image[0],
             });
             mutate();
+            handleClose();
+            setUpdateInfo(true);
             /*mutate(`/festivals/${data.id}`);*/
         } catch (error) {
+            setUpdateError(true);
+            setProcessing(false);
+            handleClose();
             if (error.response) {
                 // The request was made and the server responded with a status code
                 // that falls out of the range of 2xx
                 //alert(error.response.message);
-                alert(translateMessage(error.response.data.message));
+                //alert(translateMessage(error.response.data.message));
+                if (error.response.data.errors.name) {
+                    alert(translateMessage(error.response.data.errors.name));
+                } else if (error.response.data.errors.description) {
+                    alert(translateMessage(error.response.data.errors.description));
+                }
                 console.log(error.response);
             } else if (error.request) {
                 // The request was made but no response was received
@@ -67,18 +108,9 @@ const UpdateFestival = () => {
                 // Something happened in setting up the request that triggered an Error
                 console.log("Error", error.message);
             }
-            console.log(error.config);
         }
+        //handleUpdate();
         reset(); //Limpiar los imput después del submit
-    };
-
-    const handleOpen = () => {
-        //reset(); //Limpiar los imput antes de nada
-        setOpen(true);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
     };
 
     return (
@@ -103,6 +135,8 @@ const UpdateFestival = () => {
                         </DialogContentText>
                         <TextField
                             //autoFocus
+                            autoFocus={true}
+                            disabled={processing}
                             margin="dense"
                             id="name"
                             label="Nombre"
@@ -119,6 +153,8 @@ const UpdateFestival = () => {
                     <DialogContent>
                         <TextField
                             //autoFocus
+                            autoFocus={true}
+                            disabled={processing}
                             margin="dense"
                             id="description"
                             label="Descripción"
@@ -151,12 +187,25 @@ const UpdateFestival = () => {
                         <Button onClick={handleClose} color="primary">
                             Cancelar
                         </Button>
-                        <Button onClick={handleClose} color="primary" type="submit">
+                        {/*<Button onClick={handleClose} color="primary" type="submit">
                             Editar
-                        </Button>
+                        </Button>*/}
+                        <div className={classes.wrapper}>
+                            <Button
+                                color="primary"
+                                disabled={processing}
+                                //onClick={handlePreUpdate}
+                                type="submit"
+                            >
+                                Editar
+                            </Button>
+                            {processing && <CircularProgress size={24} className={classes.buttonProgress} />}
+                        </div>
                     </DialogActions>
                 </form>
             </Dialog>
+            {updateInfo && <SnackInfo/>}
+            {updateError && <SnackError/>}
         </div>
     );
 };

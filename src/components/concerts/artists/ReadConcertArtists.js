@@ -24,6 +24,7 @@ import CreateArtist from "@/components/artists/CreateArtist";
 import SnackSuccess from "@/components/SnackSuccess";
 import DeleteCalendarArtist from "@/components/calendars/artists/DeleteCalendarArtist";
 import DeleteConcertArtist from "@/components/concerts/artists/DeleteConcertArtist";
+import CreateConcertArtist from "@/components/concerts/artists/CreateConcertArtist";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -72,6 +73,11 @@ const ReadConcertArtists = ({id}) => {
     return (
         <div>
             <h1>Artistas del concierto</h1>
+
+            <Grid container alignItems="flex-start" justify="flex-end" direction="row">
+                <CreateConcertArtist/>
+            </Grid>
+
             <TableContainer component={Paper}>
                 <Table size="small" aria-label="a dense table">
                     <TableHead className={classes.head}>

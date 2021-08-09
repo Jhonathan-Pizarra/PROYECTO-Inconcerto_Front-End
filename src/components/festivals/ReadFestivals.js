@@ -17,12 +17,7 @@ import {
 import Routes from "@/constants/routes";
 import CreateFestival from "@/components/festivals/CreateFestival";
 import Link from "next/link";
-import Festivales from "../../pages/festivales";
-import {data} from "browserslist";
-import Pagination from "@material-ui/lab/Pagination";
-import SnackSuccess from "@/components/SnackSuccess";
-import SnackError from "@/components/SnackError";
-import {Alert} from "@material-ui/lab";
+
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -38,7 +33,14 @@ const useStyles = makeStyles((theme) => ({
         flex: '1 0 ',
     },
     cover: {
-        width: 151,
+        width: 150,
+        //height: 331,
+        "&:hover, &:focus": {
+            //"-webkit-transform":`scale(${1.5})`,
+            //"-ms-transform": `scale(${1.5})`,
+            //transform: `scale(${1.5})`,
+            width: 500,
+        },
     },
     cardDimension: {
         /*width: 240,
@@ -73,11 +75,12 @@ const ReadFestivals = () => {
         <div>
             <h1>Festivales InConcerto</h1>
             <Grid container className={classes.root} spacing={3} direction='row' justify='flex-start'>
-                {festivals.data ? <SnackSuccess/> : <Loading/>}
+                {/*{festivals.data ? <SnackSuccess/> : <Loading/>}*/}
                 {festivals.data && festivals.data.map(festival => {
                     return(
                         <Grid container item xs={12} sm={6} md={4} lg={3} xl={3} key={festival.id}>
                             <Card className={classes.root}>
+
                                 <Box m={2} className={classes.cardDimension}>
                                     <div>
                                         <CardContent className={classes.content}>
@@ -115,6 +118,7 @@ const ReadFestivals = () => {
                                     </CardActions>
                                 </Grid>
                             </div>
+
                         </Grid>
                     );
                 })}
@@ -124,4 +128,4 @@ const ReadFestivals = () => {
     );
 }
 
-export default ReadFestivals ;
+export default ReadFestivals;

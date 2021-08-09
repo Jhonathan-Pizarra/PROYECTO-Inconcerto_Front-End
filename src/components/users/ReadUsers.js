@@ -23,7 +23,6 @@ import CreateUser from "@/components/users/CreateUser";
 import UpdateUser from "@/components/users/UpdateUser";
 import DeleteUser from "@/components/users/DeleteUser";
 
-
 const useStyles = makeStyles((theme) => ({
     detail:{
         color: "#3f51b5",
@@ -50,10 +49,10 @@ const useStyles = makeStyles((theme) => ({
 
 const ReadUsers = () => {
 
+    const classes = useStyles();
     const {data: users, error} = useSWR(`/users`, fetcher);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
-    const classes = useStyles();
 
     if(error) return <p>No se pudieron cargar los usuarios...</p>;
     if (!users) return <Loading/>;
@@ -69,6 +68,7 @@ const ReadUsers = () => {
 
     return (
         <div>
+            <h1>Personal de Inconcerto</h1>
             <TableContainer component={Paper}>
                 <Table size="small" aria-label="a dense table">
                     <TableHead className={classes.head}>
@@ -81,18 +81,26 @@ const ReadUsers = () => {
                             {/*<TableCell align="center"></TableCell>*/}
                             {/*<TableCell align="center"></TableCell>*/}
                             {/*<TableCell align="center"></TableCell>*/}
-                            <TableCell align="center" style={{color: "white"}}> Acciones</TableCell>
+                            <TableCell align="left" style={{color: "white"}}> Acciones</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {users ? <SnackSuccess/> : <Loading/>}
+                        {/*{users ? <SnackSuccess/> : <Loading/>}*/}
                         {users && users.map((user => {
+                            var d = new Date(user.created_at); ////Sun May 30 2021 00:18:00 GMT-0500 (hora de Ecuador)
+                            var year = d.getFullYear();
+                            var month = (d.getMonth()+1).toString().padStart(2, "0");
+                            var day = d.getDate().toString().padStart(2, "0");
+                            //var hours = ('0'+d.getHours()).substr(-2);
+                            //var min = d.getMinutes().toString().padStart(2, "0");
+                            const fulldate = year+'-'+month+'-'+day;
+
 
                             var rol = user.role === 'ROLE_ADMIN' ? 'Administrador':'Usuario';
 
                             return(
                                 <TableRow key={user.id}>
-                                    <TableCell align="left">{user.created_at}</TableCell>
+                                    <TableCell align="left">{fulldate}</TableCell>
                                     <TableCell align="left">{user.name}</TableCell>
                                     <TableCell align="left">{user.email}</TableCell>
                                     <TableCell align="left">{rol}</TableCell>
@@ -134,8 +142,8 @@ const ReadUsers = () => {
                     onChangeRowsPerPage={handleChangeRowsPerPage}
                 />
             </TableContainer>
-            <br/>
-            {/*<CreateArtist/>*/}
+            <CreateUser/>
+            {/*<br/>
             <Grid
                 container
                 direction="column"
@@ -143,7 +151,7 @@ const ReadUsers = () => {
                 alignItems="center"
             >
                 <CreateUser/>
-            </Grid>
+            </Grid>*/}
         </div>
     )
 }

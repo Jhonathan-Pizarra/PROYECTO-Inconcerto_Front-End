@@ -2,43 +2,84 @@ import React, {useState} from "react";
 import {useForm} from "react-hook-form";
 import useSWR from "swr";
 import {
-    Button,
+    Button, CircularProgress,
     Dialog,
     DialogActions,
     DialogContent,
     DialogContentText,
-    DialogTitle,
+    DialogTitle, makeStyles,
     TextField
 } from "@material-ui/core";
 import {fetcher} from "../../utils";
 import Loading from "@/components/Loading";
 import EditIcon from "@material-ui/icons/Edit";
 import {Resource} from "@/lib/resources";
+import {mutate as mutateIndex} from "swr";
+import SnackInfo from "@/components/SnackInfo";
+import SnackError from "@/components/SnackError";
 
+const useStyles = makeStyles((theme) => ({
+    edit:{
+        color: "#FAC800",
+    },
+    wrapper: {
+        margin: theme.spacing(1),
+        position: 'relative',
+    },
+    buttonProgress: {
+        color: '#0d47a1',
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        marginTop: -12,
+        marginLeft: -12,
+    },
+}));
 
 //Este {id} lo recibe desde el componente donde lo llamemos, en este caso sería: <UpdateResorce id={resource.id}/>
 const UpdateResource = ({id}) => {
 
-    const { register, handleSubmit, reset } = useForm();
-    const [open, setOpen] = useState(false);
+    const classes = useStyles();
     const {data: resource, mutate, error} = useSWR(`/resources/${id}`, fetcher);
+    const { register, handleSubmit, reset } = useForm();
+    const [modal, setModal] = useState(false);
+    const [updateInfo, setUpdateInfo] = useState(false);
+    const [updateError, setUpdateError] = useState(false);
+    const [processing, setProcessing] = useState(false);
 
     if(error) return <div>"Recarga la página para continuar..."</div>;
     if(!resource) return <Loading/>;
+
+    const handleOpen = () => {
+        setUpdateInfo(false);
+        setUpdateError(false);
+        setModal(true);
+    };
+
+    const handleClose = () => {
+        setProcessing(false);
+        setModal(false);
+    };
 
     const onSubmit = async (data) => {
         console.log('data', data);
 
         try {
+            setProcessing(true);
             await Resource.update(id, {
                 ...data,
                 name: ((data.name) === "") ? `Vacío (${resource.id})` : data.name,
                 quantity: (((data.quantity) === "") || ((data.quantity) < 0) ) ? '0' : data.quantity,
                 description: ((data.description) === "") ? `Sin descripción` : data.description,
             });
+            mutateIndex('/resources');
             mutate();
             handleClose();
+            setUpdateInfo(true);
         } catch (error) {
+            setUpdateError(true);
+            setProcessing(false);
+            handleClose();
             if (error.response) {
                 console.error(error.response);
             } else if (error.request) {
@@ -51,13 +92,6 @@ const UpdateResource = ({id}) => {
         reset();
     };
 
-    const handleOpen = () => {
-        setOpen(true);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-    };
 
     return (
         <div>
@@ -75,7 +109,7 @@ const UpdateResource = ({id}) => {
             {/*    <EditIcon />*/}
             {/*</IconButton>*/}
 
-            <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+            <Dialog open={modal} onClose={handleClose} aria-labelledby="form-dialog-title">
                 <form onSubmit={handleSubmit(onSubmit)}>
 
                     <DialogTitle id="form-dialog-title">InConcerto</DialogTitle>
@@ -85,6 +119,8 @@ const UpdateResource = ({id}) => {
                         </DialogContentText>
                         <TextField
                             //autoFocus
+                            autoFocus={true}
+                            disabled={processing}
                             margin="dense"
                             id="name"
                             label="Nombre"
@@ -96,6 +132,8 @@ const UpdateResource = ({id}) => {
                     </DialogContent>
                     <DialogContent>
                         <TextField
+                            autoFocus={true}
+                            disabled={processing}
                             margin="dense"
                             id="standard-number"
                             label="Cantidad"
@@ -109,6 +147,8 @@ const UpdateResource = ({id}) => {
 
                     <DialogContent>
                         <TextField
+                            autoFocus={true}
+                            disabled={processing}
                             margin="dense"
                             id="outlined-basic"
                             label="Observación"
@@ -127,12 +167,21 @@ const UpdateResource = ({id}) => {
                         <Button onClick={handleClose} color="primary">
                             Cancelar
                         </Button>
-                        <Button onClick={handleClose} color="primary" type="submit">
-                            Editar
-                        </Button>
+                        <div className={classes.wrapper}>
+                            <Button
+                                disabled={processing}
+                                //onClick={handleClose}
+                                color="primary"
+                                type="submit">
+                                Editar
+                            </Button>
+                            {processing && <CircularProgress size={24} className={classes.buttonProgress} />}
+                        </div>
                     </DialogActions>
                 </form>
             </Dialog>
+            {updateInfo && <SnackInfo/>}
+            {updateError && <SnackError/>}
         </div>
     );
 };

@@ -46,7 +46,6 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-
 const ReadConcerts = () => {
 
     const classes = useStyles();
@@ -76,16 +75,18 @@ const ReadConcerts = () => {
                         <TableRow>
                             <TableCell className={classes.titles}>Concierto </TableCell>
                             <TableCell className={classes.titles}>Fecha</TableCell>
-                            <TableCell className={classes.titles}>Duración&nbsp;(horas)</TableCell>
+                            <TableCell className={classes.titles}>Hora</TableCell>
                             <TableCell className={classes.titles}>Gratuidad&nbsp;(Si - No)</TableCell>
                             <TableCell className={classes.titles}>InsiItu&nbsp;(Si - No)</TableCell>
-                             {/*<TableCell align="center">Lugar</TableCell>*/}
+                            <TableCell className={classes.titles}>Lugar</TableCell>
+                            <TableCell className={classes.titles}>Festival</TableCell>
+                            {/*<TableCell align="center">Lugar</TableCell>*/}
                              {/*<TableCell align="center">Festival</TableCell>*/}
                             <TableCell align="left" style={{color: "white"}}>&emsp;Acciones</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {concerts.data ? <SnackSuccess/> : <Loading/>}
+                       {/* {concerts.data ? <SnackSuccess/> : <Loading/>}*/}
                         {concerts.data && concerts.data.map((concert => {
 
                             var free = ((concert.free) === 0) ? "No" : "Si" ;
@@ -98,7 +99,8 @@ const ReadConcerts = () => {
                                     <TableCell align="left">{concert.duration}</TableCell>
                                     <TableCell align="left">{free}</TableCell>
                                     <TableCell align="left">{insitu}</TableCell>
-
+                                    <TableCell align="left">{concert.place}</TableCell>
+                                    <TableCell align="left">{concert.festival}</TableCell>
                                     {/*<TableCell align="center">
                                         <Link href={concert.place} passHref>
                                             <MuiLink>

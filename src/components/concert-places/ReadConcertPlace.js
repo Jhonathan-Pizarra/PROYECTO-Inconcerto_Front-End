@@ -20,11 +20,12 @@ import UpdateConcertPlace from "@/components/concert-places/UpdateConcertPlace";
 import DeleteConcertPlace from "@/components/concert-places/DeleteConcertPlace";
 import CreateConcertPlace from "@/components/concert-places/CreateConcertPlace";
 import SnackSuccess from "@/components/SnackSuccess";
-
+import UpdateEssay from "@/components/essays/UpdateEssay";
+import DeleteEssay from "@/components/essays/DeleteEssay";
 
 const useStyles = makeStyles({
     root: {
-        //display: 'flex',
+        display: 'flex',
         minWidth: 275,
     },
     title: {
@@ -33,6 +34,13 @@ const useStyles = makeStyles({
         display: "-webkit-box",
         "-webkit-line-clamp": 1,
         "-webkit-box-orient": "vertical",
+    },
+    details: {
+        flexDirection: 'unset',
+        position: 'relative',
+        top: -75,
+        left: 25,
+        //right: 50,
     },
     direction: {
         overflow: "hidden",
@@ -46,21 +54,21 @@ const useStyles = makeStyles({
         "-webkit-line-clamp": 3,
         "-webkit-box-orient": "vertical",
     },
-    details: {
-        flexDirection: 'unset',
-        position: 'relative',
-        top: -75,
-        left: 20
-    },
     cardDimension: {
-        width: 240,
-        height: 420
+        width: 340,
+        height: 400
     },
     grow: {
         flexGrow: 1,
     },
     content: {
         flex: '1 0 ',
+    },
+    actions: {
+        flexDirection: 'unset',
+        position: 'relative',
+        top: 5,
+        left: 4
     },
 });
 
@@ -76,7 +84,7 @@ const ReadConcertPlace = () => {
         <div>
             <h1>Lugares InConcierto</h1>
             <Grid container className={classes.root} spacing={3} direction='row' justify='flex-start'>
-                {places.data ? <SnackSuccess/> : <Loading/>}
+                {/*{places.data ? <SnackSuccess/> : <Loading/>}*/}
                 {places.data && places.data.map(place => {
                     return(
                         <Grid container item xs={12} sm={6} md={4} lg={3} xl={3} key={place.id}>
@@ -138,26 +146,34 @@ const ReadConcertPlace = () => {
                                             {/*    </Link>*/}
                                             {/*</Grid>*/}
                                             <br/>
+                                            {/*<div className={classes.actions}>
+                                                <Grid container spacing={3}>
+
+                                                    <Grid item container justify="center" alignItems="center">
+                                                        <CardActions xs={12} sm={12} md={12} lg={4} xl={2} >
+                                                            <MuiLink>
+                                                                <UpdateConcertPlace id={place.id}/>
+                                                            </MuiLink>
+                                                            <MuiLink>
+                                                                <DeleteConcertPlace id={place.id}/>
+                                                            </MuiLink>
+                                                        </CardActions>
+                                                    </Grid>
+
+                                                </Grid>
+                                            </div>*/}
                                         </CardContent>
-
-                                        <Grid container>
-                                            <CardActions >
-                                                <UpdateConcertPlace id={place.id}/>
-                                                <DeleteConcertPlace id={place.id}/>
-                                            </CardActions>
-                                        </Grid>
-
                                     </div>
                                 </Box>
                             </Card>
-                           {/* <div className={classes.details}>
+                            <div className={classes.details}>
                                 <Grid container>
                                     <CardActions >
                                         <UpdateConcertPlace id={place.id}/>
                                         <DeleteConcertPlace id={place.id}/>
                                     </CardActions>
                                 </Grid>
-                            </div>*/}
+                            </div>
                         </Grid>
                     )
                 })}

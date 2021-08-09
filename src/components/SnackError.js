@@ -43,7 +43,7 @@ export default function SnackError() {
                 key={vertical + horizontal}
             >
                 <Alert onClose={handleClose} severity="error">
-                    ¡Algo ha ocurrido!
+                    ¡No se ha completado!
                 </Alert>
             </Snackbar>
         </div>

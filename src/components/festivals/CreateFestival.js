@@ -1,9 +1,9 @@
-import React, {useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {useForm} from "react-hook-form";
 import {Festival} from "@/lib/festivals";
 import useSWR from "swr";
 import {
-    Button,
+    Button, CircularProgress,
     Dialog,
     DialogActions,
     DialogContent,
@@ -27,7 +27,7 @@ import SnackError from "@/components/SnackError";
 const schema = yup.object().shape({
     name: yup.string().required("Este campo es necesario..."),
     description: yup.string().required("Este campo es necesario..."),
-    //image: yup.required(),
+    //image: yup.string().required("Este campo es necesario..."),
 });
 
 const useStyles = makeStyles((theme) => ({
@@ -37,6 +37,18 @@ const useStyles = makeStyles((theme) => ({
         position: 'fixed', //a la izquierda...
         bottom: theme.spacing(2),
         right: theme.spacing(2),
+    },
+    wrapper: {
+        margin: theme.spacing(1),
+        position: 'relative',
+    },
+    buttonProgress: {
+        color: '#0d47a1',
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        marginTop: -12,
+        marginLeft: -12,
     },
     // cancel: {
     //     position: 'fixed', //a la izquierda...
@@ -51,10 +63,25 @@ const CreateFestival = () => {
         resolver: yupResolver(schema)
     });
     const [modal, setModal] = useState(false);
+    const [createSuccess, setCreateSuccess] = useState(false);
+    const [createError, setCreateError] = useState(false);
+    const [processing, setProcessing] = useState(false);
     // const fileInputRef = useRef();
 
     if(error) return <div>"No se pudo crear el festival..."</div>;
     if(!festival) return <Loading/>;
+
+    const handleOpen = () => {
+        reset();
+        setCreateSuccess(false);
+        setCreateError(false);
+        setModal(true);
+    };
+
+    const handleClose =  () => {
+        setProcessing(false);
+        setModal(false);
+    };
 
     const onSubmit = async (data) => {
 
@@ -72,57 +99,48 @@ const CreateFestival = () => {
         formData.append("description", newFestival.description);
         formData.append("image", newFestival.image);
 
-
         try {
+            setProcessing(true);
             await Festival.create(formData);
             mutate("/festivals");
             handleClose();
+            setCreateSuccess(true);
             // console.log("file", fileInputRef.current.files[0]);
         } catch (error) {
+            setCreateError(true);
+            setProcessing(false);
+            handleClose();
             if (error.response) {
                 // The request was made and the server responded with a status code
                 // that falls out of the range of 2xx
                 //alert(error.response.data.message);
-                alert(translateMessage(error.response.data.message));
                 // alert(translateMessage(error.response.data.message));
-                // if (error.response.data.errors.name) {
-                //     alert(translateMessage(error.response.data.errors.name));
-                // } else if (error.response.data.errors.description) {
-                //     alert(translateMessage(error.response.data.errors.description));
-                // } else if(error.response.data.errors.image[0]) {
-                //     alert(translateMessage(error.response.data.errors.image[0]));
-                // } else if(error.response.data.errors.image[1]) {
-                //     alert(translateMessage(error.response.data.errors.image[1]));
-                // }
+                if (error.response.data.errors.name) {
+                    alert(translateMessage(error.response.data.errors.name));
+                } else if (error.response.data.errors.description) {
+                    alert(translateMessage(error.response.data.errors.description));
+                } else if(error.response.data.errors.image[0]) {
+                    alert(translateMessage(error.response.data.errors.image[0]));
+                } else if(error.response.data.errors.image[1]) {
+                    alert(translateMessage(error.response.data.errors.image[1]));
+                }
                 console.error(error.response);
             } else if (error.request) {
                 // The request was made but no response was received
                 // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
                 // http.ClientRequest in node.js
-                alert(error.request);
-                //console.error("Error en request:", error.request);
+                //alert(error.request);
+                console.error("Error en request:", error.request);
             } else {
+                //alert(error.message);
                 // Something happened in setting up the request that triggered an Error
                 console.error("Error:", error.message);
             }
-            console.error(error.config);
+            //alert(error.config);
+            //console.error(error.config);
         }
         reset(); //Limpiar los imput después del submit
     };
-
-    const handleOpen = () => {
-        reset();
-        setModal(true);
-    };
-
-    const handleClose =  () => {
-        setModal(false);
-    };
-
-    const handleValidate = () =>{
-        setTimeout(handleClose,500000);
-    };
-
 
     return (
         <div>
@@ -153,6 +171,7 @@ const CreateFestival = () => {
                         <TextField
                             //autoFocus
                             // className={classes.title}
+                            disabled={processing}
                             margin="dense"
                             id="name"
                             label="Nombre"
@@ -170,6 +189,7 @@ const CreateFestival = () => {
                         <TextField
                             //autoFocus
                             // className={classes.body}
+                            disabled={processing}
                             margin="dense"
                             id="description"
                             label="Descripción"
@@ -194,6 +214,9 @@ const CreateFestival = () => {
                                 type="file"
                                 {...register('image')}
                             />
+                            {/*<DialogContentText color="secondary">
+                                {errors.image?.message}
+                            </DialogContentText>*/}
                         </DialogContent>
                     </DialogContentText>
 
@@ -202,12 +225,22 @@ const CreateFestival = () => {
                             Cancelar
                         </Button>
 
-                        <Button type="submit" onClick={handleValidate} color="primary">
-                            Crear
-                        </Button>
+                        <div className={classes.wrapper}>
+                            <Button
+                                color="primary"
+                                //onClick={handleValidate}
+                                disabled={processing}
+                                type="submit"
+                            >
+                                Crear
+                            </Button>
+                            {processing && <CircularProgress size={24} className={classes.buttonProgress} />}
+                        </div>
                     </DialogActions>
                 </form>
             </Dialog>
+            {createSuccess && <SnackSuccess/>}
+            {createError && <SnackError/>}
         </div>
     );
 };

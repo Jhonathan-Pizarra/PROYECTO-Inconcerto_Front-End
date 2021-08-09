@@ -19,14 +19,17 @@ import Loading from "@/components/Loading";
 import {useRouter} from "next/router";
 import LinkIcon from "@material-ui/icons/Link";
 import {ConcertResource} from "@/lib/concert_resources";
+import AddIcon from "@material-ui/icons/Add";
 
 const useStyles = makeStyles((theme) => ({
-    fixed: {
+    addresources: {
         /*display: 'inline-flex',*/
         //position: '-moz-initial',//a la derecha
-        position: 'fixed', //a la izquierda...
-        bottom: theme.spacing(2),
-        right: theme.spacing(2),
+        bottom: theme.spacing(3),
+        backgroundColor: "#ffeb33",
+        "&:hover, &:focus": {
+            backgroundColor: "#ffeb33",
+        },
     },
 }));
 
@@ -111,11 +114,21 @@ const CreateConcertResource = () => {
     return (
         <div>
 
-            <Tooltip title="Vincular" aria-label="add" className={classes.fixed}>
-                <Fab  color="primary" onClick={handleOpen} > {/*className={classes.fixed}*/}
-                    <LinkIcon />
-                </Fab>
-            </Tooltip>
+            <Button
+                className={classes.addresources}
+                variant="contained"
+                //color="secondary"
+                startIcon={<AddIcon />}
+                onClick={handleOpen}
+            >
+                Recurso
+            </Button>
+
+            {/*<Tooltip title="Vincular" aria-label="add" className={classes.fixed}>*/}
+            {/*    <Fab  color="primary" onClick={handleOpen} > /!*className={classes.fixed}*!/*/}
+            {/*        <LinkIcon />*/}
+            {/*    </Fab>*/}
+            {/*</Tooltip>*/}
 
             <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
                 <form onSubmit={handleSubmit(onSubmit)}>
