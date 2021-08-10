@@ -23,7 +23,8 @@ import DeleteArtist from "@/components/artists/DeleteArtist";
 import CreateArtist from "@/components/artists/CreateArtist";
 import SnackSuccess from "@/components/SnackSuccess";
 import DeleteCalendarArtist from "@/components/calendars/artists/DeleteCalendarArtist";
-
+import CreateCalendarArtist from "@/components/calendars/artists/CreateCalendarArtist";
+import UpdateCalendarArtist from "@/components/calendars/artists/UpdateCalendarArtist";
 
 const useStyles = makeStyles((theme) => ({
     detail:{
@@ -71,6 +72,10 @@ const ReadCalendarArtists = ({id}) => {
     return (
         <div>
             <h1>Artistas del Calendario</h1>
+
+            <Grid container alignItems="flex-start" justify="flex-end" direction="row">
+                <CreateCalendarArtist/>
+            </Grid>
             <TableContainer component={Paper}>
                 <Table size="small" aria-label="a dense table">
                     <TableHead className={classes.head}>
@@ -132,11 +137,11 @@ const ReadCalendarArtists = ({id}) => {
                                             </Link>
                                         </td>
                                         <td>
-                                            <UpdateArtist id={artistCalendar.id} />
-                                            {/*<UpdateCalendarArtist idArtist={artistCalendar.id}/>*/}
+                                            {/*<UpdateArtist id={artistCalendar.id} />*/}
+                                            <UpdateCalendarArtist idArtist={artistCalendar.id} idCalendar={id}/>
                                         </td>
                                         <td>
-                                            <DeleteCalendarArtist idArtist={artistCalendar.id} />
+                                            <DeleteCalendarArtist idArtist={artistCalendar.id} idCalendar={id} />
                                         </td>
                                     </TableCell>
                                 </TableRow>

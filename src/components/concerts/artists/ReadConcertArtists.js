@@ -25,7 +25,7 @@ import SnackSuccess from "@/components/SnackSuccess";
 import DeleteCalendarArtist from "@/components/calendars/artists/DeleteCalendarArtist";
 import DeleteConcertArtist from "@/components/concerts/artists/DeleteConcertArtist";
 import CreateConcertArtist from "@/components/concerts/artists/CreateConcertArtist";
-
+import UpdateConcertArtist from "@/components/concerts/artists/UpdateConcertArtist";
 
 const useStyles = makeStyles((theme) => ({
     detail:{
@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
         fontWeight: "400",
         verticalAlign: "inherit",
         boxSizing: "inherit",
-        width: "320%",
+        width: "120%",
         textAlign: "left",
     },
     titles:{
@@ -139,11 +139,10 @@ const ReadConcertArtists = ({id}) => {
                                             </Link>
                                         </td>
                                         <td>
-                                            <UpdateArtist id={concertArtist.id} />
-                                            {/*<UpdateConcertArtist idArtist={concertArtist.id}/>*/}
+                                            <UpdateConcertArtist idArtist={concertArtist.id} idConcert={id} />
                                         </td>
                                         <td>
-                                            <DeleteConcertArtist idArtist={concertArtist.id} />
+                                            <DeleteConcertArtist idArtist={concertArtist.id} idConcert={id} />
                                         </td>
                                     </TableCell>
                                 </TableRow>
@@ -164,7 +163,6 @@ const ReadConcertArtists = ({id}) => {
                     onChangeRowsPerPage={handleChangeRowsPerPage}
                 />
             </TableContainer>
-            {/*<CreateArtist/>*/}
         </div>
     )
 }

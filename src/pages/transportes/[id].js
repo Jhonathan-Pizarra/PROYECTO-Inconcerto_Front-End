@@ -5,10 +5,12 @@ import {fetcher} from "../../utils";
 import withAuth from "@/hocs/withAuth";
 import UpdateTransport from "@/components/transports/UpdateTransport";
 import DeleteTransport from "@/components/transports/DeleteTransport";
-import {CardActions, Grid, Link as MuiLink, makeStyles, Paper} from "@material-ui/core";
+import {CardActions, Grid, IconButton, Link as MuiLink, makeStyles, Paper} from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import Link from "next/link";
 import React from "react";
+import FindInPageIcon from "@material-ui/icons/FindInPage";
+import NotFound from "../404";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -18,6 +20,9 @@ const useStyles = makeStyles((theme) => ({
         padding: theme.spacing(2),
         margin: 'auto',
         maxWidth: '30%',
+    },
+    detail:{
+        color: "#3f51b5",
     },
 }));
 
@@ -29,7 +34,7 @@ const TransportesID= () =>{
     const {data: transport, error} = useSWR(`/transports/${id}`, fetcher);
 
     // if(error) return <div>"Recarga para continuar..."</div>;
-    if(error) return <div>"No se obtivo el transporte..."</div>;
+    if(error) return <div><NotFound/></div>;
     if(!transport) return <Loading/>;
 
     return (
@@ -57,11 +62,14 @@ const TransportesID= () =>{
                                         <p><b>Matrícula:</b> {transport.licence_plate}</p>
                                     </Typography>
                                     <Typography variant="body2" gutterBottom>
-                                        <b>Calendario:</b>&ensp;
-                                        <Link href={transport.calendar} passHref>
-                                            <MuiLink>
+                                        <b>Calendario:</b>&ensp;{transport.calendar}
+                                        <Link href={transport.calendar_id} passHref>
+                                            <IconButton aria-label="ver"  size="small" className={classes.detail}>
+                                                <FindInPageIcon />
+                                            </IconButton>
+                                            {/*<MuiLink>
                                                 Ver
-                                            </MuiLink>
+                                            </MuiLink>*/}
                                         </Link>
                                     </Typography>
 

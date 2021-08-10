@@ -4,7 +4,7 @@ import {Concert} from "@/lib/concerts";
 import useSWR, {mutate} from "swr";
 import {
     Button, CardActions,
-    Checkbox,
+    Checkbox, CircularProgress,
     Dialog,
     DialogActions,
     DialogContent,
@@ -32,6 +32,7 @@ import {useRouter} from "next/router";
 import Routes from "@/constants/routes";
 import CreateConcertPlace from "@/components/concert-places/CreateConcertPlace";
 import CreatePlaceConcert from "@/components/festivals/concerts/places/CreatePlaceConcert";
+import SnackError from "@/components/SnackError";
 
 const schema = yup.object().shape({
     name: yup.string().required("Este campo es necesario..."),
@@ -56,6 +57,18 @@ const useStyles = makeStyles((theme) => ({
             backgroundColor: "#ffeb33",
         },
     },
+    wrapper: {
+        margin: theme.spacing(1),
+        position: 'relative',
+    },
+    buttonProgress: {
+        color: '#0d47a1',
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        marginTop: -12,
+        marginLeft: -12,
+    },
 }));
 
 const CreateFestivalConcert = () => {
@@ -64,23 +77,48 @@ const CreateFestivalConcert = () => {
 
     const router = useRouter();
     const {id} = router.query;
-
     const {data: festivalConcerts, error} = useSWR(`/festivals/${id}/concerts`, fetcher);
     const {data: festival} = useSWR(`/festivals/${id}`, fetcher);
     const {data: places} = useSWR(`/places`, fetcher);
-
     const { register, handleSubmit, reset, formState:{ errors } } = useForm({
         resolver: yupResolver(schema)
     });
+    const [modal, setModal] = useState(false);
     const [checkedInsi, setInsi] = useState(true);
     const [checkedFree, setFree] = useState(true);
     const [state, setState] = useState(null);
-    const [open, setOpen] = useState(false);
+    const [createSuccess, setCreateSuccess] = useState(false);
+    const [createError, setCreateError] = useState(false);
+    const [processing, setProcessing] = useState(false);
 
     if(error) return <div>"No se obtuvo el concierto..."</div>;
     if(!festivalConcerts) return <Loading/>;
     if(!festival) return <Loading/>;
     if(!places) return <Loading/>;
+
+    const handleOpen = () => {
+        reset();
+        setCreateSuccess(false);
+        setCreateError(false);
+        setModal(true);
+    };
+
+    const handleClose = () => {
+        setProcessing(false);
+        setModal(false);
+    };
+
+    const handleChangeSelection = () => {
+        setState({state});
+    };
+
+    const handleCheckFree = (event) => {
+        setFree(event.target.checked);
+    };
+
+    const handleCheckInsi = (event) => {
+        setInsi(event.target.checked);
+    };
 
     const onSubmit = async (data) => {
         console.log('data del form:', data);
@@ -106,11 +144,16 @@ const CreateFestivalConcert = () => {
         formData.append("festival_id", newConcert.festival_id);
 
         try {
+            setProcessing(true);
             await Concert.create(formData);
             mutate(`/festivals/${id}/concerts`);
             handleClose();
+            setCreateSuccess(true);
             // console.log("file", fileInputRef.current.files[0]);
         } catch (error) {
+            setCreateError(true);
+            setProcessing(false);
+            handleClose();
             if (error.response) {
                 // The request was made and the server responded with a status code
                 // that falls out of the range of 2xx
@@ -130,44 +173,18 @@ const CreateFestivalConcert = () => {
         reset(); //Limpiar los imput después del submit
     };
 
-    const handleChangeSelection = () => {
-        setState({state});
-    };
-
-    const handleCheckFree = (event) => {
-        setFree(event.target.checked);
-    };
-
-    const handleCheckInsi = (event) => {
-        setInsi(event.target.checked);
-    };
-
-    const handleClickOpen = () => {
-        reset(); //Limpiar los imput después del submit
-        setOpen(true);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-    };
-
-    const handleValidate = () =>{
-        setTimeout(handleClose,500000);
-    };
-
-
     return (
         <div>
             <Button
                 variant="contained"
                 className={classes.concerts}
                 startIcon={<AddIcon />}
-                onClick={handleClickOpen}
+                onClick={handleOpen}
             >
                 Concierto
             </Button>
 
-            <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+            <Dialog open={modal} onClose={handleClose} aria-labelledby="form-dialog-title">
                 <form onSubmit={handleSubmit(onSubmit)}>
 
                     <DialogTitle id="form-dialog-title">InConcerto</DialogTitle>
@@ -179,6 +196,7 @@ const CreateFestivalConcert = () => {
                         <TextField
                             //autoFocus que al abrir se seleccione solo
                             // className={classes.title}
+                            disabled={processing}
                             id="name"
                             label="Nombre"
                             type="text"
@@ -193,6 +211,7 @@ const CreateFestivalConcert = () => {
 
                     <DialogContent>
                         <TextField
+                            disabled={processing}
                             id="date"
                             label="Fecha"
                             type="date"
@@ -210,6 +229,7 @@ const CreateFestivalConcert = () => {
 
                     <DialogContent>
                         <TextField
+                            disabled={processing}
                             id="time"
                             label="Hora"
                             type="time"
@@ -231,6 +251,7 @@ const CreateFestivalConcert = () => {
                             control={
                                 <Checkbox
                                     autoFocus={true}
+                                    disabled={processing}
                                     checked={checkedFree}
                                     onChange={handleCheckFree}
                                     //onChange={function(event){ handleCheckFree(checkedFree); handleChangeFree()}}
@@ -245,6 +266,7 @@ const CreateFestivalConcert = () => {
                             control={
                                 <Checkbox
                                     autoFocus={true}
+                                    disabled={processing}
                                     checked={checkedInsi}
                                     onChange={handleCheckInsi}
                                 />}
@@ -264,6 +286,7 @@ const CreateFestivalConcert = () => {
                             //value={state}
                             //onChange={handleChangeSelection}
                             autoFocus
+                            disabled={processing}
                             native
                             value={festival.id}
                             {...register("festival_id")}
@@ -287,6 +310,7 @@ const CreateFestivalConcert = () => {
                                 <Select
                                     fullWidth
                                     autoFocus
+                                    disabled={processing}
                                     native
                                     value={state}
                                     onChange={handleChangeSelection}
@@ -310,12 +334,21 @@ const CreateFestivalConcert = () => {
                         <Button onClick={handleClose}  color="primary">
                             Cancelar
                         </Button>
-                        <Button onClick={handleValidate} color="primary" type="submit">
-                            Crear
-                        </Button>
+                        <div className={classes.wrapper}>
+                            <Button
+                                disabled={processing}
+                                //onClick={handleValidate}
+                                color="primary"
+                                type="submit"
+                            >
+                                Crear
+                            </Button>
+                            {processing && <CircularProgress size={24} className={classes.buttonProgress} />}
+                        </div>
                     </DialogActions>
-
                 </form>
+                {createSuccess && <SnackSuccess/>}
+                {createError && <SnackError/>}
             </Dialog>
         </div>
     );

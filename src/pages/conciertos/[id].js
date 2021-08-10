@@ -126,10 +126,8 @@ const ConciertosID = () => {
             </div>
             <br/>
             <br/>
-            {/*<CreateConcertArtist id={concert.id}/>*/}
             <ReadConcertArtists id={concert.id}/>
             <ReadConcertResources id={concert.id}/>
-            <CreateConcertResource id={concert.id}/>
         </div>
     );
 

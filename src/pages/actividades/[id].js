@@ -3,11 +3,13 @@ import {useRouter} from "next/router";
 import Loading from "@/components/Loading";
 import {fetcher} from "../../utils";
 import withAuth from "@/hocs/withAuth";
-import {CardActions, Grid, Link as MuiLink, makeStyles, Paper, Typography} from "@material-ui/core";
+import {CardActions, Grid, IconButton, Link as MuiLink, makeStyles, Paper, Typography} from "@material-ui/core";
 import Link from "next/link";
 import UpdateActivity from "@/components/activities/UpdateActivity";
 import DeleteActivity from "@/components/activities/DeleteActivity";
 import React from "react";
+import FindInPageIcon from "@material-ui/icons/FindInPage";
+import NotFound from "../404";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -18,6 +20,9 @@ const useStyles = makeStyles((theme) => ({
         margin: 'auto',
         maxWidth: '30%',
     },
+    detail:{
+        color: "#3f51b5",
+    },
 }));
 
 const ActividadesID= () => {
@@ -27,7 +32,7 @@ const ActividadesID= () => {
     const {id} = router.query;
     const {data: activity, error} = useSWR(`/activityfestivals/${id}`, fetcher);
 
-    if(error) return <div>"No se obtuvo la actividad"</div>;
+    if(error) return <div><NotFound/></div>;
     if(!activity) return <Loading/>;
 
     return (
@@ -52,20 +57,26 @@ const ActividadesID= () => {
                                         <p><b>Descripción:</b> {activity.description}</p>
                                     </Typography>
                                     <Typography variant="body2" gutterBottom>
-                                        <b>Festival:</b>&ensp;
-                                        <Link href={activity.festival} passHref>
-                                            <MuiLink>
+                                        <b>Festival:</b>&ensp;{activity.festival}
+                                        <Link href={activity.festival_id} passHref>
+                                            <IconButton aria-label="ver"  size="small" className={classes.detail}>
+                                                <FindInPageIcon />
+                                            </IconButton>
+                                            {/*<MuiLink>
                                                 Ver
-                                            </MuiLink>
+                                            </MuiLink>*/}
                                         </Link>
                                     </Typography>
 
                                     <Typography variant="body2" gutterBottom>
-                                        <b>Responsable:</b>&ensp;
-                                        <Link href={activity.user} passHref>
-                                            <MuiLink>
+                                        <b>Responsable:</b>&ensp;{activity.user}
+                                        <Link href={activity.user_id} passHref>
+                                            <IconButton aria-label="ver"  size="small" className={classes.detail}>
+                                                <FindInPageIcon />
+                                            </IconButton>
+                                            {/*<MuiLink>
                                                 Ver
-                                            </MuiLink>
+                                            </MuiLink>*/}
                                         </Link>
                                     </Typography>
 

@@ -19,6 +19,7 @@ import {
 import React, {useState} from "react";
 import Routes from "@/constants/routes";
 import DeleteCalendarUser from "@/components/calendars/users/DeleteCalendarUser";
+import CreateCalendarUser from "@/components/calendars/users/CreateCalendarUser";
 
 const useStyles = makeStyles((theme) => ({
     detail:{
@@ -66,6 +67,11 @@ const ReadCalendarUsers = ({id}) => {
     return (
         <div>
             <h1>Usuarios del Calendario</h1>
+
+            <Grid container alignItems="flex-start" justify="flex-end" direction="row">
+                <CreateCalendarUser/>
+            </Grid>
+
             <TableContainer component={Paper}>
                 <Table size="small" aria-label="a dense table">
                     <TableHead className={classes.head}>

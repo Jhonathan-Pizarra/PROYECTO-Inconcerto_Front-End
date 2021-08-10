@@ -80,6 +80,7 @@ const UpdateFestival = () => {
                 description: ((data.description) === "") ? `Ninguna descripción` : data.description,
                 //image: data.image[0],
             });
+            //mutate(`/festivals/${id}`);
             mutate();
             handleClose();
             setUpdateInfo(true);

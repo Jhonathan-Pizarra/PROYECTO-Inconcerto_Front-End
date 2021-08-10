@@ -15,6 +15,7 @@ import ReadCalendarArtists from "@/components/calendars/artists/ReadCalendarArti
 import CreateCalendarArtist from "@/components/calendars/artists/CreateCalendarArtist";
 import ReadCalendarUsers from "@/components/calendars/users/ReadCalendarUsers";
 import CreateCalendarUser from "@/components/calendars/users/CreateCalendarUser";
+import NotFound from "../404";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -25,8 +26,10 @@ const useStyles = makeStyles((theme) => ({
         margin: 'auto',
         maxWidth: '30%',
     },
+    detail:{
+        color: "#3f51b5",
+    },
 }));
-
 
 const CalendariosID= () =>{
 
@@ -35,8 +38,7 @@ const CalendariosID= () =>{
     const {id} = router.query;
     const {data: calendar, error} = useSWR(`/calendars/${id}`, fetcher);
 
-
-    if(error) return <div>"No se obtuvo el calendario"</div>;
+    if(error) return <div><NotFound/></div>;
     if(!calendar) return <Loading/>;
 
     return (
@@ -88,10 +90,7 @@ const CalendariosID= () =>{
             <br/>
             <br/>
             <ReadCalendarArtists id={calendar.id}/>
-            <CreateCalendarArtist id={calendar.id}/>
             <ReadCalendarUsers id={calendar.id}/>
-            <CreateCalendarUser id={calendar.id}/>
-
         </div>
     );
 

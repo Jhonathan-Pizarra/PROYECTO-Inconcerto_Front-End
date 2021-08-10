@@ -1,16 +1,31 @@
 import {fetcher} from "../../../utils";
-import useSWR from "swr";
+import useSWR, {mutate as mutateID} from "swr";
 import {useRouter} from "next/router";
 import Loading from "@/components/Loading";
 import Routes from "@/constants/routes";
-import {Button, IconButton, makeStyles} from "@material-ui/core";
-import React from "react";
+import {Button, CircularProgress, Dialog, DialogActions, DialogTitle, IconButton, makeStyles} from "@material-ui/core";
+import React, {useState} from "react";
 import LinkOffIcon from '@material-ui/icons/LinkOff';
 import {LodgingUser} from "@/lib/lodging_users";
+import BackspaceIcon from "@material-ui/icons/Backspace";
+import SnackSuccess from "@/components/SnackSuccess";
+import SnackError from "@/components/SnackError";
 
 const useStyles = makeStyles((theme) => ({
     delete: {
         color: "#f50057",
+    },
+    wrapper: {
+        margin: theme.spacing(1),
+        position: 'relative',
+    },
+    buttonProgress: {
+        color: '#0d47a1',
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        marginTop: -12,
+        marginLeft: -12,
     },
 }));
 
@@ -20,12 +35,34 @@ const DeleteLodgingUser = ({idUser}) => {
     const router = useRouter();
     const {id} = router.query;
     const {data: lodgingUser, error} = useSWR(`/lodgings/${id}/users/${idUser}`, fetcher);
+    const [modal, setModal] = useState(false);
+    const [deleteSuccess, setDeleteSuccess] = useState(false);
+    const [deleteError, setDeleteError] = useState(false);
+    const [processing, setProcessing] = useState(false);
+
+    const handleOpen = () => {
+        setDeleteError(false);
+        setModal(true);
+    };
+
+    const handleClose = () => {
+        setProcessing(false);
+        setModal(false);
+        //router.push('/festivales');
+    };
 
     const handleDelete = async () => {
         try {
+            setProcessing(true);
             await LodgingUser.delete(id, idUser);
-            router.push(Routes.CALENDARS);
+            setDeleteSuccess(true);
+            handleClose();
+            mutateID(`/lodgings/${id}/users`);
+            //router.push(Routes.CALENDARS);
         } catch (error) {
+            setDeleteError(true);
+            setProcessing(false);
+            handleClose();
             if (error.response) {
                 console.log(error.response);
             } else if (error.request) {
@@ -37,14 +74,37 @@ const DeleteLodgingUser = ({idUser}) => {
         }
     };
 
-    if(error) return <div>"No se pudo desvincular el usuario..."</div>;
-    if(!lodgingUser) return <Loading/>;
-
     return (
         <div>
-            <IconButton aria-label="eliminar"  className={classes.delete} size="small" onClick={handleDelete} >
-                <LinkOffIcon />
+            <IconButton title="Remover" aria-label="eliminar"  className={classes.delete} size="small" onClick={handleOpen} >
+                <BackspaceIcon />
             </IconButton>
+            <Dialog
+                open={modal}
+                onClose={handleClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">{"¿Deseas remover este usuario del hospedaje?"}</DialogTitle>
+                <DialogActions>
+                    <Button onClick={handleClose} color="primary">
+                        Cancelar
+                    </Button>
+
+                    <div className={classes.wrapper}>
+                        <Button
+                            color="primary"
+                            disabled={processing}
+                            onClick={handleDelete}
+                        >
+                            Confirmar
+                        </Button>
+                        {processing && <CircularProgress size={24} className={classes.buttonProgress} />}
+                    </div>
+                </DialogActions>
+            </Dialog>
+            {deleteSuccess && <SnackSuccess/>}
+            {deleteError && <SnackError/>}
         </div>
     );
 

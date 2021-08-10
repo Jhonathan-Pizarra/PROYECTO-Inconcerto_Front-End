@@ -3,7 +3,15 @@ import {useRouter} from "next/router";
 import Loading from "@/components/Loading";
 import {fetcher} from "../../utils";
 import Routes from "@/constants/routes";
-import {Button, CircularProgress, Dialog, DialogActions, DialogTitle, makeStyles} from "@material-ui/core";
+import {
+    Button,
+    CircularProgress,
+    Dialog,
+    DialogActions, DialogContent,
+    DialogContentText,
+    DialogTitle,
+    makeStyles
+} from "@material-ui/core";
 import React, {useState} from "react";
 import {PlaceConcert} from "@/lib/concert_places";
 import translateMessage from "@/constants/messages";
@@ -60,7 +68,11 @@ const DeleteConcertPlace = ({id}) => {
             mutateIndex('/places');
             router.push(Routes.PLACES);
         } catch (error) {
+            setDeleteError(true);
+            setProcessing(false);
+            handleClose();
             if (error.response) {
+                //alert(translateMessage(error.response.data.message));
                 console.log(error.response);
             } else if (error.request) {
                 console.log(error.request);
@@ -89,7 +101,12 @@ const DeleteConcertPlace = ({id}) => {
                 aria-describedby="alert-dialog-description"
             >
                 <DialogTitle id="alert-dialog-title">{"¿Deseas eliminar este lugar?"}</DialogTitle>
-
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        🎼 Asegúrese de no tener <em><strong>conciertos</strong></em>en este lugar primero.🎹 <br/>
+                        De lo contrario no podrá eliminarlo ❌
+                    </DialogContentText>
+                </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose} color="primary">
                         Cancelar

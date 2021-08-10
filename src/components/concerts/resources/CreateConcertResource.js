@@ -3,7 +3,7 @@ import React, {useState} from "react";
 import {useForm} from "react-hook-form";
 import useSWR from "swr";
 import {
-    Button,
+    Button, CircularProgress,
     Dialog,
     DialogActions,
     DialogContent,
@@ -20,6 +20,9 @@ import {useRouter} from "next/router";
 import LinkIcon from "@material-ui/icons/Link";
 import {ConcertResource} from "@/lib/concert_resources";
 import AddIcon from "@material-ui/icons/Add";
+import translateMessage from "@/constants/messages";
+import SnackSuccess from "@/components/SnackSuccess";
+import SnackError from "@/components/SnackError";
 
 const useStyles = makeStyles((theme) => ({
     addresources: {
@@ -31,26 +34,63 @@ const useStyles = makeStyles((theme) => ({
             backgroundColor: "#ffeb33",
         },
     },
+    wrapper: {
+        margin: theme.spacing(1),
+        position: 'relative',
+    },
+    buttonProgress: {
+        color: '#0d47a1',
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        marginTop: -12,
+        marginLeft: -12,
+    },
 }));
 
 const CreateConcertResource = () => {
 
     const classes = useStyles();
-
     const router = useRouter();
     const {id} = router.query;
-
     const {data: concerts} = useSWR(`/concerts`, fetcher);
     const {data: resources} = useSWR(`/resources`, fetcher);
     const {data: concertResources, mutate, error} = useSWR(`/concerts/${id}/resources`, fetcher);
-
     const { register, handleSubmit, reset} = useForm();
+    const [modal, setModal] = useState(false);
     const [concertSelected, setConcertSelected] = useState(null);
     const [resourceSelected, setResourceSelected] = useState(null);
-    const [open, setOpen] = useState(false);
+    const [createSuccess, setCreateSuccess] = useState(false);
+    const [createError, setCreateError] = useState(false);
+    const [processing, setProcessing] = useState(false);
+
+    if(error) return <div>"Recarga la página para continuar..."</div>;
+    if(!concertResources) return <Loading/>;
+    if(!concerts) return <Loading/>;
+    if(!resources) return <Loading/>;
+
+    const handleOpen = () => {
+        reset();
+        setCreateSuccess(false);
+        setCreateError(false);
+        setModal(true);
+    };
+
+    const handleClose = () => {
+        setProcessing(false);
+        setModal(false);
+    };
+
+    const handleChangeConcert = () => {
+        setConcertSelected({concertSelected});
+    };
+
+    const handleChangeResource = () => {
+        setResourceSelected({resourceSelected});
+    };
 
     const onSubmit = async (data) => {
-        console.log('data', data);
+        console.log('data vinculo', data);
 
         const newConcertResource = {
             concert_id: data.concert_id,
@@ -62,14 +102,19 @@ const CreateConcertResource = () => {
         formData.append("resource_id", newConcertResource.resource_id);
 
         try {
+            setProcessing(true);
             await ConcertResource.create(id,formData);
             mutate(`/concerts/${id}/resources`);
             handleClose();
+            setCreateSuccess(true);
         } catch (error) {
+            setCreateError(true);
+            setProcessing(false);
+            handleClose();
             if (error.response) {
                 // The request was made and the server responded with a status code
                 // that falls out of the range of 2xx
-                alert(error.response.message);
+                alert(translateMessage(error.response.data.message));
                 console.error(error.response);
             } else if (error.request) {
                 // The request was made but no response was received
@@ -84,32 +129,6 @@ const CreateConcertResource = () => {
         }
         reset();
     };
-
-    const handleOpen = () => {
-        reset();
-        setOpen(true);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-    };
-
-    const handleChangeConcert = () => {
-        setConcertSelected({concertSelected});
-    };
-
-    const handleChangeResource = () => {
-        setResourceSelected({resourceSelected});
-    };
-
-    const handleValidate = () =>{
-        setTimeout(handleClose,500000);
-    };
-
-    if(error) return <div>"Recarga la página para continuar..."</div>;
-    if(!concertResources) return <Loading/>;
-    if(!concerts) return <Loading/>;
-    if(!resources) return <Loading/>;
 
     return (
         <div>
@@ -130,7 +149,7 @@ const CreateConcertResource = () => {
             {/*    </Fab>*/}
             {/*</Tooltip>*/}
 
-            <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+            <Dialog open={modal} onClose={handleClose} aria-labelledby="form-dialog-title">
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <DialogTitle id="form-dialog-title">InConcerto</DialogTitle>
 
@@ -138,12 +157,14 @@ const CreateConcertResource = () => {
                         <DialogContentText>
                             Por favor llena los siguientes campos:
                         </DialogContentText>
-                        <InputLabel htmlFor="outlined-age-native-simple">Conciertos</InputLabel>
+                        <InputLabel htmlFor="outlined-age-native-simple">Concierto</InputLabel>
                         <Select
                             fullWidth
                             autoFocus
+                            disabled={processing}
                             native
                             value={concertSelected}
+                            defaultValue={id}
                             onChange={handleChangeConcert}
                             {...register("concert_id")}
                         >
@@ -158,6 +179,7 @@ const CreateConcertResource = () => {
                         <Select
                             fullWidth
                             autoFocus
+                            disabled={processing}
                             native
                             value={resourceSelected}
                             onChange={handleChangeResource}
@@ -173,12 +195,22 @@ const CreateConcertResource = () => {
                         <Button onClick={handleClose} color="primary">
                             Cancelar
                         </Button>
-                        <Button onClick={handleValidate} color="primary" type="submit">
-                            Vincular
-                        </Button>
+                        <div className={classes.wrapper}>
+                            <Button
+                                disabled={processing}
+                                //onClick={handleValidate}
+                                color="primary"
+                                type="submit"
+                            >
+                                Vincular
+                            </Button>
+                            {processing && <CircularProgress size={24} className={classes.buttonProgress} />}
+                        </div>
                     </DialogActions>
                 </form>
             </Dialog>
+            {createSuccess && <SnackSuccess/>}
+            {createError && <SnackError/>}
         </div>
     );
 };

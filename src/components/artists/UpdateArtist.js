@@ -25,6 +25,7 @@ import * as yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
 import SnackInfo from "@/components/SnackInfo";
 import SnackError from "@/components/SnackError";
+import {useRouter} from "next/router";
 
 const useStyles = makeStyles((theme) => ({
     edit:{
@@ -59,6 +60,8 @@ const schema = yup.object().shape({
 const UpdateArtist = ({id}) => {
 
     const classes = useStyles();
+    //const router = useRouter();
+    //const {idConcert} = router.query;
     const { data: artist, mutate, error } = useSWR(`/artists/${id}`, fetcher);
     const { register, handleSubmit, reset, formState:{ errors } } = useForm({
         resolver: yupResolver(schema)
@@ -115,6 +118,10 @@ const UpdateArtist = ({id}) => {
                 observation: ((data.observation) === "") ? `Vacío (${artist.id})` : data.observation,
             });
             mutateIndex('/artists');
+            //mutateIndex(`/artists/${id}`);
+            //mutateIndex(`/concerts/${idConcert}`);
+            //mutateIndex(`/concerts/${idConcert}/artists`);
+            //mutateIndex(`/concerts/${idConcert}/artists/${id}`);
             mutate();
             handleClose();
             setUpdateInfo(true);

@@ -24,6 +24,8 @@ import CreateArtist from "@/components/artists/CreateArtist";
 import SnackSuccess from "@/components/SnackSuccess";
 import DeleteCalendarArtist from "@/components/calendars/artists/DeleteCalendarArtist";
 import DeleteLodgingArtist from "@/components/lodgings/artists/DeleteLodgingArtist";
+import CreateLodgingArtist from "@/components/lodgings/artists/CreateLodgingArtist";
+import UpdateLodgingArtist from "@/components/lodgings/artists/UpdateLodgingArtist";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -72,6 +74,10 @@ const ReadLodgingArtists = ({id}) => {
     return (
         <div>
             <h1>Artistas Hospedados</h1>
+
+            <Grid container alignItems="flex-start" justify="flex-end" direction="row">
+                <CreateLodgingArtist/>
+            </Grid>
             <TableContainer component={Paper}>
                 <Table size="small" aria-label="a dense table">
                     <TableHead className={classes.head}>
@@ -97,7 +103,7 @@ const ReadLodgingArtists = ({id}) => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {lodgingArtists.data ? <SnackSuccess/> : <Loading/>}
+                        {/*{lodgingArtists.data ? <SnackSuccess/> : <Loading/>}*/}
                         {lodgingArtists.data && lodgingArtists.data.map((lodgingArtist => {
                             var passage = ((lodgingArtist.passage) === 0) ? "No" : "Si" ;
 
@@ -133,11 +139,12 @@ const ReadLodgingArtists = ({id}) => {
                                             </Link>
                                         </td>
                                         <td>
-                                            <UpdateArtist id={lodgingArtist.id} />
+                                            <UpdateLodgingArtist idArtist={lodgingArtist.id} idLodging={id}/>
+                                            {/*<UpdateArtist id={lodgingArtist.id} />*/}
                                             {/*<UpdateCalendarArtist idArtist={artistCalendar.id}/>*/}
                                         </td>
                                         <td>
-                                            <DeleteLodgingArtist idArtist={lodgingArtist.id} />
+                                            <DeleteLodgingArtist idArtist={lodgingArtist.id} idLodging={id}/>
                                         </td>
                                     </TableCell>
                                 </TableRow>

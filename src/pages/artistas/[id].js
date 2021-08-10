@@ -5,6 +5,11 @@ import {fetcher} from "../../utils";
 import withAuth from "@/hocs/withAuth";
 import {Grid, makeStyles, Paper, Typography} from "@material-ui/core";
 import ReadArtistFeedings from "@/components/artists/feedings/ReadArtistFeedings";
+import NotFound from "../404";
+import React from "react";
+import ReadCalendarArtists from "@/components/calendars/artists/ReadCalendarArtists";
+import ReadArtistCalendars from "@/components/artists/calendars/ReadArtistCalendars";
+import ReadArtistLodgings from "@/components/artists/lodgings/ReadArtistLodgings";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -24,7 +29,7 @@ const ArtistasID= () =>{
     const {id} = router.query;
     const {data: artist, error} = useSWR(`/artists/${id}`, fetcher);
 
-    if(error) return <div>"No se obtuvo el artista"</div>;
+    if(error) return <div><NotFound/></div>;
     if(!artist) return <Loading/>;
 
     return (
@@ -85,7 +90,9 @@ const ArtistasID= () =>{
                 </Paper>
                 <br/>
                 <br/>
+                <ReadArtistCalendars id={artist.id}/>
                 <ReadArtistFeedings id={artist.id}/>
+                <ReadArtistLodgings id={artist.id}/>
             </div>
         </div>
     );

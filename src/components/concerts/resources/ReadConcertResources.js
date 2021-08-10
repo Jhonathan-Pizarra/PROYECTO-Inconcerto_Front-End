@@ -24,6 +24,8 @@ import {Alert} from "@material-ui/lab";
 import UpdateResource from "@/components/resources/UpdateResource";
 import DeleteConcertResource from "@/components/concerts/resources/DeleteConcertResource";
 import CreateConcertResource from "@/components/concerts/resources/CreateConcertResource";
+import IconButton from "@material-ui/core/IconButton";
+import FindInPageIcon from "@material-ui/icons/FindInPage";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -105,6 +107,11 @@ const ReadConcertResources = ({id}) => {
                             <div className={classes.details}>
                                 <Grid container>
                                     <CardActions>
+                                      {/*  <Link href={`${Routes.RESOURCES}/${concertResource.id}`}>
+                                            <IconButton aria-label="ver"  size="small">
+                                                <FindInPageIcon />
+                                            </IconButton>
+                                        </Link>*/}
                                         <UpdateResource id={concertResource.id}/>
                                         <DeleteConcertResource idResource={concertResource.id}/>
                                     </CardActions>

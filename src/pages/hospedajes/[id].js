@@ -12,6 +12,7 @@ import ReadLodgingArtists from "@/components/lodgings/artists/ReadLodgingArtists
 import CreateLodgingArtist from "@/components/lodgings/artists/CreateLodgingArtist";
 import ReadLodgingUsers from "@/components/lodgings/users/ReadLodgingUsers";
 import CreateLodgingUser from "@/components/lodgings/users/CreateLodgingUser";
+import NotFound from "../404";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -24,7 +25,6 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-
 const HospedajesID= () =>{
 
     const classes = useStyles();
@@ -32,7 +32,7 @@ const HospedajesID= () =>{
     const {id} = router.query;
     const {data: lodging, error, mutate} = useSWR(`/lodgings/${id}`, fetcher);
 
-    if(error) return <div>"No se obtuvo el hospedaje"</div>;
+    if(error) return <div><NotFound/></div>;
     if(!lodging) return <Loading/>;
 
     return (
@@ -72,9 +72,7 @@ const HospedajesID= () =>{
             <br/>
             <br/>
             <ReadLodgingArtists id={lodging.id}/>
-            <CreateLodgingArtist/>
             <ReadLodgingUsers id={lodging.id}/>
-            <CreateLodgingUser/>
         </div>
     );
 
