@@ -1,15 +1,17 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {useState} from "react";
 import {useForm} from "react-hook-form";
 import {Festival} from "@/lib/festivals";
 import useSWR from "swr";
 import {useRouter} from "next/router";
 import {
-    Button, CircularProgress,
+    Button,
+    CircularProgress,
     Dialog,
     DialogActions,
     DialogContent,
     DialogContentText,
-    DialogTitle, makeStyles,
+    DialogTitle,
+    makeStyles,
     TextField
 } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";

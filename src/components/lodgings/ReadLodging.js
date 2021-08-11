@@ -20,7 +20,6 @@ import FindInPageIcon from "@material-ui/icons/FindInPage";
 import UpdateLodging from "@/components/lodgings/UpdateLodging";
 import DeleteLodging from "@/components/lodgings/DeleteLodging";
 import CreateLodging from "@/components/lodgings/CreateLodging";
-import SnackSuccess from "@/components/SnackSuccess";
 
 const useStyles = makeStyles((theme) => ({
     detail:{
@@ -106,7 +105,7 @@ const ReadLodging = () => {
                                             <UpdateLodging id={lodging.id}/>
                                         </td>
                                         <td>
-                                            <DeleteLodging id={lodging.id}/>
+                                            <DeleteLodging id={lodging.id} />
                                         </td>
                                     </TableCell>
                                 </TableRow>

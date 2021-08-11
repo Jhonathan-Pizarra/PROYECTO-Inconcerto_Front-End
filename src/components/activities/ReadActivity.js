@@ -3,10 +3,9 @@ import useSWR from "swr";
 import Loading from "@/components/Loading";
 import {
     Avatar,
-    Button, CardActions,
     Divider,
-    Grid, IconButton,
-    Link as MuiLink,
+    Grid,
+    IconButton,
     ListItem,
     ListItemAvatar,
     ListItemText,
@@ -18,7 +17,6 @@ import React from 'react';
 import CreateActivity from "@/components/activities/CreateActivity";
 import FormatListNumberedRtlIcon from '@material-ui/icons/FormatListNumberedRtl';
 import Routes from "@/constants/routes";
-import SnackSuccess from "@/components/SnackSuccess";
 import FindInPageIcon from "@material-ui/icons/FindInPage";
 import UpdateActivity from "@/components/activities/UpdateActivity";
 import DeleteActivity from "@/components/activities/DeleteActivity";

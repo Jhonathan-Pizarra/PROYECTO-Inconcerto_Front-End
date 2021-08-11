@@ -1,15 +1,7 @@
 import withAuth from "@/hocs/withAuth";
 import ReadUsers from "@/components/users/ReadUsers";
-import React, {useEffect, useState} from "react";
-import api from "@/lib/api";
-import cookie from "js-cookie";
-import useSWR from "swr";
-import {fetcher} from "../../utils";
+import React from "react";
 import {useAuth} from "@/lib/auth";
-import MenuItem from "@material-ui/core/MenuItem";
-import AccountCircle from "@material-ui/icons/AccountCircle";
-import Link from "next/link";
-import Routes from "@/constants/routes";
 import Loading from "@/components/Loading";
 import Unauthorized from "../401";
 

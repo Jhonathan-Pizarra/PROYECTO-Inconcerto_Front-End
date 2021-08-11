@@ -1,6 +1,5 @@
-import React, {useState} from "react";
+import React from "react";
 import Register from "../../pages/register";
-import Grid from "@material-ui/core/Grid";
 
 const CreateUser = () => {
 

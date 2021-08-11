@@ -5,7 +5,6 @@ import IconButton from "@material-ui/core/IconButton";
 import FindInPageIcon from "@material-ui/icons/FindInPage";
 import Link from "next/link";
 import {
-    Grid,
     makeStyles,
     Paper,
     Table,
@@ -21,7 +20,6 @@ import Routes from "@/constants/routes";
 import UpdateArtist from "@/components/artists/UpdateArtist";
 import DeleteArtist from "@/components/artists/DeleteArtist";
 import CreateArtist from "@/components/artists/CreateArtist";
-import SnackSuccess from "@/components/SnackSuccess";
 
 const useStyles = makeStyles((theme) => ({
     detail:{

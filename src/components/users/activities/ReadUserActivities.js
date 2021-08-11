@@ -2,10 +2,9 @@ import useSWR from "swr";
 import Loading from "@/components/Loading";
 import {
     Avatar,
-    Button, CardActions,
     Divider,
-    Grid, IconButton,
-    Link as MuiLink,
+    Grid,
+    IconButton,
     ListItem,
     ListItemAvatar,
     ListItemText,
@@ -14,16 +13,12 @@ import {
 } from "@material-ui/core";
 import Link from "next/link";
 import React from 'react';
-import CreateActivity from "@/components/activities/CreateActivity";
 import FormatListNumberedRtlIcon from '@material-ui/icons/FormatListNumberedRtl';
 import Routes from "@/constants/routes";
-import SnackSuccess from "@/components/SnackSuccess";
 import FindInPageIcon from "@material-ui/icons/FindInPage";
-import DeleteActivity from "@/components/activities/DeleteActivity";
 import {fetcher} from "../../../utils";
 import CreateUserActivity from "@/components/users/activities/CreateUserActivity";
 import UpdateUserActivity from "@/components/users/activities/UpdateUserActivity";
-import UpdateActivity from "@/components/activities/UpdateActivity";
 import DeleteUserActivity from "@/components/users/activities/DeleteUserActivity";
 
 const useStyles = makeStyles((theme) => ({
@@ -51,7 +46,7 @@ const ReadUserActivity = ({id}) => {
         <div>
             <h1>Tareas Usuario</h1>
 
-            <Grid container alignItems="flex-start" justify="flex-end" direction="row">
+            <Grid container alignItems="flex-start" justify="center" direction="row">
                 <CreateUserActivity/>
             </Grid>
             

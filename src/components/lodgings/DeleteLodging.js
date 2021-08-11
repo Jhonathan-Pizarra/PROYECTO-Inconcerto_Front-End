@@ -1,14 +1,13 @@
-import useSWR, {mutate as mutateIndex} from "swr";
+import {mutate as mutateIndex} from "swr";
 import {useRouter} from "next/router";
-import Loading from "@/components/Loading";
-import {fetcher} from "../../utils";
 import Routes from "@/constants/routes";
 import DeleteIcon from "@material-ui/icons/Delete";
 import {
     Button,
     CircularProgress,
     Dialog,
-    DialogActions, DialogContent,
+    DialogActions,
+    DialogContent,
     DialogContentText,
     DialogTitle,
     makeStyles

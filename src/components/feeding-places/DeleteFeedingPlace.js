@@ -1,13 +1,10 @@
-import useSWR from "swr";
+import {mutate as mutateIndex} from "swr";
 import {useRouter} from "next/router";
-import Loading from "@/components/Loading";
-import {fetcher} from "../../utils";
 import Routes from "@/constants/routes";
 import DeleteIcon from "@material-ui/icons/Delete";
 import {Button, CircularProgress, Dialog, DialogActions, DialogTitle, makeStyles} from "@material-ui/core";
-import React, {useEffect, useRef, useState} from "react";
+import React, {useState} from "react";
 import {FeedingPlace} from "@/lib/feeding_places";
-import {mutate as mutateIndex} from "swr";
 import SnackSuccess from "@/components/SnackSuccess";
 import SnackError from "@/components/SnackError";
 

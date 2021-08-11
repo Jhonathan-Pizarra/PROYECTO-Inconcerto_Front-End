@@ -1,17 +1,7 @@
 import {fetcher} from "../../utils";
 import useSWR from "swr";
 import Loading from "@/components/Loading";
-import {
-    Box,
-    Button,
-    Card,
-    CardActions,
-    CardContent,
-    Grid,
-    Link as MuiLink,
-    ListItem,
-    Typography
-} from "@material-ui/core";
+import {Box, Button, Card, CardActions, CardContent, Grid, Link as MuiLink, Typography} from "@material-ui/core";
 import Link from "next/link";
 import Routes from "@/constants/routes";
 import React from "react";
@@ -19,9 +9,6 @@ import {makeStyles} from '@material-ui/core/styles';
 import UpdateConcertPlace from "@/components/concert-places/UpdateConcertPlace";
 import DeleteConcertPlace from "@/components/concert-places/DeleteConcertPlace";
 import CreateConcertPlace from "@/components/concert-places/CreateConcertPlace";
-import SnackSuccess from "@/components/SnackSuccess";
-import UpdateEssay from "@/components/essays/UpdateEssay";
-import DeleteEssay from "@/components/essays/DeleteEssay";
 
 const useStyles = makeStyles({
     root: {

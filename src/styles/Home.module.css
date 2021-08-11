@@ -1,5 +1,5 @@
 body:not(.modal-open){
-  padding-right: 0px !important;
+  padding-right: 0 !important;
 }
 
 .container {
@@ -53,7 +53,7 @@ body:not(.modal-open){
 .title {
   margin: 0;
   line-height: 1.15;
-  font-size: 4rem;
+  font-size: 4vw;
 }
 
 .title,

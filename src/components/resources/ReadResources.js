@@ -4,7 +4,8 @@ import Loading from "@/components/Loading";
 import {
     Accordion,
     AccordionDetails,
-    AccordionSummary, Button,
+    AccordionSummary,
+    CardActions,
     Grid,
     IconButton,
     Link as MuiLink,
@@ -17,7 +18,6 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import UpdateResource from "@/components/resources/UpdateResource";
 import DeleteResource from "@/components/resources/DeleteResource";
 import CreateResource from "@/components/resources/CreateResource";
-import SnackSuccess from "@/components/SnackSuccess";
 import FindInPageIcon from "@material-ui/icons/FindInPage";
 import Link from "next/link";
 import Routes from "@/constants/routes";
@@ -119,9 +119,21 @@ const ReadResources = () => {
                                             justify="flex-start"
                                             alignItems="center"
                                         >
-                                            <Grid container item xs={7} sm={6}>
-                                                <span><UpdateResource id={resource.id}/></span>
-                                                <span style={{marginLeft:  10}}><DeleteResource id={resource.id}/></span>
+                                            <Grid container item xs={12} sm={6}>
+                                                <Grid item container justify="center" alignItems="center">
+                                                    <CardActions xs={3} sm={6} md={6} lg={3} xl={3} >
+                                                        <MuiLink>
+                                                            <UpdateResource id={resource.id}/>
+                                                        </MuiLink>
+                                                    </CardActions>
+                                                    <CardActions xs={3} sm={6} md={6} lg={3} xl={3} >
+                                                        <MuiLink>
+                                                            <DeleteResource id={resource.id}/>
+                                                        </MuiLink>
+                                                    </CardActions>
+                                                </Grid>
+                                                {/*<span><UpdateResource id={resource.id}/></span>*/}
+                                                {/*<span style={{marginLeft:  10}}><DeleteResource id={resource.id}/></span>*/}
                                             </Grid>
 
                                         </Grid>

@@ -3,10 +3,8 @@ import {useRouter} from "next/router";
 import Loading from "@/components/Loading";
 import {fetcher} from "../../utils";
 import withAuth from "@/hocs/withAuth";
-import {CardActions, Grid, Link as MuiLink, makeStyles, Paper, Typography} from "@material-ui/core";
+import {Box, Card, CardActions, CardContent, Grid, Link as MuiLink, makeStyles, Typography} from "@material-ui/core";
 import React from "react";
-import UpdateEssay from "@/components/essays/UpdateEssay";
-import DeleteEssay from "@/components/essays/DeleteEssay";
 import UpdateFeedingPlace from "@/components/feeding-places/UpdateFeedingPlace";
 import DeleteFeedingPlace from "@/components/feeding-places/DeleteFeedingPlace";
 import NotFound from "../404";
@@ -14,7 +12,8 @@ import NotFound from "../404";
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        flexGrow: 1,
+        //flexGrow: 1,
+        display: 'flex',
     },
     paper: {
         padding: theme.spacing(2),
@@ -23,6 +22,15 @@ const useStyles = makeStyles((theme) => ({
     },
     items: {
         textAlign: "center",
+    },
+    cardDimension: {
+        /*width: 240,
+        height: 420*/
+        width: 400,
+        height: 300
+    },
+    content: {
+        flex: '1 0 ',
     },
 }));
 
@@ -40,11 +48,18 @@ const FeedingPlaceID = () =>{
         <div>
             <h1>Detalle Lugar Alimentación</h1>
             <div>
-                <Paper className={classes.paper}>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12} sm container>
-                            <Grid item xs container direction="column" justify="center" alignItems="center" spacing={2}>
-                                <Grid item xs>
+                <Grid
+                    container
+                    direction="row"
+                    justifyContent="center"
+                    alignItems="center"
+                    justify="center"
+                    //alignItems="center"
+                >
+                    <Card className={classes.root}>
+                        <Box m={2} className={classes.cardDimension}>
+                            <CardContent className={classes.content}>
+
                                     <Typography gutterBottom variant="subtitle1" style={{textAlign: 'center'}}>
                                         <h2>{fplace.name}</h2>
                                     </Typography>
@@ -61,6 +76,7 @@ const FeedingPlaceID = () =>{
                                             </Typography>
                                         </Grid>
                                     </Grid>
+                                    <br/>
                                     <Grid container spacing={3}>
 
                                         <Grid item container justify="center" alignItems="center">
@@ -77,12 +93,11 @@ const FeedingPlaceID = () =>{
                                         </Grid>
 
                                     </Grid>
+                            </CardContent>
+                        </Box>
 
-                                </Grid>
-                            </Grid>
-                        </Grid>
-                    </Grid>
-                </Paper>
+                    </Card>
+                </Grid>
             </div>
         </div>
     );

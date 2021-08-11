@@ -1,11 +1,7 @@
-import {fetcher} from "../../../utils";
-import useSWR, {mutate as mutateID} from "swr";
+import {mutate as mutateTo} from "swr";
 import {useRouter} from "next/router";
-import Loading from "@/components/Loading";
-import Routes from "@/constants/routes";
 import {Button, CircularProgress, Dialog, DialogActions, DialogTitle, IconButton, makeStyles} from "@material-ui/core";
 import React, {useState} from "react";
-import LinkOffIcon from '@material-ui/icons/LinkOff';
 import {LodgingUser} from "@/lib/lodging_users";
 import BackspaceIcon from "@material-ui/icons/Backspace";
 import SnackSuccess from "@/components/SnackSuccess";
@@ -29,12 +25,12 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const DeleteLodgingUser = ({idUser}) => {
+const DeleteLodgingUser = ({idUser, idLodging}) => {
 
     const classes = useStyles();
     const router = useRouter();
-    const {id} = router.query;
-    const {data: lodgingUser, error} = useSWR(`/lodgings/${id}/users/${idUser}`, fetcher);
+    //const {id} = router.query;
+    //const {data: lodgingUser, error} = useSWR(`/lodgings/${id}/users/${idUser}`, fetcher);
     const [modal, setModal] = useState(false);
     const [deleteSuccess, setDeleteSuccess] = useState(false);
     const [deleteError, setDeleteError] = useState(false);
@@ -54,10 +50,10 @@ const DeleteLodgingUser = ({idUser}) => {
     const handleDelete = async () => {
         try {
             setProcessing(true);
-            await LodgingUser.delete(id, idUser);
+            await LodgingUser.delete(idLodging, idUser);
             setDeleteSuccess(true);
             handleClose();
-            mutateID(`/lodgings/${id}/users`);
+            mutateTo(`/lodgings/${idLodging}/users`);
             //router.push(Routes.CALENDARS);
         } catch (error) {
             setDeleteError(true);

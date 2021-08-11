@@ -90,11 +90,18 @@ const ReadLodgingUsers = ({id}) => {
                         {/*{userCalendars.data ? <SnackSuccess/> : <Loading/>}*/}
                         {userLodgings.data && userLodgings.data.map((userLodgings => {
 
+                            const d = new Date(userLodgings.created_at); ////Sun May 30 2021 00:18:00 GMT-0500 (hora de Ecuador)
+                            const year = d.getFullYear();
+                            const month = (d.getMonth()+1).toString().padStart(2, "0");
+                            const day = d.getDate().toString().padStart(2, "0");
+                            //var hours = ('0'+d.getHours()).substr(-2);
+                            //var min = d.getMinutes().toString().padStart(2, "0");
+                            const fulldate = year+'-'+month+'-'+day;
                             var rol = userLodgings.role === 'ROLE_ADMIN' ? 'Administrador':'Usuario';
 
                             return(
                                 <TableRow key={userLodgings.id}>
-                                    <TableCell align="left">{userLodgings.created_at}</TableCell>
+                                    <TableCell align="left">{fulldate}</TableCell>
                                     <TableCell align="left">{userLodgings.name}</TableCell>
                                     <TableCell align="left">{userLodgings.email}</TableCell>
                                     <TableCell align="left">{rol}</TableCell>
@@ -111,7 +118,7 @@ const ReadLodgingUsers = ({id}) => {
                                             </Link>
                                         </td>
                                         <td>
-                                            <DeleteLodgingUser idUser={userLodgings.id}/>
+                                            <DeleteLodgingUser idUser={userLodgings.id} idLodging={id}/>
                                         </td>
                                     </TableCell>
                                 </TableRow>

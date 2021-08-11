@@ -1,29 +1,27 @@
 import React, {useState} from "react";
 import {useForm} from "react-hook-form";
-import {Artist} from "@/lib/artists";
 import useSWR, {mutate as mutateIndex} from "swr";
 import {
-    Button, Checkbox, CircularProgress,
+    Button,
+    CircularProgress,
     Dialog,
     DialogActions,
     DialogContent,
     DialogContentText,
-    DialogTitle, Fab, FormControlLabel, Grid, InputLabel,
-    makeStyles, Select,
-    TextField, Tooltip
+    DialogTitle,
+    InputLabel,
+    makeStyles,
+    Select,
+    TextField
 } from "@material-ui/core";
 import {fetcher} from "../../utils";
-import AddIcon from "@material-ui/icons/Add";
 import Loading from "@/components/Loading";
-import {useRouter} from "next/router";
 import EditIcon from "@material-ui/icons/Edit";
 import IconButton from "@material-ui/core/IconButton";
-import {Concert} from "@/lib/concerts";
 import {User} from "@/lib/users";
 import * as yup from "yup";
 import {yupResolver} from '@hookform/resolvers/yup';
 import SnackInfo from "@/components/SnackInfo";
-import translateMessage from "@/constants/messages";
 import SnackError from "@/components/SnackError";
 
 const schema = yup.object().shape({

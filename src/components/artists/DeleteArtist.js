@@ -1,7 +1,5 @@
 import {mutate as mutateIndex} from "swr";
 import {useRouter} from "next/router";
-import Loading from "@/components/Loading";
-import {fetcher} from "../../utils";
 import {Artist} from "@/lib/artists";
 import Routes from "@/constants/routes";
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -9,14 +7,14 @@ import {
     Button,
     CircularProgress,
     Dialog,
-    DialogActions, DialogContent,
+    DialogActions,
+    DialogContent,
     DialogContentText,
     DialogTitle,
     makeStyles
 } from "@material-ui/core";
 import React, {useState} from "react";
 import IconButton from "@material-ui/core/IconButton";
-import translateMessage from "@/constants/messages";
 import SnackSuccess from "@/components/SnackSuccess";
 import SnackError from "@/components/SnackError";
 

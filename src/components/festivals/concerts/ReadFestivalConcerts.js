@@ -2,7 +2,6 @@ import {fetcher} from "../../../utils";
 import useSWR from "swr";
 import Loading from "@/components/Loading";
 import {
-    Button,
     makeStyles,
     Paper,
     Table,
@@ -16,9 +15,6 @@ import {
 import React, {useState} from "react";
 import Link from "next/link";
 import Routes from "@/constants/routes";
-import {useRouter} from "next/router";
-import UpdateConcert from "@/components/concerts/UpdateConcert";
-import DeleteConcert from "@/components/concerts/DeleteConcert";
 import FindInPageIcon from "@material-ui/icons/FindInPage";
 import IconButton from "@material-ui/core/IconButton";
 import DeleteFestivalConcert from "@/components/festivals/concerts/DeleteFestivalConcert";

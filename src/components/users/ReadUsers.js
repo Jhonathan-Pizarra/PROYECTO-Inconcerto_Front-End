@@ -5,7 +5,6 @@ import IconButton from "@material-ui/core/IconButton";
 import FindInPageIcon from "@material-ui/icons/FindInPage";
 import Link from "next/link";
 import {
-    Grid,
     makeStyles,
     Paper,
     Table,
@@ -18,7 +17,6 @@ import {
 } from "@material-ui/core";
 import React, {useState} from "react";
 import Routes from "@/constants/routes";
-import SnackSuccess from "@/components/SnackSuccess";
 import CreateUser from "@/components/users/CreateUser";
 import UpdateUser from "@/components/users/UpdateUser";
 import DeleteUser from "@/components/users/DeleteUser";

@@ -4,7 +4,8 @@ import {Artist} from "@/lib/artists";
 import useSWR from "swr";
 import {
     Button,
-    Checkbox, CircularProgress,
+    Checkbox,
+    CircularProgress,
     Dialog,
     DialogActions,
     DialogContent,

@@ -1,29 +1,22 @@
 import {fetcher} from "../../../utils";
 import React, {useState} from "react";
 import {useForm} from "react-hook-form";
-import useSWR from "swr";
+import useSWR, {mutate as mutateTo} from "swr";
 import {
     Button,
-    Checkbox, CircularProgress,
+    CircularProgress,
     Dialog,
     DialogActions,
     DialogContent,
     DialogContentText,
     DialogTitle,
-    Fab,
-    FormControlLabel,
-    Grid,
     InputLabel,
     makeStyles,
-    Select,
-    TextField,
-    Tooltip
+    Select
 } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import Loading from "@/components/Loading";
 import {useRouter} from "next/router";
-import PersonAddIcon from '@material-ui/icons/PersonAdd';
-import LinkIcon from "@material-ui/icons/Link";
 import {CalendarUser} from "@/lib/calendar_users";
 import SnackSuccess from "@/components/SnackSuccess";
 import SnackError from "@/components/SnackError";
@@ -32,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
     addusers: {
         /*display: 'inline-flex',*/
         //position: '-moz-initial',//a la derecha
-        bottom: theme.spacing(3),
+        //bottom: theme.spacing(3),
         backgroundColor: "#ffeb33",
         "&:hover, &:focus": {
             backgroundColor: "#ffeb33",
@@ -57,9 +50,9 @@ const CreateCalendarUser = () => {
     const classes = useStyles();
     const router = useRouter();
     const {id} = router.query;
+    const {data: calendarUsers, mutate, error} = useSWR(`/calendars/${id}/users`, fetcher);
     const {data: calendars} = useSWR(`/calendars`, fetcher);
     const {data: users} = useSWR(`/users`, fetcher);
-    const {data: calendarUsers, mutate, error} = useSWR(`/calendars/${id}/users`, fetcher);
     const { register, handleSubmit, reset} = useForm();
     const [calendarSelected, setCalendarSelected] = useState(null);
     const [userSelected, setUserSelected] = useState(null);
@@ -108,7 +101,7 @@ const CreateCalendarUser = () => {
         try {
             setProcessing(true);
             await CalendarUser.create(id,formData);
-            mutate(`/calendars/${id}/users`);
+            mutateTo(`/calendars/${id}/users`);
             handleClose();
             setCreateSuccess(true);
         } catch (error) {

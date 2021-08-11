@@ -3,26 +3,24 @@ import {useForm} from "react-hook-form";
 import {Concert} from "@/lib/concerts";
 import {
     Button,
-    Checkbox, CircularProgress,
+    Checkbox,
+    CircularProgress,
     Dialog,
     DialogActions,
     DialogContent,
     DialogContentText,
     DialogTitle,
-    Fab,
     FormControlLabel,
     InputLabel,
     makeStyles,
     Select,
-    TextField,
-    Tooltip
+    TextField
 } from "@material-ui/core";
 import Loading from "@/components/Loading";
 import AddIcon from "@material-ui/icons/Add";
 import translateMessage from "@/constants/messages";
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from "yup";
-import MySnacks from "@/components/SnackSuccess";
 import SnackSuccess from "@/components/SnackSuccess";
 import SnackError from "@/components/SnackError";
 import {fetcher} from "../../../utils";
@@ -67,9 +65,9 @@ const CreateConcertPlaceConcert = () => {
     const classes = useStyles();
     const router = useRouter();
     const {id} = router.query;
+    const {data: place} = useSWR(`/places/${id}`, fetcher);
     const {data: concert, error} = useSWR(`/concerts`, fetcher);
     const {data: festivals} = useSWR(`/festivals`, fetcher);
-    const {data: place} = useSWR(`/places/${id}`, fetcher);
     const { register, handleSubmit, reset, formState:{ errors } } = useForm({
         resolver: yupResolver(schema)
     });
@@ -140,7 +138,7 @@ const CreateConcertPlaceConcert = () => {
         try {
             setProcessing(true);
             await Concert.create(formData);
-            mutate(`/places/${id}/concerts`);
+            mutate(`/places/${id}/concerts`); //En este caso yo no tengo en mi API esta ruta ni, pero arbitrariamente le quemo el ID
             handleClose();
             setCreateSuccess(true);
             // console.log("file", fileInputRef.current.files[0]);

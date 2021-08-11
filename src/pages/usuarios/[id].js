@@ -3,23 +3,33 @@ import {useRouter} from "next/router";
 import Loading from "@/components/Loading";
 import {fetcher} from "../../utils";
 import withAuth from "@/hocs/withAuth";
-import {Grid, Link as MuiLink, makeStyles, Paper, Typography} from "@material-ui/core";
-import Link from "next/link";
+import {Box, Card, CardContent, Grid, makeStyles, Typography} from "@material-ui/core";
 import NotFound from "../404";
 import React from "react";
 import ReadUserCalendars from "@/components/users/calendars/ReadUserCalendars";
 import ReadUserFeedings from "@/components/users/feedings/ReadUserFeedings";
 import ReadUserActivities from "@/components/users/activities/ReadUserActivities";
 import ReadUserLodging from "@/components/users/lodgings/ReadUserLodging";
+import Image from "next/image";
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        flexGrow: 1,
+        //flexGrow: 1,
+        display: 'flex',
     },
     paper: {
         padding: theme.spacing(2),
         margin: 'auto',
         maxWidth: '30%',
+    },
+    cardDimension: {
+        /*width: 240,
+        height: 420*/
+        width: 400,
+        height: 350
+    },
+    content: {
+        flex: '1 0 ',
     },
 }));
 
@@ -45,34 +55,48 @@ const UsuariosID = () => {
         <div>
             <h1>Detalle Usuario</h1>
             <div>
-                <Paper className={classes.paper}>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12} sm container>
-                            <Grid item xs container direction="column" justify="center" alignItems="center" spacing={2}>
-                                <Grid item xs>
-                                    <Typography gutterBottom variant="subtitle1" style={{textAlign: 'center'}}>
-                                        <h2>{user.name}</h2>
-                                    </Typography>
-                                    <Typography variant="body2" gutterBottom>
-                                        <p><b>Fecha Registro:</b>&ensp;{fulldate}</p>
-                                    </Typography>
-                                    <Typography variant="body2" gutterBottom>
-                                        <p><b>Email:</b>&ensp;{user.email}</p>
-                                    </Typography>
-                                    <Typography variant="body2" gutterBottom>
-                                        <p><b>Rol:</b>&ensp;{user.role === 'ROLE_ADMIN' ? 'Administrador':'Usuario'}</p>
-                                    </Typography>
+                <Grid container className={classes.root} spacing={3} direction='row' justify='flex-start'>
+                    <Grid container item xs={12} sm={6} md={4} lg={3} xl={3} >
+                        <Card className={classes.root}>
+                            <Box m={2} className={classes.cardDimension}>
+                                <CardContent className={classes.content}>
 
-                                </Grid>
 
-                            </Grid>
-                        </Grid>
+                                        <Typography gutterBottom variant="subtitle1" style={{textAlign: 'center'}}>
+                                            <h2>{user.name}</h2>
+                                        </Typography>
+                                        <Typography variant="body2" gutterBottom>
+                                            <p><b>Fecha Registro:</b>&ensp;{fulldate}</p>
+                                        </Typography>
+                                        <Typography variant="body2" gutterBottom>
+                                            <p><b>Email:</b>&ensp;{user.email}</p>
+                                        </Typography>
+                                        <Typography variant="body2" gutterBottom>
+                                            <p><b>Rol:</b>&ensp;{user.role === 'ROLE_ADMIN' ? 'Administrador':'Usuario'}</p>
+                                        </Typography>
+
+                                    <Image
+                                        src="/logo1-inconcerto.png"
+                                        alt="InConcerto"
+                                        width={550}
+                                        height={'auto'}
+                                    />
+
+                                </CardContent>
+                            </Box>
+
+                        </Card>
+
                     </Grid>
-                </Paper>
+                    <Grid item xs={12} sm={6} md={8} lg={9} xl={9}>
+                        <ReadUserActivities id={user.id}/>
+                    </Grid>
+                </Grid>
             </div>
+            <br/>
             <ReadUserCalendars id={user.id}/>
             <ReadUserFeedings id={user.id}/>
-            <ReadUserActivities id={user.id}/>
+            {/*<ReadUserActivities id={user.id}/>*/}
             <ReadUserLodging id={user.id}/>
         </div>
     );

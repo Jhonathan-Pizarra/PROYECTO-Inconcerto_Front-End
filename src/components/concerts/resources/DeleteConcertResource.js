@@ -1,22 +1,8 @@
-import {fetcher} from "../../../utils";
-import useSWR, {mutate as mutateID} from "swr";
+import {mutate as mutateID} from "swr";
 import {useRouter} from "next/router";
-import Loading from "@/components/Loading";
-import Routes from "@/constants/routes";
-import DeleteIcon from "@material-ui/icons/Delete";
-import {
-    Button, CircularProgress,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogContentText,
-    DialogTitle,
-    IconButton,
-    makeStyles
-} from "@material-ui/core";
+import {Button, CircularProgress, Dialog, DialogActions, DialogTitle, makeStyles} from "@material-ui/core";
 import React, {useState} from "react";
 import {ConcertResource} from "@/lib/concert_resources";
-import translateMessage from "@/constants/messages";
 import SnackSuccess from "@/components/SnackSuccess";
 import SnackError from "@/components/SnackError";
 import BackspaceIcon from "@material-ui/icons/Backspace";
@@ -39,12 +25,12 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const DeleteConcertResource = ({idResource}) => {
+const DeleteConcertResource = ({idResource, idConcert}) => {
 
     const classes = useStyles();
     const router = useRouter();
-    const {id} = router.query;
-    const {data: concertResource, error} = useSWR(`/concerts/${id}/resources/${idResource}`, fetcher);
+    //const {id} = router.query;
+    //const {data: concertResource, error} = useSWR(`/concerts/${id}/resources/${idResource}`, fetcher);
     const [modal, setModal] = useState(false);
     const [deleteSuccess, setDeleteSuccess] = useState(false);
     const [deleteError, setDeleteError] = useState(false);
@@ -64,10 +50,10 @@ const DeleteConcertResource = ({idResource}) => {
     const handleDelete = async () => {
         try {
             setProcessing(true);
-            await ConcertResource.delete(id, idResource);
+            await ConcertResource.delete(idConcert, idResource);
             setDeleteSuccess(true);
             handleClose();
-            mutateID(`/concerts/${id}/resources`);
+            mutateID(`/concerts/${idConcert}/resources`);
         } catch (error) {
             setDeleteError(true);
             setProcessing(false);

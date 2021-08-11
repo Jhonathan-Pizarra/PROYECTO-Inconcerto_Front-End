@@ -6,31 +6,48 @@ import withAuth from "@/hocs/withAuth";
 import UpdateConcert from "@/components/concerts/UpdateConcert";
 import React from "react";
 import DeleteConcert from "@/components/concerts/DeleteConcert";
-import {CardActions, Grid, IconButton, Link as MuiLink, makeStyles, Paper, Typography} from "@material-ui/core";
+import {
+    Box,
+    Card,
+    CardActions,
+    CardContent,
+    Grid,
+    IconButton,
+    Link as MuiLink,
+    makeStyles,
+    Typography
+} from "@material-ui/core";
 import Link from "next/link";
-import ReadCalendarArtists from "@/components/calendars/artists/ReadCalendarArtists";
-import CreateCalendarArtist from "@/components/calendars/artists/CreateCalendarArtist";
 import ReadConcertArtists from "@/components/concerts/artists/ReadConcertArtists";
-import CreateConcertArtist from "@/components/concerts/artists/CreateConcertArtist";
 import ReadConcertResources from "@/components/concerts/resources/ReadConcertResources";
-import CreateConcertResource from "@/components/concerts/resources/CreateConcertResource";
 import FindInPageIcon from "@material-ui/icons/FindInPage";
 import NotFound from "../404";
+import Image from "next/image";
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        flexGrow: 1,
+        //flexGrow: 1,
+        display: 'flex',
     },
     paper: {
         padding: theme.spacing(2),
         margin: 'auto',
-        maxWidth: '30%',
+        maxWidth: '50%',
     },
     items: {
         textAlign: "center",
     },
     detail:{
         color: "#3f51b5",
+    },
+    cardDimension: {
+        /*width: 240,
+        height: 420*/
+        width: 400,
+        height: 320
+    },
+    content: {
+        flex: '1 0 ',
     },
 }));
 
@@ -48,11 +65,11 @@ const ConciertosID = () => {
         <div>
             <h1>Detalle Concierto</h1>
             <div>
-                <Paper className={classes.paper}>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12} sm container>
-                            <Grid item xs container direction="column" justify="center" alignItems="center" spacing={2}>
-                                <Grid item xs>
+                <Grid container className={classes.root} spacing={3} direction='row' justify='flex-start'>
+                    <Grid container item xs={12} sm={6} md={4} lg={3} xl={3} >
+                        <Card className={classes.root}>
+                            <Box m={2} className={classes.cardDimension}>
+                                <CardContent className={classes.content}>
                                     <Typography gutterBottom variant="subtitle1" style={{textAlign: 'center'}}>
                                         <h2>{concert.name}</h2>
                                     </Typography>
@@ -75,7 +92,6 @@ const ConciertosID = () => {
                                         </Grid>
                                     </Grid>
                                     <br/>
-
                                     <Typography variant="body2" gutterBottom>
                                         <b>Festival:</b>&ensp;{concert.festival}
                                         <Link href={concert.festival_id} passHref>
@@ -117,16 +133,27 @@ const ConciertosID = () => {
                                             </CardActions>
                                         </Grid>
                                     </Grid>
+                                    <Image
+                                        src="/logo1-inconcerto.png"
+                                        alt="InConcerto"
+                                        width={550}
+                                        height={'auto'}
+                                    />
+                                </CardContent>
+                            </Box>
 
-                                </Grid>
-                            </Grid>
-                        </Grid>
+                        </Card>
+
                     </Grid>
-                </Paper>
+                    <Grid item xs={12} sm={6} md={8} lg={9} xl={9}>
+                        <ReadConcertArtists id={concert.id}/>
+                    </Grid>
+                </Grid>
+
             </div>
             <br/>
             <br/>
-            <ReadConcertArtists id={concert.id}/>
+            {/*<ReadConcertArtists id={concert.id}/>*/}
             <ReadConcertResources id={concert.id}/>
         </div>
     );

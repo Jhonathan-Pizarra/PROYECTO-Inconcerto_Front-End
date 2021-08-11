@@ -18,15 +18,9 @@ import {
 } from "@material-ui/core";
 import React, {useState} from "react";
 import Routes from "@/constants/routes";
-import UpdateArtist from "@/components/artists/UpdateArtist";
-import DeleteArtist from "@/components/artists/DeleteArtist";
-import CreateArtist from "@/components/artists/CreateArtist";
-import SnackSuccess from "@/components/SnackSuccess";
-import DeleteCalendarArtist from "@/components/calendars/artists/DeleteCalendarArtist";
 import DeleteLodgingArtist from "@/components/lodgings/artists/DeleteLodgingArtist";
 import CreateLodgingArtist from "@/components/lodgings/artists/CreateLodgingArtist";
 import UpdateLodgingArtist from "@/components/lodgings/artists/UpdateLodgingArtist";
-
 
 const useStyles = makeStyles((theme) => ({
     detail:{

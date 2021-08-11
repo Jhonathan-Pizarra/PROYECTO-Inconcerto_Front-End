@@ -3,7 +3,17 @@ import {useRouter} from "next/router";
 import Loading from "@/components/Loading";
 import {fetcher} from "../../utils";
 import withAuth from "@/hocs/withAuth";
-import {CardActions, Grid, IconButton, Link as MuiLink, makeStyles, Paper, Typography} from "@material-ui/core";
+import {
+    Box,
+    Card,
+    CardActions,
+    CardContent,
+    Grid,
+    IconButton,
+    Link as MuiLink,
+    makeStyles,
+    Typography
+} from "@material-ui/core";
 import Link from "next/link";
 import UpdateActivity from "@/components/activities/UpdateActivity";
 import DeleteActivity from "@/components/activities/DeleteActivity";
@@ -13,7 +23,8 @@ import NotFound from "../404";
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        flexGrow: 1,
+        //flexGrow: 1,
+        display: 'flex',
     },
     paper: {
         padding: theme.spacing(2),
@@ -23,9 +34,18 @@ const useStyles = makeStyles((theme) => ({
     detail:{
         color: "#3f51b5",
     },
+    cardDimension: {
+        /*width: 240,
+        height: 420*/
+        width: 400,
+        height: 400
+    },
+    content: {
+        flex: '1 0 ',
+    },
 }));
 
-const ActividadesID= () => {
+const ActividadesID = () => {
 
     const classes = useStyles();
     const router = useRouter();
@@ -39,11 +59,18 @@ const ActividadesID= () => {
         <div>
             <h1>Detalle Actividad</h1>
             <div>
-                <Paper className={classes.paper}>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12} sm container>
-                            <Grid item xs container direction="column" justify="center" alignItems="center" spacing={2}>
-                                <Grid item xs>
+                <Grid
+                    container
+                    direction="row"
+                    justifyContent="center"
+                    alignItems="center"
+                    justify="center"
+                    //alignItems="center"
+                >
+                    <Card className={classes.root}>
+                        <Box m={2} className={classes.cardDimension}>
+                            <CardContent className={classes.content}>
+
                                     <Typography gutterBottom variant="subtitle1" style={{textAlign: 'center'}}>
                                         <h2>{activity.name}</h2>
                                     </Typography>
@@ -80,7 +107,9 @@ const ActividadesID= () => {
                                         </Link>
                                     </Typography>
 
-                                    <Grid container spacing={3}>
+                                    <br/>
+
+                                    <Grid container spacing={2}>
                                         <Grid item container justify="center" alignItems="center">
                                             <CardActions xs={12} sm={4} md={4} lg={3} xl={3}>
                                                 <MuiLink>
@@ -95,12 +124,13 @@ const ActividadesID= () => {
                                         </Grid>
                                     </Grid>
 
-                                </Grid>
 
-                            </Grid>
-                        </Grid>
-                    </Grid>
-                </Paper>
+
+                            </CardContent>
+                        </Box>
+
+                    </Card>
+                </Grid>
             </div>
         </div>
     );

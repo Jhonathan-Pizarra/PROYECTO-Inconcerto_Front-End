@@ -9,7 +9,6 @@ import {CardActions, Grid, Link as MuiLink, makeStyles, Paper} from "@material-u
 import Typography from "@material-ui/core/Typography";
 import React from "react";
 import NotFound from "../404";
-import ReadPlaceConcerts from "@/components/concert-places/concerts/ReadConcertPlaceConcerts";
 import ReadConcertPlaceConcerts from "@/components/concert-places/concerts/ReadConcertPlaceConcerts";
 
 const useStyles = makeStyles((theme) => ({

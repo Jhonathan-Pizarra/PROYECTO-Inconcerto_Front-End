@@ -1,7 +1,7 @@
 import Loading from "@/components/Loading";
 import useSWR from "swr";
 import {fetcher} from "../../utils";
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {
     Box,
     Button,

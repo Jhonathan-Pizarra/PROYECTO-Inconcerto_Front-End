@@ -1,14 +1,8 @@
-import {fetcher} from "../../../utils";
-import useSWR, {mutate as mutateID} from "swr";
+import {mutate as mutateTo} from "swr";
 import {useRouter} from "next/router";
-import Loading from "@/components/Loading";
-import Routes from "@/constants/routes";
-import DeleteIcon from "@material-ui/icons/Delete";
 import {Button, CircularProgress, Dialog, DialogActions, DialogTitle, IconButton, makeStyles} from "@material-ui/core";
 import React, {useState} from "react";
-import {Calendar} from "@/lib/calendars";
 import {CalendarArtist} from "@/lib/calendar_artists";
-import LinkOffIcon from '@material-ui/icons/LinkOff';
 import SnackSuccess from "@/components/SnackSuccess";
 import SnackError from "@/components/SnackError";
 import BackspaceIcon from "@material-ui/icons/Backspace";
@@ -36,7 +30,7 @@ const DeleteCalendarArtist = ({idArtist, idCalendar}) => {
     const classes = useStyles();
     const router = useRouter();
     //const {id} = router.query;
-    const {data: calendarArtist, error} = useSWR(`/calendars/${idCalendar}/artists/${idArtist}`, fetcher);
+    //const {data: calendarArtist, error} = useSWR(`/calendars/${idCalendar}/artists/${idArtist}`, fetcher);
     const [modal, setModal] = useState(false);
     const [deleteSuccess, setDeleteSuccess] = useState(false);
     const [deleteError, setDeleteError] = useState(false);
@@ -59,7 +53,7 @@ const DeleteCalendarArtist = ({idArtist, idCalendar}) => {
             await CalendarArtist.delete(idCalendar, idArtist);
             setDeleteSuccess(true);
             handleClose();
-            mutateID(`/calendars/${idCalendar}/artists`);
+            mutateTo(`/calendars/${idCalendar}/artists`);
             //router.push(Routes.CALENDARS);
         } catch (error) {
             setDeleteError(true);

@@ -1,23 +1,9 @@
-import useSWR, {mutate as mutateIndex} from "swr";
-import {useRouter} from "next/router";
-import Loading from "@/components/Loading";
-import Routes from "@/constants/routes";
-import DeleteIcon from "@material-ui/icons/Delete";
-import {
-    Button,
-    CircularProgress,
-    Dialog,
-    DialogActions, DialogContent,
-    DialogContentText,
-    DialogTitle,
-    makeStyles
-} from "@material-ui/core";
+import {mutate as mutateIndex} from "swr";
+import {Button, CircularProgress, Dialog, DialogActions, DialogTitle, makeStyles} from "@material-ui/core";
 import React, {useState} from "react";
 import IconButton from "@material-ui/core/IconButton";
-import {Lodging} from "@/lib/lodgings";
 import SnackSuccess from "@/components/SnackSuccess";
 import SnackError from "@/components/SnackError";
-import {UserLodging} from "@/lib/user_lodgings";
 import BackspaceIcon from "@material-ui/icons/Backspace";
 import {ArtistLodging} from "@/lib/artist_lodging";
 
@@ -42,8 +28,8 @@ const useStyles = makeStyles((theme) => ({
 const DeleteArtistLodging = ({idLodging, idArtist}) => {
 
     const classes = useStyles();
-    const router = useRouter();
-    const {id} = router.query;
+    //const router = useRouter();
+    //const {id} = router.query;
     const [modal, setModal] = useState(false);
     const [deleteSuccess, setDeleteSuccess] = useState(false);
     const [deleteError, setDeleteError] = useState(false);
@@ -64,7 +50,7 @@ const DeleteArtistLodging = ({idLodging, idArtist}) => {
     const handleDelete = async () => {
         try {
             setProcessing(true);
-            await ArtistLodging.delete(id, idLodging);
+            await ArtistLodging.delete(idArtist, idLodging);
             setDeleteSuccess(true);
             handleClose();
             mutateIndex(`/artists/${idArtist}/lodgings`);
