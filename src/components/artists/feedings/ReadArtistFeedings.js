@@ -2,7 +2,7 @@ import {fetcher} from "../../../utils";
 import useSWR from "swr";
 import Loading from "@/components/Loading";
 import {
-    Button, Grid,
+    Grid,
     makeStyles,
     Paper,
     Table,
@@ -14,16 +14,10 @@ import {
     TableRow
 } from "@material-ui/core";
 import React, {useState} from "react";
-import CreateConcert from "@/components/concerts/CreateConcert";
 import Link from "next/link";
 import Routes from "@/constants/routes";
-import {useRouter} from "next/router";
-import SnackSuccess from "@/components/SnackSuccess";
 import IconButton from "@material-ui/core/IconButton";
 import FindInPageIcon from "@material-ui/icons/FindInPage";
-import UpdateFeeding from "@/components/feedings/UpdateFeeding";
-import DeleteFeeding from "@/components/feedings/DeleteFeeding";
-import CreateUserFeeding from "@/components/users/feedings/CreateUserFeeding";
 import CreateArtistFeeding from "@/components/artists/feedings/CreateArtistFeeding";
 import UpdateArtistFeeding from "@/components/artists/feedings/UpdateArtistFeeding";
 import DeleteArtistFeeding from "@/components/artists/feedings/DeleteArtistFeeding";

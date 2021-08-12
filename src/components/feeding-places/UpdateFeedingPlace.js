@@ -3,13 +3,15 @@ import {useForm} from "react-hook-form";
 import useSWR, {mutate as mutateIndex} from "swr";
 import {
     Button,
-    Checkbox, CircularProgress,
+    Checkbox,
+    CircularProgress,
     Dialog,
     DialogActions,
     DialogContent,
     DialogContentText,
     DialogTitle,
-    FormControlLabel, makeStyles,
+    FormControlLabel,
+    makeStyles,
     TextField
 } from "@material-ui/core";
 import {fetcher} from "../../utils";

@@ -3,7 +3,8 @@ import {useForm} from "react-hook-form";
 import useSWR from "swr";
 import {
     Button,
-    Checkbox, CircularProgress,
+    Checkbox,
+    CircularProgress,
     Dialog,
     DialogActions,
     DialogContent,

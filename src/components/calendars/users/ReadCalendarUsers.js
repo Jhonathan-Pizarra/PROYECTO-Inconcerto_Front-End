@@ -91,11 +91,18 @@ const ReadCalendarUsers = ({id}) => {
                         {/*{userCalendars.data ? <SnackSuccess/> : <Loading/>}*/}
                         {userCalendars.data && userCalendars.data.map((userCalendar => {
 
+                            const d = new Date(userCalendar.created_at); ////Sun May 30 2021 00:18:00 GMT-0500 (hora de Ecuador)
+                            const year = d.getFullYear();
+                            const month = (d.getMonth()+1).toString().padStart(2, "0");
+                            const day = d.getDate().toString().padStart(2, "0");
+                            //var hours = ('0'+d.getHours()).substr(-2);
+                            //var min = d.getMinutes().toString().padStart(2, "0");
+                            const fulldate = year+'-'+month+'-'+day;
                             var rol = userCalendar.role === 'ROLE_ADMIN' ? 'Administrador':'Usuario';
 
                             return(
                                 <TableRow key={userCalendar.id}>
-                                    <TableCell align="left">{userCalendar.created_at}</TableCell>
+                                    <TableCell align="left">{fulldate}</TableCell>
                                     <TableCell align="left">{userCalendar.name}</TableCell>
                                     <TableCell align="left">{userCalendar.email}</TableCell>
                                     <TableCell align="left">{rol}</TableCell>

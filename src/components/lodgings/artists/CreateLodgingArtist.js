@@ -1,33 +1,23 @@
 import {fetcher} from "../../../utils";
 import React, {useState} from "react";
 import {useForm} from "react-hook-form";
-import useSWR from "swr";
+import useSWR, {mutate as mutateTo} from "swr";
 import {
     Button,
-    Checkbox, CircularProgress,
+    CircularProgress,
     Dialog,
     DialogActions,
     DialogContent,
     DialogContentText,
     DialogTitle,
-    Fab,
-    FormControlLabel,
-    Grid,
     InputLabel,
     makeStyles,
-    Select,
-    TextField,
-    Tooltip
+    Select
 } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import Loading from "@/components/Loading";
-import {yupResolver} from '@hookform/resolvers/yup';
-import * as yup from "yup";
 import SnackSuccess from "@/components/SnackSuccess";
-import {CalendarArtist} from "@/lib/calendar_artists";
 import {useRouter} from "next/router";
-import PersonAddIcon from '@material-ui/icons/PersonAdd';
-import LinkIcon from '@material-ui/icons/Link';
 import {LodgingArtist} from "@/lib/lodging_artists";
 import SnackError from "@/components/SnackError";
 
@@ -60,9 +50,9 @@ const CreateLodgingArtist = () => {
     const classes = useStyles();
     const router = useRouter();
     const {id} = router.query;
+    const {data: lodgingArtists, mutate, error} = useSWR(`/lodgings/${id}/artists`, fetcher);
     const {data: lodgings} = useSWR(`/lodgings`, fetcher);
     const {data: artists} = useSWR(`/artists`, fetcher);
-    const {data: lodgingArtists, mutate, error} = useSWR(`/lodgings/${id}/artists`, fetcher);
     const { register, handleSubmit, reset} = useForm();
     const [lodgingSelected, setLodgingSelected] = useState(null);
     const [artistSelected, setArtistSelected] = useState(null);
@@ -111,7 +101,7 @@ const CreateLodgingArtist = () => {
         try {
             setProcessing(true);
             await LodgingArtist.create(id,formData);
-            mutate(`/lodgings/${id}/artists`);
+            mutateTo(`/lodgings/${id}/artists`);
             handleClose();
             setCreateSuccess(true);
         } catch (error) {

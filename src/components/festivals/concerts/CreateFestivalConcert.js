@@ -3,34 +3,29 @@ import {useForm} from "react-hook-form";
 import {Concert} from "@/lib/concerts";
 import useSWR, {mutate} from "swr";
 import {
-    Button, CardActions,
-    Checkbox, CircularProgress,
+    Button,
+    Checkbox,
+    CircularProgress,
     Dialog,
     DialogActions,
     DialogContent,
     DialogContentText,
     DialogTitle,
-    Fab,
-    FormControlLabel, FormHelperText, Grid,
-    InputLabel, Link as MuiLink,
+    FormControlLabel,
+    Grid,
+    InputLabel,
     makeStyles,
     Select,
-    TextField,
-    Tooltip
+    TextField
 } from "@material-ui/core";
-import Link from "next/link";
 import Loading from "@/components/Loading";
 import AddIcon from "@material-ui/icons/Add";
 import translateMessage from "@/constants/messages";
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from "yup";
-import MySnacks from "@/components/SnackSuccess";
 import SnackSuccess from "@/components/SnackSuccess";
-import EditIcon from "@material-ui/icons/Edit";
 import {fetcher} from "../../../utils";
 import {useRouter} from "next/router";
-import Routes from "@/constants/routes";
-import CreateConcertPlace from "@/components/concert-places/CreateConcertPlace";
 import CreatePlaceConcert from "@/components/festivals/concerts/places/CreatePlaceConcert";
 import SnackError from "@/components/SnackError";
 

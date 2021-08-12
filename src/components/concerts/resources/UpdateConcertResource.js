@@ -9,15 +9,15 @@ import {
     DialogContent,
     DialogContentText,
     DialogTitle,
-    IconButton,
     makeStyles,
     TextField
 } from "@material-ui/core";
 import Loading from "@/components/Loading";
 import EditIcon from "@material-ui/icons/Edit";
-import {Calendar} from "@/lib/calendars";
+import {Resource} from "@/lib/resources";
 import SnackInfo from "@/components/SnackInfo";
 import SnackError from "@/components/SnackError";
+import translateMessage from "@/constants/messages";
 import {fetcher} from "../../../utils";
 
 const useStyles = makeStyles((theme) => ({
@@ -38,36 +38,19 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-//Este {id} lo recibe desde el componente donde lo llamemos
-const UpdateUserCalendar = ({idCalendar, idUser}) => {
+//Este {id} lo recibe desde el componente donde lo llamemos, en este caso sería: <UpdateResorce id={resource.id}/>
+const UpdateConcertResource = ({id, idResource}) => {
 
     const classes = useStyles();
-    //const {data: calendar, mutate, error} = useSWR(`/calendars/${idCalendar}`, fetcher);
-    const {data: calendar, mutate, error} = useSWR(`/users/${idUser}/calendars/${idCalendar}`, fetcher);
+    const {data: resource, mutate, error} = useSWR(`/concerts/${id}/resources/${idResource}`, fetcher);
     const { register, handleSubmit, reset } = useForm();
     const [modal, setModal] = useState(false);
     const [updateInfo, setUpdateInfo] = useState(false);
     const [updateError, setUpdateError] = useState(false);
     const [processing, setProcessing] = useState(false);
 
-    if(error) return <div>"No se pudo editar el calendario..."</div>;
-    if(!calendar) return <Loading/>;
-
-    var inArtist = new Date(calendar.checkIn_Artist); ////Sun May 30 2021 00:18:00 GMT-0500 (hora de Ecuador)
-    var yearIn = inArtist.getFullYear();
-    var monthIn = (inArtist.getMonth()+1).toString().padStart(2, "0");
-    var dayIn = inArtist.getDate().toString().padStart(2, "0");
-    var hoursIn = ('0'+inArtist.getHours()).substr(-2);
-    var minIn = inArtist.getMinutes().toString().padStart(2, "0");
-    const dateIn = yearIn+'-'+monthIn+'-'+dayIn+'T'+hoursIn+':'+minIn;
-
-    var outArtist = new Date(calendar.checkOut_Artist); ////Sun May 30 2021 00:18:00 GMT-0500 (hora de Ecuador)
-    var yearOut = outArtist.getFullYear();
-    var monthOut = (outArtist.getMonth()+1).toString().padStart(2, "0");
-    var dayOut = outArtist.getDate().toString().padStart(2, "0");
-    var hoursOut = ('0'+outArtist.getHours()).substr(-2);
-    var minOut = outArtist.getMinutes().toString().padStart(2, "0");
-    const dateOut = yearOut+'-'+monthOut+'-'+dayOut+'T'+hoursOut+':'+minOut;
+    if(error) return <div>"Recarga la página para continuar..."</div>;
+    if(!resource) return <Loading/>;
 
     const handleOpen = () => {
         setUpdateInfo(false);
@@ -85,14 +68,13 @@ const UpdateUserCalendar = ({idCalendar, idUser}) => {
 
         try {
             setProcessing(true);
-            await Calendar.update(idCalendar, {
+            await Resource.update(idResource, {
                 ...data,
-                checkIn_Artist: ((data.checkIn_Artist) === "") ? dateIn : data.checkIn_Artist,
-                checkOut_Artist: ((data.checkOut_Artist) === "") ? dateOut : data.checkOut_Artist,
-                comingFrom: ((data.comingFrom) === "") ? `Vacío (${calendar.id})` : data.comingFrom,
-                flyNumber:  ((data.flyNumber) === "") ? `Vacío (${calendar.id})` : data.flyNumber,
+                name: ((data.name) === "") ? `Vacío (${resource.id})` : data.name,
+                quantity: (((data.quantity) === "") || ((data.quantity) < 0) ) ? '0' : data.quantity,
+                description: ((data.description) === "") ? `Sin descripción` : data.description,
             });
-            mutateIndex(`/users/${idUser}/calendars`);
+            mutateIndex(`/concerts/${id}/resources`);
             mutate();
             handleClose();
             setUpdateInfo(true);
@@ -101,6 +83,7 @@ const UpdateUserCalendar = ({idCalendar, idUser}) => {
             setProcessing(false);
             handleClose();
             if (error.response) {
+                alert(translateMessage(error.response.data.errors.name));
                 console.error(error.response);
             } else if (error.request) {
                 console.error(error.request);
@@ -116,9 +99,18 @@ const UpdateUserCalendar = ({idCalendar, idUser}) => {
     return (
         <div>
 
-             <IconButton aria-label="editar"  className={classes.edit} size="small" onClick={handleOpen} >
-                <EditIcon />
-            </IconButton>
+            <Button
+                variant="contained"
+                color="secondary"
+                startIcon={<EditIcon />}
+                onClick={handleOpen}
+            >
+                Editar
+            </Button>
+
+            {/*<IconButton aria-label="editar"  className={classes.edit} size="small" onClick={handleOpen} >*/}
+            {/*    <EditIcon />*/}
+            {/*</IconButton>*/}
 
             <Dialog open={modal} onClose={handleClose} aria-labelledby="form-dialog-title">
                 <form onSubmit={handleSubmit(onSubmit)}>
@@ -129,57 +121,50 @@ const UpdateUserCalendar = ({idCalendar, idUser}) => {
                             Por favor llena los siguientes campos:
                         </DialogContentText>
                         <TextField
-                            disabled={processing}
-                            id="datetime-local"
-                            label="Fecha de llegada"
-                            type="datetime-local"
-                            defaultValue={dateIn}
-                            margin="dense"
-                            //className={classes.textField}
-                            {...register('checkIn_Artist')}
-                            //dateConcert
-                            fullWidth
-                        />
-                    </DialogContent>
-
-                    <DialogContent>
-                        <TextField
-                            disabled={processing}
-                            id="datetime-local"
-                            label="Fecha de salida"
-                            type="datetime-local"
-                            defaultValue={dateOut}
-                            margin="dense"
-                            {...register('checkOut_Artist')}
-                            fullWidth
-                        />
-                    </DialogContent>
-
-                    <DialogContent>
-                        <TextField
+                            //autoFocus
+                            autoFocus={true}
                             disabled={processing}
                             margin="dense"
                             id="name"
-                            label="País del que proviene"
-                            defaultValue={calendar.comingFrom}
+                            label="Nombre"
+                            defaultValue={resource.name}
                             type="text"
-                            {...register('comingFrom')}
+                            {...register('name')}
                             fullWidth
+                        />
+                    </DialogContent>
+                    <DialogContent>
+                        <TextField
+                            autoFocus={true}
+                            disabled={processing}
+                            margin="dense"
+                            id="standard-number"
+                            label="Cantidad"
+                            type="number"
+                            defaultValue={resource.quantity}
+                            //autoFocus
+                            {...register('quantity')}
+                            helperText="(0 si no aplica)"
                         />
                     </DialogContent>
 
                     <DialogContent>
                         <TextField
+                            autoFocus={true}
                             disabled={processing}
                             margin="dense"
-                            id="name"
-                            label="# de vuelo"
-                            defaultValue={calendar.flyNumber}
+                            id="outlined-basic"
+                            label="Observación"
+                            defaultValue={resource.description}
                             type="text"
-                            {...register('flyNumber')}
+                            multiline
+                            rows={3}
+                            rowsMax={6}
+                            {...register('description')}
                             fullWidth
                         />
                     </DialogContent>
+
 
                     <DialogActions>
                         <Button onClick={handleClose} color="primary">
@@ -187,11 +172,10 @@ const UpdateUserCalendar = ({idCalendar, idUser}) => {
                         </Button>
                         <div className={classes.wrapper}>
                             <Button
-                                color="primary"
                                 disabled={processing}
-                                //onClick={handlePreUpdate}
-                                type="submit"
-                            >
+                                //onClick={handleClose}
+                                color="primary"
+                                type="submit">
                                 Editar
                             </Button>
                             {processing && <CircularProgress size={24} className={classes.buttonProgress} />}
@@ -205,4 +189,4 @@ const UpdateUserCalendar = ({idCalendar, idUser}) => {
     );
 };
 
-export default UpdateUserCalendar;
+export default UpdateConcertResource;

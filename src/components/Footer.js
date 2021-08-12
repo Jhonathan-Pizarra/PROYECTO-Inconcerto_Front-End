@@ -8,7 +8,6 @@ import PhoneIcon from '@material-ui/icons/Phone';
 import MailIcon from '@material-ui/icons/Mail';
 import React from "react";
 import Image from "next/image";
-import {white} from "colorette";
 
 const useStyles = makeStyles((theme) => ({
     copyright: {

@@ -1,14 +1,21 @@
 import {fetcher} from "../../utils";
 import useSWR from "swr";
 import Loading from "@/components/Loading";
-import {Accordion, AccordionDetails, AccordionSummary, Grid, Paper} from "@material-ui/core";
+import {
+    Accordion,
+    AccordionDetails,
+    AccordionSummary,
+    CardActions,
+    Grid,
+    Link as MuiLink,
+    Paper
+} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import React, {useState} from "react";
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import UpdateCalendar from "@/components/calendars/UpdateCalendar";
 import DeleteCalendar from "@/components/calendars/DeleteCalendar";
-import SnackSuccess from "@/components/SnackSuccess";
 import Link from "next/link";
 import Routes from "@/constants/routes";
 import IconButton from "@material-ui/core/IconButton";
@@ -112,6 +119,7 @@ const ReadCalendars = () => {
                                                     <Typography className={classes.secondaryHeading} ><b>Número vuelo:&ensp;</b>{calendar.flyNumber}</Typography>
                                                 </Grid>
 
+
                                             </Grid>
 
 
@@ -140,10 +148,20 @@ const ReadCalendars = () => {
                                                 justify="flex-start"
                                                 alignItems="center"
                                             >
-
-                                                <Grid container item xs={7} sm={6}>
-                                                    <span><UpdateCalendar id={calendar.id}/></span>
-                                                    <span style={{marginLeft:  10}}><DeleteCalendar id={calendar.id}/></span>
+                                                <Grid container item xs={12} sm={6}>
+                                                    <Grid item container justify="center" alignItems="center">
+                                                        <CardActions xs={3} sm={6} md={6} lg={3} xl={3} >
+                                                            <MuiLink>
+                                                                <UpdateCalendar id={calendar.id}/>                                                            </MuiLink>
+                                                        </CardActions>
+                                                        <CardActions xs={3} sm={6} md={6} lg={3} xl={3} >
+                                                            <MuiLink>
+                                                                <DeleteCalendar id={calendar.id}/>
+                                                            </MuiLink>
+                                                        </CardActions>
+                                                    </Grid>
+                                                    {/*<span><UpdateResource id={resource.id}/></span>*/}
+                                                    {/*<span style={{marginLeft:  10}}><DeleteResource id={resource.id}/></span>*/}
                                                 </Grid>
 
                                             </Grid>

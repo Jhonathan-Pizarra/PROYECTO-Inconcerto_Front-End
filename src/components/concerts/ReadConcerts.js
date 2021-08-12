@@ -2,7 +2,7 @@ import {fetcher} from "../../utils";
 import useSWR from "swr";
 import Loading from "@/components/Loading";
 import {
-    Button, IconButton,
+    IconButton,
     makeStyles,
     Paper,
     Table,
@@ -17,7 +17,6 @@ import React, {useState} from "react";
 import CreateConcert from "@/components/concerts/CreateConcert";
 import Link from "next/link";
 import Routes from "@/constants/routes";
-import SnackSuccess from "@/components/SnackSuccess";
 import FindInPageIcon from "@material-ui/icons/FindInPage";
 import UpdateConcert from "@/components/concerts/UpdateConcert";
 import DeleteConcert from "@/components/concerts/DeleteConcert";

@@ -1,9 +1,10 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {useState} from "react";
 import {useForm} from "react-hook-form";
 import {Festival} from "@/lib/festivals";
 import useSWR from "swr";
 import {
-    Button, CircularProgress,
+    Button,
+    CircularProgress,
     Dialog,
     DialogActions,
     DialogContent,
@@ -21,7 +22,6 @@ import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from "yup";
 import translateMessage from "@/constants/messages";
 import SnackSuccess from "@/components/SnackSuccess";
-import ReadFestivals from "@/components/festivals/ReadFestivals";
 import SnackError from "@/components/SnackError";
 
 const schema = yup.object().shape({

@@ -4,7 +4,8 @@ import {Concert} from "@/lib/concerts";
 import useSWR from "swr";
 import {
     Button,
-    Checkbox, CircularProgress,
+    Checkbox,
+    CircularProgress,
     Dialog,
     DialogActions,
     DialogContent,
@@ -24,7 +25,6 @@ import AddIcon from "@material-ui/icons/Add";
 import translateMessage from "@/constants/messages";
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from "yup";
-import MySnacks from "@/components/SnackSuccess";
 import SnackSuccess from "@/components/SnackSuccess";
 import SnackError from "@/components/SnackError";
 

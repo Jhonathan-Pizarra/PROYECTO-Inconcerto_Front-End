@@ -18,7 +18,6 @@ import {
 } from "@material-ui/core";
 import React, {useState} from "react";
 import Routes from "@/constants/routes";
-import UpdateCalendar from "@/components/calendars/UpdateCalendar";
 import DeleteUserCalendar from "@/components/users/calendars/DeleteUserCalendar";
 import UpdateUserCalendar from "@/components/users/calendars/UpdateUserCalendar";
 import CreateUserCalendar from "@/components/users/calendars/CreateUserCalendar";

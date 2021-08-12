@@ -1,33 +1,24 @@
 import {fetcher} from "../../../utils";
 import React, {useState} from "react";
 import {useForm} from "react-hook-form";
-import useSWR from "swr";
+import useSWR, {mutate as mutateTo} from "swr";
 import {
     Button,
-    Checkbox, CircularProgress,
+    CircularProgress,
     Dialog,
     DialogActions,
     DialogContent,
     DialogContentText,
     DialogTitle,
-    Fab,
-    FormControlLabel,
-    Grid,
     InputLabel,
     makeStyles,
-    Select,
-    TextField,
-    Tooltip
+    Select
 } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import Loading from "@/components/Loading";
-import {yupResolver} from '@hookform/resolvers/yup';
-import * as yup from "yup";
 import SnackSuccess from "@/components/SnackSuccess";
 import {CalendarArtist} from "@/lib/calendar_artists";
 import {useRouter} from "next/router";
-import PersonAddIcon from '@material-ui/icons/PersonAdd';
-import LinkIcon from "@material-ui/icons/Link";
 import SnackError from "@/components/SnackError";
 
 const useStyles = makeStyles((theme) => ({
@@ -59,9 +50,9 @@ const CreateCalendarArtist = () => {
     const classes = useStyles();
     const router = useRouter();
     const {id} = router.query;
+    const {data: calendarArtists, mutate, error} = useSWR(`/calendars/${id}/artists`, fetcher);
     const {data: calendars} = useSWR(`/calendars`, fetcher);
     const {data: artists} = useSWR(`/artists`, fetcher);
-    const {data: calendarArtists, mutate, error} = useSWR(`/calendars/${id}/artists`, fetcher);
     const { register, handleSubmit, reset} = useForm();
     const [modal, setModal] = useState(false);
     const [calendarSelected, setCalendarSelected] = useState(null);
@@ -110,7 +101,7 @@ const CreateCalendarArtist = () => {
         try {
             setProcessing(true);
             await CalendarArtist.create(id,formData);
-            mutate(`/calendars/${id}/artists`);
+            mutateTo(`/calendars/${id}/artists`);
             handleClose();
             setCreateSuccess(true);
         } catch (error) {

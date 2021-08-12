@@ -3,21 +3,27 @@ import {useForm} from "react-hook-form";
 import withAuth from "@/hocs/withAuth";
 import {useAuth} from "@/lib/auth";
 import {
-    Button, CircularProgress, Dialog,
+    Button,
+    CircularProgress,
+    Dialog,
     DialogActions,
     DialogContent,
     DialogContentText,
-    DialogTitle, Fab, InputLabel, makeStyles,
-    Paper, Select,
-    TextField, Tooltip
+    DialogTitle,
+    Fab,
+    InputLabel,
+    makeStyles,
+    Select,
+    TextField,
+    Tooltip
 } from "@material-ui/core";
-import Grid from "@material-ui/core/Grid";
 import AddIcon from "@material-ui/icons/Add";
 import {useRouter} from "next/router";
 import SnackSuccess from "@/components/SnackSuccess";
 import * as yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
 import SnackError from "@/components/SnackError";
+import Unauthorized from "./401";
 //import translateMessage from "@/constants/messages";
 
 const schema = yup.object().shape({
@@ -49,6 +55,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Register = () => {
 
+    const { user } = useAuth();
     const router = useRouter();
     const classes = useStyles();
     const { register: newUser } = useAuth();
@@ -61,6 +68,11 @@ const Register = () => {
     const [createSuccess, setCreateSuccess] = useState(false);
     const [createError, setCreateError] = useState(false);
     const [processing, setProcessing] = useState(false);
+
+    const ward = (user.id === undefined) ? user.user.id: user.id;
+    const rol = (user.name === undefined) ? user.user.role: user.role;
+    console.log("Valor ID?", ward);
+    console.log("Valor ROLE?", rol);
 
     const handleOpen = () => {
         reset();
@@ -112,8 +124,8 @@ const Register = () => {
         reset();
     };
 
-    return (
-        <div>
+    const renderRegister = (
+        <>
             <Tooltip title="Nuevo" aria-label="add" className={classes.fixed}>
                 <Fab  color="secondary" onClick={handleOpen} > {/*className={classes.fixed}*/}
                     <AddIcon />
@@ -320,6 +332,12 @@ const Register = () => {
                 </div>
                 <input type="submit"/>
             </form>*/}
+        </>
+    );
+
+    return (
+        <div>
+            {rol === 'ROLE_ADMIN' ? renderRegister : (<Unauthorized/>)}
         </div>
     );
 

@@ -18,10 +18,6 @@ import {
 } from "@material-ui/core";
 import React, {useState} from "react";
 import Routes from "@/constants/routes";
-import UpdateArtist from "@/components/artists/UpdateArtist";
-import DeleteArtist from "@/components/artists/DeleteArtist";
-import CreateArtist from "@/components/artists/CreateArtist";
-import SnackSuccess from "@/components/SnackSuccess";
 import DeleteCalendarArtist from "@/components/calendars/artists/DeleteCalendarArtist";
 import CreateCalendarArtist from "@/components/calendars/artists/CreateCalendarArtist";
 import UpdateCalendarArtist from "@/components/calendars/artists/UpdateCalendarArtist";

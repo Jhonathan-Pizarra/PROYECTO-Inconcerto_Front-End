@@ -1,34 +1,26 @@
 import React, {useState} from "react";
 import {useForm} from "react-hook-form";
-import {Concert} from "@/lib/concerts";
-import useSWR from "swr";
+import useSWR, {mutate as mutateTo} from "swr";
 import {
     Button,
-    Checkbox, CircularProgress,
+    CircularProgress,
     Dialog,
     DialogActions,
     DialogContent,
     DialogContentText,
     DialogTitle,
-    Fab,
-    FormControlLabel,
     InputLabel,
     makeStyles,
-    Select,
-    TextField,
-    Tooltip
+    Select
 } from "@material-ui/core";
 import Loading from "@/components/Loading";
 import AddIcon from "@material-ui/icons/Add";
 import translateMessage from "@/constants/messages";
-import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from "yup";
-import MySnacks from "@/components/SnackSuccess";
 import SnackSuccess from "@/components/SnackSuccess";
 import SnackError from "@/components/SnackError";
 import {useRouter} from "next/router";
 import {fetcher} from "../../../utils";
-import {ConcertResource} from "@/lib/concert_resources";
 import {ResourceConcert} from "@/lib/resoruce_concerts";
 
 const schema = yup.object().shape({
@@ -69,9 +61,9 @@ const CreateResourceConcert = () => {
     const classes = useStyles();
     const router = useRouter();
     const {id} = router.query;
+    const {data: concertResources, error} = useSWR(`/resources/${id}/concerts`, fetcher);
     const {data: concerts} = useSWR(`/concerts`, fetcher);
     const {data: resources} = useSWR(`/resources`, fetcher);
-    const {data: concertResources, mutate, error} = useSWR(`/resources/${id}/concerts`, fetcher);
     const { register, handleSubmit, reset} = useForm();
     const [modal, setModal] = useState(false);
     const [concertSelected, setConcertSelected] = useState(null);
@@ -120,7 +112,7 @@ const CreateResourceConcert = () => {
         try {
             setProcessing(true);
             await ResourceConcert.create(id,formData);
-            mutate(`/resources/${id}/concerts`);
+            mutateTo(`/resources/${id}/concerts`);
             handleClose();
             setCreateSuccess(true);
         } catch (error) {

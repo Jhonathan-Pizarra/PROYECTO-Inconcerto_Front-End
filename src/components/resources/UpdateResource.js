@@ -1,20 +1,21 @@
 import React, {useState} from "react";
 import {useForm} from "react-hook-form";
-import useSWR from "swr";
+import useSWR, {mutate as mutateIndex} from "swr";
 import {
-    Button, CircularProgress,
+    Button,
+    CircularProgress,
     Dialog,
     DialogActions,
     DialogContent,
     DialogContentText,
-    DialogTitle, makeStyles,
+    DialogTitle,
+    makeStyles,
     TextField
 } from "@material-ui/core";
 import {fetcher} from "../../utils";
 import Loading from "@/components/Loading";
 import EditIcon from "@material-ui/icons/Edit";
 import {Resource} from "@/lib/resources";
-import {mutate as mutateIndex} from "swr";
 import SnackInfo from "@/components/SnackInfo";
 import SnackError from "@/components/SnackError";
 import translateMessage from "@/constants/messages";

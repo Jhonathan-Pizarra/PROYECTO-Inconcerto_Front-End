@@ -1,31 +1,11 @@
 import Loading from "@/components/Loading";
 import useSWR from "swr";
 import {fetcher} from "../../../utils";
-import React, {useEffect, useState} from 'react';
-import {
-    Box,
-    Button,
-    Card,
-    CardActions,
-    CardContent,
-    CardMedia,
-    Grid,
-    Link as MuiLink,
-    makeStyles,
-    Typography
-} from "@material-ui/core";
-import Routes from "@/constants/routes";
-import Link from "next/link";
-import {data} from "browserslist";
-import Pagination from "@material-ui/lab/Pagination";
-import SnackSuccess from "@/components/SnackSuccess";
-import SnackError from "@/components/SnackError";
-import {Alert} from "@material-ui/lab";
-import UpdateResource from "@/components/resources/UpdateResource";
+import React from 'react';
+import {Box, Card, CardActions, CardContent, Grid, makeStyles, Typography} from "@material-ui/core";
 import DeleteConcertResource from "@/components/concerts/resources/DeleteConcertResource";
 import CreateConcertResource from "@/components/concerts/resources/CreateConcertResource";
-import IconButton from "@material-ui/core/IconButton";
-import FindInPageIcon from "@material-ui/icons/FindInPage";
+import UpdateConcertResource from "@/components/concerts/resources/UpdateConcertResource";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -112,8 +92,9 @@ const ReadConcertResources = ({id}) => {
                                                 <FindInPageIcon />
                                             </IconButton>
                                         </Link>*/}
-                                        <UpdateResource id={concertResource.id}/>
-                                        <DeleteConcertResource idResource={concertResource.id}/>
+                                        {/*<UpdateResource id={concertResource.id}/>*/}
+                                        <UpdateConcertResource idResource={concertResource.id} id={id}/>
+                                        <DeleteConcertResource idResource={concertResource.id} idConcert={id}/>
                                     </CardActions>
                                 </Grid>
                             </div>

@@ -3,17 +3,16 @@ import {useForm} from "react-hook-form";
 import useSWR, {mutate} from "swr";
 import {
     Button,
-    Checkbox, CircularProgress,
+    Checkbox,
+    CircularProgress,
     Dialog,
     DialogActions,
     DialogContent,
     DialogContentText,
     DialogTitle,
-    Fab,
     FormControlLabel,
     makeStyles,
-    TextField,
-    Tooltip
+    TextField
 } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import Loading from "@/components/Loading";
@@ -22,7 +21,6 @@ import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from "yup";
 import SnackSuccess from "@/components/SnackSuccess";
 import {fetcher} from "../../../../utils";
-import DeleteIcon from "@material-ui/icons/Delete";
 import SnackError from "@/components/SnackError";
 
 const schema = yup.object().shape({

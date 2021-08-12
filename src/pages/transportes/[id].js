@@ -5,7 +5,7 @@ import {fetcher} from "../../utils";
 import withAuth from "@/hocs/withAuth";
 import UpdateTransport from "@/components/transports/UpdateTransport";
 import DeleteTransport from "@/components/transports/DeleteTransport";
-import {CardActions, Grid, IconButton, Link as MuiLink, makeStyles, Paper} from "@material-ui/core";
+import {Box, Card, CardActions, CardContent, Grid, IconButton, Link as MuiLink, makeStyles} from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import Link from "next/link";
 import React from "react";
@@ -14,7 +14,8 @@ import NotFound from "../404";
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        flexGrow: 1,
+        //flexGrow: 1,
+        display: 'flex',
     },
     paper: {
         padding: theme.spacing(2),
@@ -24,9 +25,18 @@ const useStyles = makeStyles((theme) => ({
     detail:{
         color: "#3f51b5",
     },
+    cardDimension: {
+        /*width: 240,
+        height: 420*/
+        width: 400,
+        height: 300
+    },
+    content: {
+        flex: '1 0 ',
+    },
 }));
 
-const TransportesID= () =>{
+const TransportesID = () =>{
 
     const classes = useStyles();
     const router = useRouter();
@@ -41,11 +51,18 @@ const TransportesID= () =>{
         <div>
             <h1>Detalle Transporte</h1>
             <div>
-                <Paper className={classes.paper}>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12} sm container>
-                            <Grid item xs container direction="column" justify="center" alignItems="center" spacing={2}>
-                                <Grid item xs>
+                <Grid
+                    container
+                    direction="row"
+                    justifyContent="center"
+                    alignItems="center"
+                    justify="center"
+                    //alignItems="center"
+                >
+                    <Card className={classes.root}>
+                        <Box m={2} className={classes.cardDimension}>
+                            <CardContent className={classes.content}>
+
                                     <Typography gutterBottom variant="subtitle1" style={{textAlign: 'center'}}>
                                         <h2>{transport.type}</h2>
                                     </Typography>
@@ -88,11 +105,13 @@ const TransportesID= () =>{
                                         </Grid>
                                     </Grid>
 
-                                </Grid>
-                            </Grid>
-                        </Grid>
-                    </Grid>
-                </Paper>
+
+
+                            </CardContent>
+                        </Box>
+
+                    </Card>
+                </Grid>
             </div>
         </div>
     );

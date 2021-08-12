@@ -3,7 +3,6 @@ import useSWR from "swr";
 import Loading from "@/components/Loading";
 import {
     Link as MUILink,
-    Grid,
     makeStyles,
     Paper,
     Table,
@@ -22,8 +21,6 @@ import FindInPageIcon from "@material-ui/icons/FindInPage";
 import UpdateFeeding from "@/components/feedings/UpdateFeeding";
 import DeleteFeeding from "@/components/feedings/DeleteFeeding";
 import CreateFeeding from "@/components/feedings/CreateFeeding";
-import SnackSuccess from "@/components/SnackSuccess";
-import Typography from "@material-ui/core/Typography";
 
 const useStyles = makeStyles((theme) => ({
     detail:{

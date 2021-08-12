@@ -2,7 +2,8 @@ import React, {useState} from "react";
 import {useForm} from "react-hook-form";
 import useSWR, {mutate as mutateIndex} from "swr";
 import {
-    Button, CircularProgress,
+    Button,
+    CircularProgress,
     Dialog,
     DialogActions,
     DialogContent,

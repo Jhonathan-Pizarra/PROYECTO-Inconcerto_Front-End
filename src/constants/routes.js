@@ -38,7 +38,7 @@ const privateRoutes = {
     //ACTIVITIES_ID: "/actividades/:id",
     //FESTIVALCONCERTS: "festivales/:id/conciertos",
     //CALENDARARTISTS: "calendarios/:id/artistas",
-    REGISTER: "/register",
+    //REGISTER: "/register",
     USERS: "/usuarios",
 };
 

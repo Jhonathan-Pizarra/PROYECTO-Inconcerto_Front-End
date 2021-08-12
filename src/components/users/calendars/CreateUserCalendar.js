@@ -1,28 +1,24 @@
 import React, {useState} from "react";
 import {useForm} from "react-hook-form";
-import useSWR from "swr";
+import useSWR, {mutate as mutateTo} from "swr";
 import {
-    Button, CircularProgress,
+    Button,
+    CircularProgress,
     Dialog,
     DialogActions,
     DialogContent,
     DialogContentText,
     DialogTitle,
-    Fab, InputLabel,
-    makeStyles, Select,
-    TextField,
-    Tooltip
+    InputLabel,
+    makeStyles,
+    Select
 } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import Loading from "@/components/Loading";
-import {Calendar} from "@/lib/calendars";
-import {yupResolver} from '@hookform/resolvers/yup';
-import * as yup from "yup";
 import SnackSuccess from "@/components/SnackSuccess";
 import SnackError from "@/components/SnackError";
 import {fetcher} from "../../../utils";
 import {useRouter} from "next/router";
-import {ConcertResource} from "@/lib/concert_resources";
 import translateMessage from "@/constants/messages";
 import {UserCalendar} from "@/lib/user_calendars";
 
@@ -55,9 +51,9 @@ const CreateUserCalendar = () => {
     const classes = useStyles();
     const router = useRouter();
     const {id} = router.query;
+    const {data: userCalendars, error} = useSWR(`/users/${id}/calendars`, fetcher);
     const {data: calendars} = useSWR(`/calendars`, fetcher);
     const {data: users} = useSWR(`/users`, fetcher);
-    const {data: userCalendars, mutate, error} = useSWR(`/users/${id}/calendars`, fetcher);
     const { register, handleSubmit, reset} = useForm();
     const [modal, setModal] = useState(false);
     const [userSelected, setUserSelected] = useState(null);
@@ -106,7 +102,7 @@ const CreateUserCalendar = () => {
         try {
             setProcessing(true);
             await UserCalendar.create(id,formData);
-            mutate(`/users/${id}/calendars`);
+            mutateTo(`/users/${id}/calendars`);
             handleClose();
             setCreateSuccess(true);
         } catch (error) {

@@ -1,26 +1,9 @@
-import {fetcher} from "../../../utils";
-import useSWR, {mutate as mutateID} from "swr";
+import {mutate as mutateID} from "swr";
 import {useRouter} from "next/router";
-import Loading from "@/components/Loading";
-import Routes from "@/constants/routes";
-import DeleteIcon from "@material-ui/icons/Delete";
-import {
-    Button, CircularProgress,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogContentText,
-    DialogTitle,
-    IconButton,
-    makeStyles
-} from "@material-ui/core";
+import {Button, CircularProgress, Dialog, DialogActions, DialogTitle, IconButton, makeStyles} from "@material-ui/core";
 import React, {useState} from "react";
-import {ConcertResource} from "@/lib/concert_resources";
-import translateMessage from "@/constants/messages";
 import SnackSuccess from "@/components/SnackSuccess";
 import SnackError from "@/components/SnackError";
-import {UserCalendar} from "@/lib/user_calendars";
-import LinkOffIcon from "@material-ui/icons/LinkOff";
 import BackspaceIcon from "@material-ui/icons/Backspace";
 import {ArtistCalendar} from "@/lib/artist_calendars";
 

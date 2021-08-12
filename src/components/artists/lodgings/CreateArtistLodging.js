@@ -1,31 +1,25 @@
 import React, {useState} from "react";
 import {useForm} from "react-hook-form";
-import useSWR from "swr";
+import useSWR, {mutate as mutateTo} from "swr";
 import {
-    Button, CircularProgress,
+    Button,
+    CircularProgress,
     Dialog,
     DialogActions,
     DialogContent,
     DialogContentText,
     DialogTitle,
-    Fab, InputLabel,
-    makeStyles, Select,
-    TextField,
-    Tooltip
+    InputLabel,
+    makeStyles,
+    Select
 } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import Loading from "@/components/Loading";
-import {Calendar} from "@/lib/calendars";
-import {yupResolver} from '@hookform/resolvers/yup';
-import * as yup from "yup";
 import SnackSuccess from "@/components/SnackSuccess";
 import SnackError from "@/components/SnackError";
 import {fetcher} from "../../../utils";
 import {useRouter} from "next/router";
-import {ConcertResource} from "@/lib/concert_resources";
 import translateMessage from "@/constants/messages";
-import {UserCalendar} from "@/lib/user_calendars";
-import {UserLodging} from "@/lib/user_lodgings";
 import {ArtistLodging} from "@/lib/artist_lodging";
 
 const useStyles = makeStyles((theme) => ({
@@ -57,9 +51,9 @@ const CreateArtistLodging = () => {
     const classes = useStyles();
     const router = useRouter();
     const {id} = router.query;
+    const {data: artistLodgings, mutate, error} = useSWR(`/artists/${id}/lodgings`, fetcher);
     const {data: lodgings} = useSWR(`/lodgings`, fetcher);
     const {data: artists} = useSWR(`/artists`, fetcher);
-    const {data: artistLodgings, mutate, error} = useSWR(`/artists/${id}/lodgings`, fetcher);
     const { register, handleSubmit, reset} = useForm();
     const [modal, setModal] = useState(false);
     const [artistSelected, setArtistSelected] = useState(null);
@@ -108,7 +102,7 @@ const CreateArtistLodging = () => {
         try {
             setProcessing(true);
             await ArtistLodging.create(id,formData);
-            mutate(`/artists/${id}/lodgings`);
+            mutateTo(`/artists/${id}/lodgings`);
             handleClose();
             setCreateSuccess(true);
         } catch (error) {

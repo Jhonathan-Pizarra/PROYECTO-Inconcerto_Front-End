@@ -2,12 +2,14 @@ import React, {useState} from "react";
 import {useForm} from "react-hook-form";
 import useSWR, {mutate as mutateIndex} from "swr";
 import {
-    Button, CircularProgress,
+    Button,
+    CircularProgress,
     Dialog,
     DialogActions,
     DialogContent,
     DialogContentText,
-    DialogTitle, IconButton,
+    DialogTitle,
+    IconButton,
     makeStyles,
     TextField
 } from "@material-ui/core";

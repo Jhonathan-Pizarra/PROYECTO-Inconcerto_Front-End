@@ -4,13 +4,10 @@ import Loading from "@/components/Loading";
 import {fetcher} from "../../utils";
 import withAuth from "@/hocs/withAuth";
 import {CardActions, CardMedia, Grid, Link, makeStyles, Paper, Typography} from "@material-ui/core";
-import React, {useEffect, useRef, useCallback} from "react";
+import React from "react";
 import UpdateFestival from "@/components/festivals/UpdateFestival";
 import DeleteFestival from "@/components/festivals/DeleteFestival";
 import ReadFestivalConcerts from "@/components/festivals/concerts/ReadFestivalConcerts";
-import SnackError from "@/components/SnackError";
-import SnackSuccess from "@/components/SnackSuccess";
-import SnackInfo from "@/components/SnackInfo";
 import CreateFestivalConcert from "@/components/festivals/concerts/CreateFestivalConcert";
 import NotFound from "../404";
 
@@ -72,18 +69,31 @@ const FestivalID = () =>{
                                     <ReadFestivalConcerts id={festival.id}/>
                                     {/*<Typography variant="body2" color="textSecondary">Conciertos: ...(Pendiente)</Typography>*/}
                                 </Grid>
-                                <Grid item>
+                                <Grid container>
                                     <CardActions>
-                                        <Link>
-                                            <CreateFestivalConcert id={festival.id}/>
-                                        </Link>
-                                        <Link>
-                                            <UpdateFestival/>
-                                        </Link>
-                                        <Link>
-                                            {/*<DeleteFestival />*/}
-                                            <DeleteFestival id={festival.id} />
-                                        </Link>
+                                        <Grid item xs={12} sm={12} md={12} lg={6} xl={6}>
+                                            <Link>
+                                                <CreateFestivalConcert id={festival.id}/>
+                                            </Link>
+                                        </Grid>
+                                    </CardActions>
+                                    <CardActions>
+                                        {/*<Grid item xs={12} sm={12} md={12} lg={12} xl={12}>*/}
+                                        {/*    <Link>*/}
+                                        {/*        <CreateFestivalConcert id={festival.id}/>*/}
+                                        {/*    </Link>*/}
+                                        {/*</Grid>*/}
+                                        <Grid item xs={12} sm={12} md={12} lg={6} xl={6}>
+                                            <Link>
+                                                <UpdateFestival/>
+                                            </Link>
+                                        </Grid>
+                                        <Grid item xs={12} sm={12} md={12} lg={6} xl={6}>
+                                            <Link>
+                                                {/*<DeleteFestival />*/}
+                                                <DeleteFestival id={festival.id} />
+                                            </Link>
+                                        </Grid>
                                     </CardActions>
                                 </Grid>
                             </Grid>

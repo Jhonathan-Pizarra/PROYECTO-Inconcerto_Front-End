@@ -1,29 +1,22 @@
 import {fetcher} from "../../../utils";
 import React, {useState} from "react";
 import {useForm} from "react-hook-form";
-import useSWR from "swr";
+import useSWR, {mutate as mutateTo} from "swr";
 import {
     Button,
-    Checkbox, CircularProgress,
+    CircularProgress,
     Dialog,
     DialogActions,
     DialogContent,
     DialogContentText,
     DialogTitle,
-    Fab,
-    FormControlLabel,
-    Grid,
     InputLabel,
     makeStyles,
-    Select,
-    TextField,
-    Tooltip
+    Select
 } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import Loading from "@/components/Loading";
 import {useRouter} from "next/router";
-import PersonAddIcon from '@material-ui/icons/PersonAdd';
-import LinkIcon from "@material-ui/icons/Link";
 import {LodgingUser} from "@/lib/lodging_users";
 import SnackSuccess from "@/components/SnackSuccess";
 import SnackError from "@/components/SnackError";
@@ -57,9 +50,9 @@ const CreateLodgingUser = () => {
     const classes = useStyles();
     const router = useRouter();
     const {id} = router.query;
+    const {data: lodgingUsers, mutate, error} = useSWR(`/lodgings/${id}/users`, fetcher);
     const {data: lodgings} = useSWR(`/lodgings`, fetcher);
     const {data: users} = useSWR(`/users`, fetcher);
-    const {data: lodgingUsers, mutate, error} = useSWR(`/lodgings/${id}/users`, fetcher);
     const { register, handleSubmit, reset} = useForm();
     const [modal, setModal] = useState(false);
     const [lodgingSelected, setLodgingSelected] = useState(null);
@@ -108,7 +101,7 @@ const CreateLodgingUser = () => {
         try {
             setProcessing(true);
             await LodgingUser.create(id, formData);
-            mutate(`/lodgings/${id}/users`);
+            mutateTo(`/lodgings/${id}/users`);
             handleClose();
             setCreateSuccess(true);
         } catch (error) {

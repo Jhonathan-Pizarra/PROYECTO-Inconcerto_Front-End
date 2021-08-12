@@ -4,7 +4,8 @@ import {Artist} from "@/lib/artists";
 import useSWR, {mutate as mutateIndex} from "swr";
 import {
     Button,
-    Checkbox, CircularProgress,
+    Checkbox,
+    CircularProgress,
     Dialog,
     DialogActions,
     DialogContent,
@@ -26,7 +27,6 @@ import SnackInfo from "@/components/SnackInfo";
 import SnackError from "@/components/SnackError";
 import {fetcher} from "../../../utils";
 import {useRouter} from "next/router";
-import {ConcertArtist} from "@/lib/concert_artists";
 
 const useStyles = makeStyles((theme) => ({
     edit:{
@@ -58,13 +58,13 @@ const schema = yup.object().shape({
 });
 
 //Este {id} lo recibe desde el componente donde lo llamemos, en este caso sería: <UpdateArtistForm id={artist.id}/>
-const UpdateConcertArtist = ({idArtist, idConcert}) => {
+const UpdateConcertArtist = ({idArtist}) => {
 
     const classes = useStyles();
     const router = useRouter();
-    //const {idConcert} = router.query;
+    const {id} = router.query;
     //const { data: concertArtists, mutate, error } = useSWR(`/artists/${idArtist}`, fetcher);
-    const { data: concertArtists, mutate, error } = useSWR(`/concerts/${idConcert}/artists/${idArtist}`, fetcher);
+    const { data: concertArtists, mutate, error } = useSWR(`/concerts/${id}/artists/${idArtist}`, fetcher);
     const { register, handleSubmit, reset, formState:{ errors } } = useForm({
         resolver: yupResolver(schema)
     });
@@ -110,7 +110,6 @@ const UpdateConcertArtist = ({idArtist, idConcert}) => {
                 lastName: ((data.lastName) === "") ? `Vacío (${artist.id})` : data.lastName,
                 nationality: ((data.nationality) === "") ? `Vacío (${artist.id})` : data.nationality,
                 mail: ((data.mail) === "") ? `vacío(${artist.id})@mail.com` : data.mail,
-                //mail: data.mail,
                 phone: data.phone,
                 passage: data.passage,
                 instruments: ((data.instruments) === "") ? `Vacío (${artist.id})` : data.instruments,
@@ -135,7 +134,7 @@ const UpdateConcertArtist = ({idArtist, idConcert}) => {
             //mutateIndex(`/concerts/${idConcert}`);
             //mutateIndex(`/concerts/${idConcert}/artists`);
             //mutateID(`/concerts/${id}/artists`);
-            mutateIndex(`/concerts/${idConcert}/artists`);
+            mutateIndex(`/concerts/${id}/artists`);
             mutate();
             //router.push(`/concerts/${id}/artists`);
             //router.push(`/conciertos/${id}`);

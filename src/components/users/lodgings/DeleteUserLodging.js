@@ -1,20 +1,8 @@
-import useSWR, {mutate as mutateIndex} from "swr";
+import {mutate as mutateIndex} from "swr";
 import {useRouter} from "next/router";
-import Loading from "@/components/Loading";
-import Routes from "@/constants/routes";
-import DeleteIcon from "@material-ui/icons/Delete";
-import {
-    Button,
-    CircularProgress,
-    Dialog,
-    DialogActions, DialogContent,
-    DialogContentText,
-    DialogTitle,
-    makeStyles
-} from "@material-ui/core";
+import {Button, CircularProgress, Dialog, DialogActions, DialogTitle, makeStyles} from "@material-ui/core";
 import React, {useState} from "react";
 import IconButton from "@material-ui/core/IconButton";
-import {Lodging} from "@/lib/lodgings";
 import SnackSuccess from "@/components/SnackSuccess";
 import SnackError from "@/components/SnackError";
 import {UserLodging} from "@/lib/user_lodgings";
@@ -42,7 +30,7 @@ const DeleteUserLodging = ({idLodging, idUser}) => {
 
     const classes = useStyles();
     const router = useRouter();
-    const {id} = router.query;
+    //const {id} = router.query;
     const [modal, setModal] = useState(false);
     const [deleteSuccess, setDeleteSuccess] = useState(false);
     const [deleteError, setDeleteError] = useState(false);
@@ -63,7 +51,7 @@ const DeleteUserLodging = ({idLodging, idUser}) => {
     const handleDelete = async () => {
         try {
             setProcessing(true);
-            await UserLodging.delete(id, idLodging);
+            await UserLodging.delete(idUser, idLodging);
             setDeleteSuccess(true);
             handleClose();
             mutateIndex(`/users/${idUser}/lodgings`)

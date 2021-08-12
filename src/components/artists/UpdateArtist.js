@@ -4,7 +4,8 @@ import {Artist} from "@/lib/artists";
 import useSWR, {mutate as mutateIndex} from "swr";
 import {
     Button,
-    Checkbox, CircularProgress,
+    Checkbox,
+    CircularProgress,
     Dialog,
     DialogActions,
     DialogContent,
@@ -25,7 +26,6 @@ import * as yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
 import SnackInfo from "@/components/SnackInfo";
 import SnackError from "@/components/SnackError";
-import {useRouter} from "next/router";
 
 const useStyles = makeStyles((theme) => ({
     edit:{

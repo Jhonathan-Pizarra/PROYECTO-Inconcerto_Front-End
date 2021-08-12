@@ -2,24 +2,11 @@ import {fetcher} from "../../utils";
 import useSWR from "swr";
 import Loading from "@/components/Loading";
 import {makeStyles} from "@material-ui/core/styles";
-import {
-    Avatar, Box,
-    Button, Card, CardActions, CardContent,
-    Divider,
-    Grid, IconButton,
-    Link as MuiLink,
-    ListItem,
-    ListItemAvatar,
-    ListItemText,
-    Paper,
-    Typography
-} from "@material-ui/core";
-import EmojiObjectsIcon from '@material-ui/icons/EmojiObjects';
+import {Box, Card, CardActions, CardContent, Grid, IconButton, Link as MuiLink, Typography} from "@material-ui/core";
 import Routes from "@/constants/routes";
 import CreateEssay from "@/components/essays/CreateEssay";
 import React from "react";
 import Link from "next/link";
-import SnackSuccess from "@/components/SnackSuccess";
 import UpdateEssay from "@/components/essays/UpdateEssay";
 import DeleteEssay from "@/components/essays/DeleteEssay";
 import FindInPageIcon from "@material-ui/icons/FindInPage";

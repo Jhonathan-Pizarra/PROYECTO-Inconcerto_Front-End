@@ -18,11 +18,6 @@ import {
 } from "@material-ui/core";
 import React, {useState} from "react";
 import Routes from "@/constants/routes";
-import UpdateArtist from "@/components/artists/UpdateArtist";
-import DeleteArtist from "@/components/artists/DeleteArtist";
-import CreateArtist from "@/components/artists/CreateArtist";
-import SnackSuccess from "@/components/SnackSuccess";
-import DeleteCalendarArtist from "@/components/calendars/artists/DeleteCalendarArtist";
 import DeleteConcertArtist from "@/components/concerts/artists/DeleteConcertArtist";
 import CreateConcertArtist from "@/components/concerts/artists/CreateConcertArtist";
 import UpdateConcertArtist from "@/components/concerts/artists/UpdateConcertArtist";
@@ -139,7 +134,7 @@ const ReadConcertArtists = ({id}) => {
                                             </Link>
                                         </td>
                                         <td>
-                                            <UpdateConcertArtist idArtist={concertArtist.id} idConcert={id} />
+                                            <UpdateConcertArtist idArtist={concertArtist.id} />
                                         </td>
                                         <td>
                                             <DeleteConcertArtist idArtist={concertArtist.id} idConcert={id} />
