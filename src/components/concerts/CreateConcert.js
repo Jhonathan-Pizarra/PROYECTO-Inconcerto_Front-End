@@ -221,7 +221,7 @@ const CreateConcert = () => {
                         <TextField
                             disabled={processing}
                             id="time"
-                            label="Hora"
+                            label="Duración"
                             type="time"
                             defaultValue="00:00"
                             margin="dense"

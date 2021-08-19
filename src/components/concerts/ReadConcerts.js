@@ -74,7 +74,7 @@ const ReadConcerts = () => {
                         <TableRow>
                             <TableCell className={classes.titles}>Concierto </TableCell>
                             <TableCell className={classes.titles}>Fecha</TableCell>
-                            <TableCell className={classes.titles}>Hora</TableCell>
+                            <TableCell className={classes.titles}>Duración</TableCell>
                             <TableCell className={classes.titles}>Gratuidad&nbsp;(Si - No)</TableCell>
                             <TableCell className={classes.titles}>InsiItu&nbsp;(Si - No)</TableCell>
                             <TableCell className={classes.titles}>Lugar</TableCell>
