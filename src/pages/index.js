@@ -2,7 +2,7 @@ import styles from '@/styles/Home.module.css';
 import BackToTop from "@/components/BackToTop";
 import ReactPlayer from 'react-player'
 import React from "react";
-import {Link as MuiLink, makeStyles} from "@material-ui/core";
+import {Container, Link as MuiLink, makeStyles, Paper} from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
 import Image from "next/image";
 import Link from "next/link";
@@ -46,6 +46,10 @@ const useStyles = makeStyles((theme) => ({
     },
     playerWraper:{
         position: 'relative',
+    },
+    text: {
+      textAlign: 'justify',
+      maxWidth: 600,
     }
 }));
 
@@ -56,18 +60,24 @@ export default function Home() {
     return (
         <Grid container className={classes.root} spacing={3} direction='row' justify='flex-start'>
 
-            <Grid container className={classes.container2}>
-                <br/>
-                <p className={styles.title}>♪♬♩🎵InConcerto ♪🎶♫...</p>
-                <i>"Música Clásica en Espacios InUsuales ..."</i>
-            </Grid>
+            {/*<Grid*/}
+            {/*    container*/}
+            {/*    direction="column"*/}
+            {/*    justifyContent="center"*/}
+            {/*    alignItems="center"*/}
+            {/*>*/}
+            {/*  */}
+            {/*    <Grid>*/}
+            {/*        <BackToTop/>*/}
+            {/*    </Grid>*/}
+            {/*</Grid>*/}
 
-            <BackToTop/>
 
             <Grid container spacing={1}>
-                <Grid item xs={12} sm={6} md={6} lg={6} xl={6} >
 
-                    <p>
+                <Grid item xs={12} sm={7} md={6} lg={6} xl={6} >
+                    <p className={classes.text}>
+                        <h2>¿Quiénes somos?</h2>
                         <span className={classes.adornated}>I</span>nconcerto es un colectivo interdisciplinario de artistas, sociólogos, comunicadores y gestores culturales
                         que crean espacios y canales para difundir y revalorizar la música clásica en nuestra época y lugar
                         a través de proyectos que resignifican los protocolos que han situado a ésta,
@@ -90,38 +100,68 @@ export default function Home() {
 
 
                 </Grid>
-                <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
 
+                <Grid item xs={12} sm={5} md={6} lg={6} xl={6}>
+                    <BackToTop/>
                     <ReactPlayer
                         className={classes.playerWraper}
                         url='https://www.youtube.com/watch?v=2gO1v2GPMFk'
                         width="100%"
-                        height="100%"
+                        height="80%"
                         playing={false}
                         controls={true}
                     />
 
                 </Grid>
+
             </Grid>
 
             <br/>
 
             <Grid container spacing={1}>
                 <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
-
+                    <br/>
                     <Image
                         src="/logo1-inconcerto.png"
                         alt="InConcerto"
                         width={500}
-                        height={400}
+                        height={390}
                     />
 
                 </Grid>
+
+                <Grid container xs={12} sm={6} md={6} lg={6} xl={6}>
+                    <Grid item>
+
+                        <br/>
+                        <p className={classes.text}>
+                            <h2>Misión</h2>
+                            Somos una plataforma cultural que fomenta la revalorización y el acceso a la música clásica en nuestra época y lugar, para incidir positivamente en nuestra sociedad. Garantizamos una experiencia transversal desde el campo artístico y promovemos el acceso cultural interdisciplinario con la finalidad de contribuir al desarrollo cultural del país
+                            <h2>Visión</h2>
+                            Buscamos ser un espacio cultural que transforme la vida de las personas a través de experiencias significativas, asegurando amplitud en el acceso y una programación de calidad que ponga en diálogo al arte.
+                        </p>
+                        <br/>
+                        <br/>
+                        <div style={{textAlign: 'center'}}>
+                            <i>"Música Clásica en Espacios InUsuales ..."</i>
+                        </div>
+
+                    </Grid>
+
+                </Grid>
+
+            </Grid>
+
+            <br/>
+
+            <Grid container spacing={1}>
+
                 <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
 
-                    <p>
-                        El presente sistema web apoyará a la gestión interna, permitiendo coordinar diferentes áreas importantes para la administración de eventos organizados por Inconcerto
-                        Lo cual conlleva:
+                    <h2>Plataforma</h2>
+                    <p className={classes.text}>
+                        El presente sistema web ayudará al personal administrativo en la organización de diferentes factores primordiales para la gestión de eventos organizados por Inconcerto,
+                        tales como:
                         <ul>
                             <li>
                                 <strong>Gestión de artistas invitados:</strong> Los artistas son nacionales e internacionales por lo que se lleva el control de compras de pasajes, tiempos de llegada y salida, observaciones de alimentación especiales, transporte, etc.
@@ -136,13 +176,81 @@ export default function Home() {
                                 <strong>Gestión de espacios para conciertos:</strong> La fundación está constantemente en búsqueda de espacios poco usuales para ofrecer conciertos. Se lleva un control de estos espacios para facilitar la organización de cada evento.
                             </li>
                             <li>
-                                <strong>Adicionalmente</strong>, la fundación cuenta con una <strong>página web</strong> con medios adecuados para la difusión de sus actividades para las personas interesadas en sus eventos.
+                                <strong>Adicionalmente</strong>, la fundación cuenta con una  <a href="https://www.inconcerto.org/inicio" ><b>página web</b></a> con medios adecuados para la difusión de sus actividades para las personas interesadas en sus eventos.
                             </li>
                         </ul>
 
                     </p>
-
                     <br/>
+                </Grid>
+
+                <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
+
+                    <h2>Miembros del Equipo</h2>
+
+
+                    <Grid container spacing={1}>
+
+                        <Grid item xs={3}>
+                            <Image
+                                src="/Alejandra-Pinto.jpg"
+                                alt="Alejandra"
+                                width={150}
+                                height={200}
+                            />
+                            <div style={{textAlign: 'center'}}>
+                                <p>
+                                    <strong>Alejanda Pinto</strong><br/>
+                                    Coordinadora General
+                                </p>
+                            </div>
+
+                        </Grid>
+                        <Grid item xs={3}>
+                            <Image
+                                src="/Simon-Gangotena.jpg"
+                                alt="InConcerto"
+                                width={150}
+                                height={200}
+                            />
+                            <div style={{textAlign: 'center'}}>
+                                <p>
+                                    <strong>Simón Gangotena</strong><br/>
+                                    Director Ejecutivo/Musical
+                                </p>
+                            </div>
+                        </Grid>
+                        <Grid item xs={3}>
+                            <Image
+                                src="/Carlerita1.jpeg"
+                                alt="InConcerto"
+                                width={150}
+                                height={200}
+                            />
+                            <div style={{textAlign: 'center'}}>
+                                <p>
+                                    <strong>Carla Moncayo</strong><br/>
+                                    Producción
+                                </p>
+                            </div>
+                        </Grid>
+                        <Grid item xs={3}>
+                            <Image
+                                src="/isadora.jpeg"
+                                alt="InConcerto"
+                                width={150}
+                                height={200}
+                            />
+                            <div style={{textAlign: 'center'}}>
+                                <p>
+                                    <strong>Isadora Ponce</strong><br/>
+                                    Directora Artística
+                                </p>
+                            </div>
+                        </Grid>
+                    </Grid>
+
+
                 </Grid>
             </Grid>
 
@@ -151,9 +259,7 @@ export default function Home() {
             <Grid container spacing={1}>
                 <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
 
-                    <p>
-                        Colectivo de músicos, comunicadores, gestores y analistas culturales que construye diferentes espacios y canales para popularizar y resignificar la música clásica en nuestra época a través de proyectos que faciliten el acceso a la apreciación e interpretación musical, generando una relación activa, integral y humana entre músicos y espectadores. Una de las principales actividades que InConcerto desarrolla desde 2017 es el Festival Música Ocupa.
-                    </p>
+
                     <div className={classes.paper2}>
                         <Link href='https://www.passline.com/eventos/sumate-a-musicaocupa' passHref >
                             <MuiLink>
@@ -169,17 +275,17 @@ export default function Home() {
 
                     <br/>
                     {/*<Paper className={classes.paper}>
-                        <Link href='https://www.passline.com/eventos/sumate-a-musicaocupa' passHref >
-                            <MuiLink>
-                                <Image
-                                    src="/donaciones.png"
-                                    alt="InConcerto"
-                                    width={400}
-                                    height={400}
-                                />
-                            </MuiLink>
-                        </Link>
-                    </Paper>*/}
+                    <Link href='https://www.passline.com/eventos/sumate-a-musicaocupa' passHref >
+                        <MuiLink>
+                            <Image
+                                src="/donaciones.png"
+                                alt="InConcerto"
+                                width={400}
+                                height={400}
+                            />
+                        </MuiLink>
+                    </Link>
+                </Paper>*/}
                 </Grid>
                 <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
 
@@ -192,20 +298,9 @@ export default function Home() {
 
                 </Grid>
             </Grid>
-            {/* <Paper className={classes.paper2}>
-                <Link href='https://www.passline.com/eventos/sumate-a-musicaocupa' passHref >
-                    <MuiLink>
-                        <Image
-                            src="/donaciones.png"
-                            alt="InConcerto"
-                            width={400}
-                            height={400}
-                        />
-                    </MuiLink>
-                </Link>
-            </Paper>*/}
-        </Grid>
 
+            <br/>
 
+            </Grid>
     );
 }

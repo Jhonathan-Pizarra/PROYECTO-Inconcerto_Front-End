@@ -130,7 +130,7 @@ const Footer = () => {
                                     <IconButton aria-label="ver"  size="small">
                                         <PhoneIcon className={classes.phone}/>
                                     </IconButton>
-                                    +593 990803129
+                                    +593 995043446
                                 </Link>
                             </Box>
                             <Box>
@@ -144,7 +144,7 @@ const Footer = () => {
                         </Grid>
 
                         <Grid item xs={12} sm={4}>
-                            <Box borderBottom={1}>About</Box>
+                            <Box borderBottom={1}>Nosotros</Box>
                             <Box style={{  paddingTop: 30,}}>
                                 InConcerto es una fundación sin fines de lucro que tiene como objetivo promover el desarrollo y la creación de nuevos espacios de expresión. Se trabaja desde el 2012 en proyectos interdisciplinarios que involucren a la música clásica en nuestro contexto y época. Repensar la música clásica y su papel en el ahora es también pensar su relación con el tejido social y simbólico y su participación en la construcción del conocimiento.
                             </Box>
@@ -155,7 +155,7 @@ const Footer = () => {
             </Box>
             <div className={classes.copyright}>
                 <Container >
-                    &copy; {new Date().getFullYear()} Copyright: <a href="https://www.inconcerto.org/inicio" color="secondary"><b>Inconcerto 2021</b></a>
+                    &copy; {new Date().getFullYear()} Copyright Inconcerto
                 </Container>
             </div>
         </div>
