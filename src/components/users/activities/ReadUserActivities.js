@@ -20,6 +20,7 @@ import {fetcher} from "../../../utils";
 import CreateUserActivity from "@/components/users/activities/CreateUserActivity";
 import UpdateUserActivity from "@/components/users/activities/UpdateUserActivity";
 import DeleteUserActivity from "@/components/users/activities/DeleteUserActivity";
+import AssignmentIcon from '@material-ui/icons/Assignment';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -65,7 +66,7 @@ const ReadUserActivity = ({id}) => {
                                 <ListItem>
                                     <ListItemAvatar>
                                         <Avatar>
-                                            <FormatListNumberedRtlIcon />
+                                            <AssignmentIcon />
                                         </Avatar>
                                     </ListItemAvatar>
                                     <ListItemText primary={activity.name} secondary={activity.date} />

@@ -64,7 +64,7 @@ const FestivalID = () =>{
                                         <h2>{festival.name}</h2>
                                     </Typography>
                                     <Typography variant="body2" gutterBottom>
-                                        <p>Descripcion: {festival.description}</p>
+                                        <p><b>DESCRIPCIÓN:</b>&ensp;{festival.description}</p>
                                     </Typography>
                                     <ReadFestivalConcerts id={festival.id}/>
                                     {/*<Typography variant="body2" color="textSecondary">Conciertos: ...(Pendiente)</Typography>*/}

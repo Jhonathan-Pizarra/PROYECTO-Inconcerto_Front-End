@@ -74,13 +74,13 @@ const EnsayosID = () => {
                                     <h2>{essay.name}</h2>
                                 </Typography>
                                 <Typography variant="body2" gutterBottom>
-                                    <p><b>Fecha:</b> {essay.dateEssay}</p>
+                                    <p><b>Fecha:</b>&ensp;{essay.dateEssay}</p>
                                 </Typography>
                                 <Typography variant="body2" gutterBottom>
-                                    <p><b>Lugar:</b> {essay.place}</p>
+                                    <p><b>Lugar:</b>&ensp;{essay.place}</p>
                                 </Typography>
                                 <Typography variant="body2" gutterBottom>
-                                    <b>Festival:</b> {essay.festival}
+                                    <b>Festival:</b>&ensp;{essay.festival}
                                     <Link href={essay.festival_id} passHref>
                                         <IconButton aria-label="ver"  size="small" className={classes.detail}>
                                             <FindInPageIcon />

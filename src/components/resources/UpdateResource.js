@@ -108,6 +108,7 @@ const UpdateResource = ({id}) => {
                 Editar
             </Button>
 
+
             {/*<IconButton aria-label="editar"  className={classes.edit} size="small" onClick={handleOpen} >*/}
             {/*    <EditIcon />*/}
             {/*</IconButton>*/}

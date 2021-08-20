@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
         /*width: 240,
         height: 420*/
         width: 400,
-        height: 390
+        height: 450
     },
     content: {
         flex: '1 0 ',

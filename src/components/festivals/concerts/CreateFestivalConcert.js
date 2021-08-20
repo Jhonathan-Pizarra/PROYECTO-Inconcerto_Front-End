@@ -207,10 +207,10 @@ const CreateFestivalConcert = () => {
                     <DialogContent>
                         <TextField
                             disabled={processing}
-                            id="date"
+                            id="datetime-local"
                             label="Fecha"
-                            type="date"
-                            defaultValue="1996-11-19"
+                            type="datetime-local"
+                            defaultValue="2019-05-24T10:30"
                             margin="dense"
                             //className={classes.textField}
                             {...register('dateConcert')}

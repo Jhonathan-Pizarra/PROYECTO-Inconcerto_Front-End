@@ -67,6 +67,14 @@ const UpdateFestivalConcert = ({id, idFestival}) => {
     if(!festivals) return <Loading/>
     if(!places) return <Loading/>
 
+    var d = new Date(festivalConcert.dateConcert); ////Sun May 30 2021 00:18:00 GMT-0500 (hora de Ecuador)
+    var year = d.getFullYear();
+    var month = (d.getMonth()+1).toString().padStart(2, "0");
+    var day = d.getDate().toString().padStart(2, "0");
+    var hours = ('0'+d.getHours()).substr(-2);
+    var min = d.getMinutes().toString().padStart(2, "0");
+    const fulldate = year+'-'+month+'-'+day+'T'+hours+':'+min;
+
     const handleOpen = () => {
         setUpdateInfo(false);
         setUpdateError(false);
@@ -175,10 +183,10 @@ const UpdateFestivalConcert = ({id, idFestival}) => {
                         <TextField
                             autoFocus={true}
                             disabled={processing}
-                            id="date"
+                            id="datetime-local"
                             label="Fecha"
-                            type="date"
-                            defaultValue={festivalConcert.dateConcert}
+                            type="datetime-local"
+                            defaultValue={fulldate}
                             margin="dense"
                             //className={classes.textField}
                             {...register('dateConcert')}
