@@ -4,7 +4,7 @@ import {useForm} from "react-hook-form";
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from "yup";
 import {Button, Grid, makeStyles, TextField} from "@material-ui/core";
-import {useState} from "react";
+import React, {useState} from "react";
 import Image from "next/image";
 
 const schema = yup.object().shape({
@@ -59,7 +59,7 @@ const Login = () => {
     return (
         <div>
             <Grid container justify="center">
-                <Grid item xs={10}>
+                <Grid item xs={10} sm={6} md={6} lg={6} xl={6}>
                     <form noValidate autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
                         <Grid container spacing={2} justify="center" alignItems="center">
                             <Image
