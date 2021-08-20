@@ -59,7 +59,7 @@ const Login = () => {
     return (
         <div>
             <Grid container justify="center">
-                <Grid item xs={6}>
+                <Grid item xs={10}>
                     <form noValidate autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
                         <Grid container spacing={2} justify="center" alignItems="center">
                             <Image

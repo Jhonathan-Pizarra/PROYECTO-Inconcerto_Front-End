@@ -203,7 +203,7 @@ const UpdateFestivalConcert = ({id, idFestival}) => {
                             autoFocus={true}
                             disabled={processing}
                             id="time"
-                            label="Hora"
+                            label="Duración"
                             type="time"
                             defaultValue={festivalConcert.duration}
                             margin="dense"
