@@ -5,7 +5,7 @@ import {fetcher} from "../../utils";
 import withAuth from "@/hocs/withAuth";
 import UpdateConcertPlace from "@/components/concert-places/UpdateConcertPlace";
 import DeleteConcertPlace from "@/components/concert-places/DeleteConcertPlace";
-import {CardActions, Grid, Link as MuiLink, makeStyles, Paper} from "@material-ui/core";
+import {Box, Card, CardActions, CardContent, Grid, Link as MuiLink, makeStyles, Paper} from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import React from "react";
 import NotFound from "../404";
@@ -13,12 +13,25 @@ import ReadConcertPlaceConcerts from "@/components/concert-places/concerts/ReadC
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        flexGrow: 1,
+        //flexGrow: 1,
+        display: "flex",
     },
     paper: {
         padding: theme.spacing(2),
         margin: 'auto',
         maxWidth: '30%',
+    },
+    detail:{
+        color: "#3f51b5",
+    },
+    cardDimension: {
+        /*width: 240,
+        height: 420*/
+        width: 400,
+        height: 400
+    },
+    content: {
+        flex: '1 0 ',
     },
 }));
 
@@ -36,14 +49,11 @@ const PlaceConcertsID = () =>{
         <div>
             <h1>Detalle Lugar Concierto</h1>
             <div>
-                {/*<h2>Places ID: {place.id}</h2>*/}
-                {/*<p>Nombre: {place.name}</p>*/}
-                {/*<p>Dirección: {place.address}</p>*/}
-                <Paper className={classes.paper}>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12} sm container>
-                            <Grid item xs container direction="column" justify="center" alignItems="center" spacing={2}>
-                                <Grid item xs>
+                <Grid container className={classes.root} spacing={3} direction='row' justify='flex-start'>
+                    <Grid container item xs={12} sm={6} md={4} lg={3} xl={3} >
+                        <Card className={classes.root}>
+                            <Box m={2} className={classes.cardDimension}>
+                                <CardContent className={classes.content}>
                                     <Typography gutterBottom variant="subtitle1" style={{textAlign: 'center'}}>
                                         <h2>{place.name}</h2>
                                     </Typography>
@@ -69,7 +79,6 @@ const PlaceConcertsID = () =>{
                                         <p><b>Descripción:</b> {place.description}</p>
                                     </Typography>
 
-
                                     <Grid container spacing={3}>
                                         <Grid item container justify="center" alignItems="center">
                                             <CardActions xs={12} sm={4} md={4} lg={3} xl={3} >
@@ -85,15 +94,20 @@ const PlaceConcertsID = () =>{
                                         </Grid>
                                     </Grid>
 
-
-                                </Grid>
-                            </Grid>
-                        </Grid>
+                                </CardContent>
+                            </Box>
+                        </Card>
                     </Grid>
 
-                </Paper>
+                    <Grid item xs={12} sm={6} md={8} lg={9} xl={9}>
+                        <ReadConcertPlaceConcerts id={place.id}/>
+
+                    </Grid>
+                </Grid>
+                {/*<h2>Places ID: {place.id}</h2>*/}
+                {/*<p>Nombre: {place.name}</p>*/}
+                {/*<p>Dirección: {place.address}</p>*/}
             </div>
-            <ReadConcertPlaceConcerts id={place.id}/>
             {/*  <ReadResourceConcerts id={resource.id}/>*/}
         </div>
     );

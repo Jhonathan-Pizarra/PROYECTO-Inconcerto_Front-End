@@ -74,6 +74,14 @@ const UpdateConcert = ({id}) => {
     if(!festivals) return <Loading/>
     if(!places) return <Loading/>
 
+    var d = new Date(concert.dateConcert); ////Sun May 30 2021 00:18:00 GMT-0500 (hora de Ecuador)
+    var year = d.getFullYear();
+    var month = (d.getMonth()+1).toString().padStart(2, "0");
+    var day = d.getDate().toString().padStart(2, "0");
+    var hours = ('0'+d.getHours()).substr(-2);
+    var min = d.getMinutes().toString().padStart(2, "0");
+    const fulldate = year+'-'+month+'-'+day+'T'+hours+':'+min;
+
     const handleOpen = () => {
         setUpdateInfo(false);
         setUpdateError(false);
@@ -109,7 +117,8 @@ const UpdateConcert = ({id}) => {
             await Concert.update(id, {
                 ...data,
                 name: ((data.name) === "") ? `Vacío (${concert.id})` : data.name,
-                dateConcert: data.dateConcert,
+                //dateConcert: data.dateConcert,
+                dateConcert: ((data.dateConcert) === "") ? fulldate : data.dateConcert,
                 duration: data.duration,
                 free: data.free,
                 insitu: data.insitu,
@@ -183,10 +192,10 @@ const UpdateConcert = ({id}) => {
                         <TextField
                             autoFocus={true}
                             disabled={processing}
-                            id="date"
+                            id="datetime-local"
                             label="Fecha"
-                            type="date"
-                            defaultValue={concert.dateConcert}
+                            type="datetime-local"
+                            defaultValue={fulldate}
                             margin="dense"
                             //className={classes.textField}
                             {...register('dateConcert')}

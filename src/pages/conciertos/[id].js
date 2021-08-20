@@ -74,10 +74,10 @@ const ConciertosID = () => {
                                         <h2>{concert.name}</h2>
                                     </Typography>
                                     <Typography variant="body2" gutterBottom>
-                                        <p><b>Fecha:</b>&ensp;{concert.dateConcert}</p>
+                                        <p><b>Fecha/Hora:</b>&ensp;{concert.dateConcert}</p>
                                     </Typography>
                                     <Typography variant="body2" gutterBottom>
-                                        <p><b>Hora:</b>&ensp;{concert.duration}</p>
+                                        <p><b>Duración:</b>&ensp;{concert.duration}</p>
                                     </Typography>
                                     <Grid container spacing={3} justify="center" alignItems="center">
                                         <Grid item>

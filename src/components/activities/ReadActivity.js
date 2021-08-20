@@ -20,6 +20,7 @@ import Routes from "@/constants/routes";
 import FindInPageIcon from "@material-ui/icons/FindInPage";
 import UpdateActivity from "@/components/activities/UpdateActivity";
 import DeleteActivity from "@/components/activities/DeleteActivity";
+import AssignmentIcon from '@material-ui/icons/Assignment';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -60,7 +61,7 @@ const ReadActivity = () => {
                             <ListItem>
                                 <ListItemAvatar>
                                     <Avatar>
-                                        <FormatListNumberedRtlIcon />
+                                        <AssignmentIcon />
                                     </Avatar>
                                 </ListItemAvatar>
                                 <ListItemText primary={activity.name} secondary={activity.date} />

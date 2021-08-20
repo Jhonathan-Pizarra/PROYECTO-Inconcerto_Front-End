@@ -92,7 +92,7 @@ const ReadConcertPlace = () => {
                                                     justify="flex-end"
                                                     alignItems="center"
                                                 >
-                                                    <b>Permiso:</b>{place.permit ? "Si" : "No" }
+                                                    <b>Permiso:</b>&nbsp;{place.permit ? "Si" : "No" }
                                                 </Grid>
                                                 <Grid
                                                     container
@@ -100,7 +100,7 @@ const ReadConcertPlace = () => {
                                                     justify="flex-end"
                                                     alignItems="center"
                                                 >
-                                                    <b>Aforo:</b>{place.aforo}
+                                                    <b>Aforo:</b>&nbsp;{place.aforo}
                                                 </Grid>
                                                 <Grid
                                                     container
