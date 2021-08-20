@@ -209,10 +209,10 @@ const CreateConcertPlaceConcert = () => {
                     <DialogContent>
                         <TextField
                             disabled={processing}
-                            id="date"
+                            id="datetime-local"
                             label="Fecha"
-                            type="date"
-                            defaultValue="1996-11-19"
+                            type="datetime-local"
+                            defaultValue="2020-11-19T10:30"
                             margin="dense"
                             //className={classes.textField}
                             {...register('dateConcert')}
@@ -228,7 +228,7 @@ const CreateConcertPlaceConcert = () => {
                         <TextField
                             disabled={processing}
                             id="time"
-                            label="Hora"
+                            label="Duración"
                             type="time"
                             defaultValue="00:00"
                             margin="dense"
