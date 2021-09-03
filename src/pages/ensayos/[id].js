@@ -93,14 +93,14 @@ const EnsayosID = () => {
 
                                     <Grid item container justify="center" alignItems="center">
                                         <CardActions xs={12} sm={4} md={4} lg={3} xl={3} >
-                                            <MuiLink>
-                                                <UpdateEssay id={essay.id}/>
-                                            </MuiLink>
+
+                                            <UpdateEssay id={essay.id}/>
+
                                         </CardActions>
                                         <CardActions xs={12} sm={4} md={4} lg={3} xl={3} >
-                                            <MuiLink>
-                                                <DeleteEssay  id={essay.id}/>
-                                            </MuiLink>
+
+                                            <DeleteEssay  id={essay.id}/>
+
                                         </CardActions>
                                     </Grid>
 

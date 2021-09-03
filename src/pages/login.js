@@ -9,7 +9,7 @@ import Image from "next/image";
 
 const schema = yup.object().shape({
     email: yup.string().email("Esé email no es válido").required("Ingresa el email"),
-    password: yup.string().required(),
+    password: yup.string().required("Ingresa la contraseña"),
 });
 
 const useStyles = makeStyles((theme) => ({
@@ -107,6 +107,9 @@ const Login = () => {
                             </Grid>
                         </Grid>
                     </form>
+                    <p className={classes.buttonWrapper}>
+                        <a href="mailto:inconcerto.comunicacion@gmail.com" target="_blank">¿Olvidaste tu contraseña?</a>
+                    </p>
                 </Grid>
             </Grid>
         </div>

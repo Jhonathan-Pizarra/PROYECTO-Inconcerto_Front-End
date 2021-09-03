@@ -76,14 +76,14 @@ const CalendariosID = () =>{
                                         <Grid container spacing={3} >
                                             <Grid item container justify="center" alignItems="center">
                                                 <CardActions xs={12} sm={4} md={4} lg={3} xl={3} >
-                                                    <MuiLink>
-                                                        <UpdateCalendar id={calendar.id}/>
-                                                    </MuiLink>
+
+                                                    <UpdateCalendar id={calendar.id}/>
+
                                                 </CardActions>
                                                 <CardActions xs={12} sm={4} md={4} lg={3} xl={3} >
-                                                    <MuiLink>
-                                                        <DeleteCalendar id={calendar.id}/>
-                                                    </MuiLink>
+
+                                                    <DeleteCalendar id={calendar.id}/>
+
                                                 </CardActions>
                                             </Grid>
                                         </Grid>

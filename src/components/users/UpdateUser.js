@@ -26,9 +26,9 @@ import SnackError from "@/components/SnackError";
 
 const schema = yup.object().shape({
     //name: yup.string().required("Este campo es necesario..."),
-    email: yup.string().email('Ese e-mail no es válido...').required("Es necesario un email"),
-    password: yup.string().required("Este campo es necesario"),
-    password_confirmation: yup.string().required("Este campo es necesario"),
+    email: yup.string().matches(/@inconcerto.com/, 'No es un mail de inconcerto').email('Ese e-mail no es válido...').required("Es necesario un email"),
+    password: yup.string().required("Este campo es necesario").min(6, 'Debe tener al menos 6 caracteres'),
+    password_confirmation: yup.string().required("Este campo es necesario").min(6, 'Debe tener al menos 6 caracteres').oneOf([yup.ref('password')], 'Las contraseñas no coinciden'),
 });
 
 const useStyles = makeStyles((theme) => ({

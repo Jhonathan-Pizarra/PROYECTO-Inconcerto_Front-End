@@ -151,13 +151,14 @@ const ReadCalendars = () => {
                                                 <Grid container item xs={12} sm={6}>
                                                     <Grid item container justify="center" alignItems="center">
                                                         <CardActions xs={3} sm={6} md={6} lg={3} xl={3} >
-                                                            <MuiLink>
-                                                                <UpdateCalendar id={calendar.id}/>                                                            </MuiLink>
+
+                                                            <UpdateCalendar id={calendar.id}/>
+
                                                         </CardActions>
                                                         <CardActions xs={3} sm={6} md={6} lg={3} xl={3} >
-                                                            <MuiLink>
-                                                                <DeleteCalendar id={calendar.id}/>
-                                                            </MuiLink>
+
+                                                            <DeleteCalendar id={calendar.id}/>
+
                                                         </CardActions>
                                                     </Grid>
                                                     {/*<span><UpdateResource id={resource.id}/></span>*/}
