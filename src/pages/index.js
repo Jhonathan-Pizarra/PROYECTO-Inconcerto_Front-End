@@ -106,7 +106,7 @@ export default function Home() {
                         <BackToTop/>
                         <ReactPlayer
                             className={classes.playerWraper}
-                            url='https://www.youtube.com/watch?v=2gO1v2GPMFk'
+                            url='https://www.youtube.com/watch?v=s4E-riFpywY&t=12s'
                             width="100%"
                             height="80%"
                             playing={false}

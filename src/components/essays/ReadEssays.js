@@ -123,12 +123,12 @@ const ReadEssays = () => {
 
                                                 <Grid item container justify="center" alignItems="center">
                                                     <CardActions xs={12} sm={12} md={12} lg={4} xl={2} >
-                                                        <MuiLink>
-                                                            <UpdateEssay id={essay.id}/>
-                                                        </MuiLink>
-                                                        <MuiLink>
-                                                            <DeleteEssay id={essay.id}/>
-                                                        </MuiLink>
+
+                                                        <UpdateEssay id={essay.id}/>
+
+
+                                                        <DeleteEssay id={essay.id}/>
+
                                                     </CardActions>
 
                                                 </Grid>

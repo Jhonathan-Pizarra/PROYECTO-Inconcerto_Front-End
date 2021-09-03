@@ -72,9 +72,9 @@ const FestivalID = () =>{
                                 <Grid container>
                                     <CardActions>
                                         <Grid item xs={12} sm={12} md={12} lg={6} xl={6}>
-                                            <Link>
-                                                <CreateFestivalConcert id={festival.id}/>
-                                            </Link>
+
+                                            <CreateFestivalConcert id={festival.id}/>
+
                                         </Grid>
                                     </CardActions>
                                     <CardActions>
@@ -84,15 +84,15 @@ const FestivalID = () =>{
                                         {/*    </Link>*/}
                                         {/*</Grid>*/}
                                         <Grid item xs={12} sm={12} md={12} lg={6} xl={6}>
-                                            <Link>
-                                                <UpdateFestival/>
-                                            </Link>
+
+                                            <UpdateFestival/>
+
                                         </Grid>
                                         <Grid item xs={12} sm={12} md={12} lg={6} xl={6}>
-                                            <Link>
+
                                                 {/*<DeleteFestival />*/}
-                                                <DeleteFestival id={festival.id} />
-                                            </Link>
+                                            <DeleteFestival id={festival.id} />
+
                                         </Grid>
                                     </CardActions>
                                 </Grid>

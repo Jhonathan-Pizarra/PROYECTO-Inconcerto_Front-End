@@ -26,6 +26,7 @@ import * as yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
 import SnackInfo from "@/components/SnackInfo";
 import SnackError from "@/components/SnackError";
+import translateMessage from "@/constants/messages";
 
 const useStyles = makeStyles((theme) => ({
     edit:{
@@ -132,6 +133,7 @@ const UpdateArtist = ({id}) => {
             if (error.response) {
                 // The request was made and the server responded with a status code
                 // that falls out of the range of 2xx
+                alert(translateMessage(error.response.data.message));
                 //alert(error.response.message);
                 console.error(error.response);
             } else if (error.request) {

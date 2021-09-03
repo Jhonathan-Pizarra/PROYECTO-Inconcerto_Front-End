@@ -11,6 +11,7 @@ import ReadUserFeedings from "@/components/users/feedings/ReadUserFeedings";
 import ReadUserActivities from "@/components/users/activities/ReadUserActivities";
 import ReadUserLodging from "@/components/users/lodgings/ReadUserLodging";
 import Image from "next/image";
+import UpdateUser from "@/components/users/UpdateUser";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -63,7 +64,22 @@ const UsuariosID = () => {
 
 
                                         <Typography gutterBottom variant="subtitle1" style={{textAlign: 'center'}}>
-                                            <h2>{user.name}</h2>
+
+                                            <Grid
+                                                container
+                                                direction="row"
+                                                justifyContent="center"
+                                                alignItems="center"
+                                            >
+                                                <Grid item>
+                                                    <UpdateUser id={user.id}/>
+                                                </Grid>
+                                                <Grid item>
+                                                    <h2>{user.name} </h2>
+                                                </Grid>
+                                            </Grid>
+
+
                                         </Typography>
                                         <Typography variant="body2" gutterBottom>
                                             <p><b>Fecha Registro:</b>&ensp;{fulldate}</p>

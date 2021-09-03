@@ -70,16 +70,16 @@ const ResourcesID = () =>{
                                         <Grid container spacing={3} >
                                             <Grid item container justify="center" alignItems="center">
                                                 <CardActions xs={12} sm={4} md={4} lg={3} xl={3} >
-                                                    <MuiLink>
-                                                        <UpdateResource id={resource.id}/>
-                                                        {/*<UpdateTransport id={transport.id}/>*/}
-                                                    </MuiLink>
+
+                                                    <UpdateResource id={resource.id}/>
+                                                    {/*<UpdateTransport id={transport.id}/>*/}
+
                                                 </CardActions>
                                                 <CardActions xs={12} sm={4} md={4} lg={3} xl={3} >
-                                                    <MuiLink>
-                                                        <DeleteResource id={resource.id}/>
-                                                        {/*<DeleteTransport id={transport.id}/>*/}
-                                                    </MuiLink>
+
+                                                    <DeleteResource id={resource.id}/>
+                                                    {/*<DeleteTransport id={transport.id}/>*/}
+
                                                 </CardActions>
                                             </Grid>
                                         </Grid>

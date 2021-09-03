@@ -122,14 +122,14 @@ const ReadResources = () => {
                                             <Grid container item xs={12} sm={6}>
                                                 <Grid item container justify="center" alignItems="center">
                                                     <CardActions xs={3} sm={6} md={6} lg={3} xl={3} >
-                                                        <MuiLink>
-                                                            <UpdateResource id={resource.id}/>
-                                                        </MuiLink>
+
+                                                        <UpdateResource id={resource.id}/>
+
                                                     </CardActions>
                                                     <CardActions xs={3} sm={6} md={6} lg={3} xl={3} >
-                                                        <MuiLink>
-                                                            <DeleteResource id={resource.id}/>
-                                                        </MuiLink>
+
+                                                        <DeleteResource id={resource.id}/>
+
                                                     </CardActions>
                                                 </Grid>
                                                 {/*<span><UpdateResource id={resource.id}/></span>*/}
