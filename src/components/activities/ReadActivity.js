@@ -15,7 +15,6 @@ import {
 import Link from "next/link";
 import React from 'react';
 import CreateActivity from "@/components/activities/CreateActivity";
-import FormatListNumberedRtlIcon from '@material-ui/icons/FormatListNumberedRtl';
 import Routes from "@/constants/routes";
 import FindInPageIcon from "@material-ui/icons/FindInPage";
 import UpdateActivity from "@/components/activities/UpdateActivity";

@@ -3,7 +3,7 @@ import {useRouter} from "next/router";
 import Loading from "@/components/Loading";
 import {fetcher} from "../../utils";
 import withAuth from "@/hocs/withAuth";
-import {Box, Card, CardActions, CardContent, Grid, Link as MuiLink, makeStyles} from "@material-ui/core";
+import {Box, Card, CardActions, CardContent, Grid, makeStyles} from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import React from "react";
 import DeleteCalendar from "@/components/calendars/DeleteCalendar";

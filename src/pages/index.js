@@ -1,8 +1,7 @@
-import styles from '@/styles/Home.module.css';
 import BackToTop from "@/components/BackToTop";
 import ReactPlayer from 'react-player'
 import React from "react";
-import {Container, Link as MuiLink, makeStyles, Paper} from "@material-ui/core";
+import {Container, Link as MuiLink, makeStyles} from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
 import Image from "next/image";
 import Link from "next/link";

@@ -13,7 +13,6 @@ import {
 } from "@material-ui/core";
 import Link from "next/link";
 import React from 'react';
-import FormatListNumberedRtlIcon from '@material-ui/icons/FormatListNumberedRtl';
 import Routes from "@/constants/routes";
 import FindInPageIcon from "@material-ui/icons/FindInPage";
 import {fetcher} from "../../../utils";

@@ -3,7 +3,7 @@ import {useRouter} from "next/router";
 import Loading from "@/components/Loading";
 import {fetcher} from "../../utils";
 import withAuth from "@/hocs/withAuth";
-import {CardActions, CardMedia, Grid, Link, makeStyles, Paper, Typography} from "@material-ui/core";
+import {CardActions, CardMedia, Grid, makeStyles, Paper, Typography} from "@material-ui/core";
 import React from "react";
 import UpdateFestival from "@/components/festivals/UpdateFestival";
 import DeleteFestival from "@/components/festivals/DeleteFestival";

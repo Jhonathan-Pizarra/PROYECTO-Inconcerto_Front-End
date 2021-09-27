@@ -3,17 +3,7 @@ import {useRouter} from "next/router";
 import Loading from "@/components/Loading";
 import {fetcher} from "../../utils";
 import withAuth from "@/hocs/withAuth";
-import {
-    Box,
-    Card,
-    CardActions,
-    CardContent,
-    Grid,
-    IconButton,
-    Link as MuiLink,
-    makeStyles,
-    Typography
-} from "@material-ui/core";
+import {Box, Card, CardActions, CardContent, Grid, IconButton, makeStyles, Typography} from "@material-ui/core";
 import Link from "next/link";
 import UpdateEssay from "@/components/essays/UpdateEssay";
 import React from "react";
