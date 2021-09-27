@@ -1,15 +1,7 @@
 import {fetcher} from "../../utils";
 import useSWR from "swr";
 import Loading from "@/components/Loading";
-import {
-    Accordion,
-    AccordionDetails,
-    AccordionSummary,
-    CardActions,
-    Grid,
-    Link as MuiLink,
-    Paper
-} from "@material-ui/core";
+import {Accordion, AccordionDetails, AccordionSummary, CardActions, Grid, Paper} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import React, {useState} from "react";

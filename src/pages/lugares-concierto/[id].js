@@ -5,7 +5,7 @@ import {fetcher} from "../../utils";
 import withAuth from "@/hocs/withAuth";
 import UpdateConcertPlace from "@/components/concert-places/UpdateConcertPlace";
 import DeleteConcertPlace from "@/components/concert-places/DeleteConcertPlace";
-import {Box, Card, CardActions, CardContent, Grid, Link as MuiLink, makeStyles, Paper} from "@material-ui/core";
+import {Box, Card, CardActions, CardContent, Grid, Link as MuiLink, makeStyles} from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import React from "react";
 import NotFound from "../404";
