@@ -53,7 +53,7 @@ const CreateUserLodging = () => {
     const {id} = router.query;
     const {data: userLodgings, mutate, error} = useSWR(`/users/${id}/lodgings`, fetcher);
     const {data: lodgings} = useSWR(`/lodgings`, fetcher);
-    const {data: users} = useSWR(`/users`, fetcher);
+    const {data: users} = useSWR(`/users/${id}`, fetcher);
     const { register, handleSubmit, reset} = useForm();
     const [modal, setModal] = useState(false);
     const [userSelected, setUserSelected] = useState(null);
@@ -61,6 +61,14 @@ const CreateUserLodging = () => {
     const [createSuccess, setCreateSuccess] = useState(false);
     const [createError, setCreateError] = useState(false);
     const [processing, setProcessing] = useState(false);
+
+    const today = new Date(); //alert(today); //Mon Oct 11 2021 16:05:40 GMT-0500 (hora de Ecuador)
+    var year = today.getFullYear();
+    var month = (today.getMonth()+1).toString().padStart(2, "0");
+    var day = today.getDate().toString().padStart(2, "0");
+    var hours = ('0'+today.getHours()).substr(-2);
+    var min = today.getMinutes().toString().padStart(2, "0");
+    const fulldate = year+'-'+month+'-'+day+'T'+hours+':'+min; //2020-11-19T10:30
 
     if(error) return <div>"Recarga la página para continuar..."</div>;
     if(!userLodgings) return <Loading/>;
@@ -174,14 +182,12 @@ const CreateUserLodging = () => {
                             autoFocus
                             disabled={processing}
                             native
-                            value={userSelected}
+                            value={users.id}
                             defaultValue={id}
-                            onChange={handleChangeUser}
+                            //onChange={handleChangeUser}
                             {...register("user_id")}
                         >
-                            {users.map((user) => (
-                                <option key={user.id}  value={user.id}>{user.name}</option>
-                            ))}
+                            <option key={users.id} value={users.id}>{users.name}</option>
                         </Select>
                     </DialogContent>
 

@@ -53,7 +53,7 @@ const CreateUserCalendar = () => {
     const {id} = router.query;
     const {data: userCalendars, error} = useSWR(`/users/${id}/calendars`, fetcher);
     const {data: calendars} = useSWR(`/calendars`, fetcher);
-    const {data: users} = useSWR(`/users`, fetcher);
+    const {data: users} = useSWR(`/users/${id}`, fetcher);
     const { register, handleSubmit, reset} = useForm();
     const [modal, setModal] = useState(false);
     const [userSelected, setUserSelected] = useState(null);
@@ -167,6 +167,24 @@ const CreateUserCalendar = () => {
                         </Select>
                     </DialogContent>
 
+                    {/*<DialogContent>*/}
+                    {/*    <InputLabel htmlFor="outlined-age-native-simple">Usuario</InputLabel>*/}
+                    {/*    <Select*/}
+                    {/*        fullWidth*/}
+                    {/*        autoFocus*/}
+                    {/*        disabled={processing}*/}
+                    {/*        native*/}
+                    {/*        value={userSelected}*/}
+                    {/*        defaultValue={id}*/}
+                    {/*        onChange={handleChangeUser}*/}
+                    {/*        {...register("user_id")}*/}
+                    {/*    >*/}
+                    {/*        {users.map((user) => (*/}
+                    {/*            <option key={user.id}  value={user.id} disabled={true}>{user.name}</option>*/}
+                    {/*        ))}*/}
+                    {/*    </Select>*/}
+                    {/*</DialogContent>*/}
+
                     <DialogContent>
                         <InputLabel htmlFor="outlined-age-native-simple">Usuario</InputLabel>
                         <Select
@@ -174,14 +192,12 @@ const CreateUserCalendar = () => {
                             autoFocus
                             disabled={processing}
                             native
-                            value={userSelected}
+                            value={users.id}
                             defaultValue={id}
-                            onChange={handleChangeUser}
+                            //onChange={handleChangeUser}
                             {...register("user_id")}
                         >
-                            {users.map((user) => (
-                                <option key={user.id}  value={user.id}>{user.name}</option>
-                            ))}
+                            <option key={users.id} value={users.id}>{users.name}</option>
                         </Select>
                     </DialogContent>
 

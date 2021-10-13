@@ -54,7 +54,7 @@ const ReadCalendars = () => {
 
     return (
         <div>
-            <h1>Calendarios InConcerto</h1>
+            <h1>Calendarios de vuelo InConcerto</h1>
             <div>
                 <Grid
                     container
@@ -83,10 +83,10 @@ const ReadCalendars = () => {
                                                             <FindInPageIcon />
                                                         </IconButton>
                                                     </Link>
-                                                    <Typography className={classes.heading}>{calendar.artist.map(artist => artist.name+" | ")}</Typography>
+                                                    <Typography className={classes.heading}><b className={classes.secondaryHeading}>Artistas:</b> {calendar.artist.map(artist => artist.name+" | ")}</Typography>
                                                 </Grid>
                                                 <Grid container  item>
-                                                    <Typography className={classes.secondaryHeading}><b>Entrada:</b> {calendar.checkIn_Artist}&emsp;&emsp;&emsp;</Typography>
+                                                    <Typography className={classes.secondaryHeading}><b>Llegada:</b> {calendar.checkIn_Artist}&emsp;&emsp;&emsp;</Typography>
                                                 </Grid>
                                             </Grid>
                                         </AccordionSummary>

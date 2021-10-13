@@ -64,6 +64,14 @@ const CreateCalendar = () => {
     const [createError, setCreateError] = useState(false);
     const [processing, setProcessing] = useState(false);
 
+    const today = new Date(); //alert(today); //Mon Oct 11 2021 16:05:40 GMT-0500 (hora de Ecuador)
+    var year = today.getFullYear();
+    var month = (today.getMonth()+1).toString().padStart(2, "0");
+    var day = today.getDate().toString().padStart(2, "0");
+    var hours = ('0'+today.getHours()).substr(-2);
+    var min = today.getMinutes().toString().padStart(2, "0");
+    const fulldate = year+'-'+month+'-'+day+'T'+hours+':'+min; //2020-11-19T10:30
+
     if(error) return <div>"No se obtuvo el calendario..."</div>;
     if(!calendar) return <Loading/>;
 
@@ -137,7 +145,9 @@ const CreateCalendar = () => {
                             id="datetime-local"
                             label="Fecha de llegada"
                             type="datetime-local"
-                            defaultValue="2019-11-19T10:30"
+                            defaultValue={fulldate}
+                            //InputProps={{inputProps: { min: "2020-11-19T10:30", max: "2021-11-19T10:30"} }}
+                            InputProps={{inputProps: { min: fulldate} }}
                             margin="dense"
                             //className={classes.textField}
                             {...register('checkIn_Artist')}
@@ -154,7 +164,9 @@ const CreateCalendar = () => {
                             id="datetime-local"
                             label="Fecha de salida"
                             type="datetime-local"
-                            defaultValue="2020-05-24T10:30"
+                            defaultValue={fulldate}
+                            //InputProps={{inputProps: { min: "2020-11-19T10:30", max: "2021-11-19T10:30"} }}
+                            InputProps={{inputProps: { min: fulldate} }}
                             margin="dense"
                             {...register('checkOut_Artist')}
                             fullWidth

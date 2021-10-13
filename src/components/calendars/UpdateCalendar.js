@@ -141,6 +141,7 @@ const UpdateCalendar = ({id}) => {
                             label="Fecha de llegada"
                             type="datetime-local"
                             defaultValue={dateIn}
+                            InputProps={{inputProps: { min: dateIn} }}
                             margin="dense"
                             //className={classes.textField}
                             {...register('checkIn_Artist')}
@@ -156,6 +157,7 @@ const UpdateCalendar = ({id}) => {
                             label="Fecha de salida"
                             type="datetime-local"
                             defaultValue={dateOut}
+                            InputProps={{inputProps: { min: dateOut} }}
                             margin="dense"
                             {...register('checkOut_Artist')}
                             fullWidth

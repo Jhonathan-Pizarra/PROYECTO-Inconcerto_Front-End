@@ -195,8 +195,8 @@ const UpdateLodging = ({id}) => {
                             id="datetime-local"
                             label="Check In"
                             type="datetime-local"
-                            //defaultValue="2017-05-24T10:30"
                             defaultValue={dateIn}
+                            InputProps={{inputProps: { min: dateIn} }}
                             margin="dense"
                             //className={classes.textField}
                             {...register('checkIn')}
@@ -212,8 +212,8 @@ const UpdateLodging = ({id}) => {
                             id="datetime-local"
                             label="Check Out"
                             type="datetime-local"
-                            //defaultValue="2017-05-24T10:30"
                             defaultValue={dateOut}
+                            InputProps={{inputProps: { min: dateOut} }}
                             margin="dense"
                             //className={classes.textField}
                             {...register('checkOut')}
