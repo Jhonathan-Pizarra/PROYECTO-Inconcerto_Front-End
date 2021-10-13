@@ -53,7 +53,7 @@ const CreateArtistCalendar = () => {
     const {id} = router.query;
     const {data: artistCalendars, error} = useSWR(`/artists/${id}/calendars`, fetcher);
     const {data: calendars} = useSWR(`/calendars`, fetcher);
-    const {data: artists} = useSWR(`/artists`, fetcher);
+    const {data: artists} = useSWR(`/artists/${id}`, fetcher);
     const { register, handleSubmit, reset} = useForm();
     const [modal, setModal] = useState(false);
     const [artistSelected, setArtistSelected] = useState(null);
@@ -167,6 +167,24 @@ const CreateArtistCalendar = () => {
                         </Select>
                     </DialogContent>
 
+                    {/*<DialogContent>*/}
+                    {/*    <InputLabel htmlFor="outlined-age-native-simple">Artista</InputLabel>*/}
+                    {/*    <Select*/}
+                    {/*        fullWidth*/}
+                    {/*        autoFocus*/}
+                    {/*        disabled={processing}*/}
+                    {/*        native*/}
+                    {/*        value={artistSelected}*/}
+                    {/*        defaultValue={id}*/}
+                    {/*        onChange={handleChangeArtist}*/}
+                    {/*        {...register("artist_id")}*/}
+                    {/*    >*/}
+                    {/*        {artists.data.map((artist) => (*/}
+                    {/*            <option key={artist.id}  value={artist.id}>{artist.name}</option>*/}
+                    {/*        ))}*/}
+                    {/*    </Select>*/}
+                    {/*</DialogContent>*/}
+
                     <DialogContent>
                         <InputLabel htmlFor="outlined-age-native-simple">Artista</InputLabel>
                         <Select
@@ -174,14 +192,12 @@ const CreateArtistCalendar = () => {
                             autoFocus
                             disabled={processing}
                             native
-                            value={artistSelected}
+                            value={artists.id}
                             defaultValue={id}
-                            onChange={handleChangeArtist}
+                            //onChange={handleChangeUser}
                             {...register("artist_id")}
                         >
-                            {artists.data.map((artist) => (
-                                <option key={artist.id}  value={artist.id}>{artist.name}</option>
-                            ))}
+                            <option key={artists.id} value={artists.id}>{artists.name}</option>
                         </Select>
                     </DialogContent>
 

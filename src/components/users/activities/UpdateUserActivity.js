@@ -169,6 +169,7 @@ const UpdateUserActivity = ({idActivity}) => {
                             label="Fecha"
                             type="datetime-local"
                             defaultValue={fulldate}
+                            InputProps={{inputProps: { min: fulldate} }}
                             margin="dense"
                             //className={classes.textField}
                             {...register('date')}

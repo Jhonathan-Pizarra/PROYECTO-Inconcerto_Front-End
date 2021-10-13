@@ -98,7 +98,7 @@ const ReadFeeding = () => {
                                     <TableCell align="left">{feeding.observation}</TableCell>
                                     {/*<TableCell align="left">{feeding.place}</TableCell>*/}
                                     <TableCell align="left">{feeding.fplace}</TableCell>
-                                    <TableCell align="left">{feeding.artist}</TableCell>
+                                    <TableCell align="left">{feeding.artist} {feeding.artistLst}</TableCell>
                                     <TableCell align="left">{feeding.user}</TableCell>
                                     <TableCell align="center" >
                                         <td>

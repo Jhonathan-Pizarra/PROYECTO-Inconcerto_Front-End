@@ -23,6 +23,7 @@ import SnackSuccess from "@/components/SnackSuccess";
 import * as yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
 import SnackError from "@/components/SnackError";
+import useSWR, {mutate as mutateTo} from "swr";
 import Unauthorized from "./401";
 //import translateMessage from "@/constants/messages";
 
@@ -99,7 +100,8 @@ const Register = () => {
             const userData = await newUser(data);
             handleClose();
             setCreateSuccess(true);
-            router.push('/');
+            mutateTo(`/users`);
+            //router.push('/');
 
         }catch (error) {
             setCreateError(true);

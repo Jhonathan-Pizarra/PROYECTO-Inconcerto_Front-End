@@ -30,6 +30,7 @@ import clsx from "clsx";
 import Routes from "../constants/routes";
 import IconsMenu from "./NavigationIcons";
 import Typography from "@material-ui/core/Typography";
+import {useAuth} from "@/lib/auth";
 
 
 const drawerWidth = 250;

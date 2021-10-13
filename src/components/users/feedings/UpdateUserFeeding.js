@@ -150,6 +150,7 @@ const UpdateUserFeeding = ({id, idUser}) => {
                             label="Fecha"
                             type="datetime-local"
                             defaultValue={dateIn}
+                            InputProps={{inputProps: { min: dateIn} }}
                             margin="dense"
                             //className={classes.textField}
                             {...register('date')}

@@ -66,6 +66,14 @@ const CreateLodging = () => {
     const [createError, setCreateError] = useState(false);
     const [processing, setProcessing] = useState(false);
 
+    const today = new Date(); //alert(today); //Mon Oct 11 2021 16:05:40 GMT-0500 (hora de Ecuador)
+    var year = today.getFullYear();
+    var month = (today.getMonth()+1).toString().padStart(2, "0");
+    var day = today.getDate().toString().padStart(2, "0");
+    var hours = ('0'+today.getHours()).substr(-2);
+    var min = today.getMinutes().toString().padStart(2, "0");
+    const fulldate = year+'-'+month+'-'+day+'T'+hours+':'+min; //2020-11-19T10:30
+
     if(error) return <div>"No se obtuvo el hospedaje..."</div>;
     if(!lodging) return <Loading/>;
 
@@ -210,7 +218,9 @@ const CreateLodging = () => {
                             id="datetime-local"
                             label="Check In"
                             type="datetime-local"
-                            defaultValue="2017-05-24T10:30"
+                            defaultValue={fulldate}
+                            //InputProps={{inputProps: { min: "2020-11-19T10:30", max: "2021-11-19T10:30"} }}
+                            InputProps={{inputProps: { min: fulldate} }}
                             margin="dense"
                             //className={classes.textField}
                             {...register('checkIn')}
@@ -228,7 +238,8 @@ const CreateLodging = () => {
                             id="datetime-local"
                             label="Check Out"
                             type="datetime-local"
-                            defaultValue="2017-05-24T10:30"
+                            defaultValue={fulldate}
+                            InputProps={{inputProps: { min: fulldate} }}
                             margin="dense"
                             //className={classes.textField}
                             {...register('checkOut')}
