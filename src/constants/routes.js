@@ -10,6 +10,8 @@ const publicRoutes = {
     // USERS: "/usuarios",
     // USERS_ID: `/usuario/:id`,
     //ABOUT: "/about",
+    FORGET_PASSWORD: "/olvide-mi-clave",
+    RESET_PASSWORD: "/restablecer-clave",
 };
 
 const privateRoutes = {
