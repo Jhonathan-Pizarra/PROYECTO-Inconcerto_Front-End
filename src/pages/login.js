@@ -3,9 +3,11 @@ import withoutAuth from "@/hocs/withoutAuth";
 import {useForm} from "react-hook-form";
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from "yup";
-import {Button, Grid, makeStyles, TextField} from "@material-ui/core";
+import {Button, Grid, Link as MuiLink, makeStyles, TextField, Typography} from "@material-ui/core";
 import React, {useState} from "react";
 import Image from "next/image";
+import Link from "next/link";
+import Routes from "@/constants/routes";
 
 const schema = yup.object().shape({
     email: yup.string().email("Esé email no es válido").required("Ingresa el email"),
@@ -108,7 +110,13 @@ const Login = () => {
                         </Grid>
                     </form>
                     <p className={classes.buttonWrapper}>
-                        <a href="mailto:inconcerto.comunicacion@gmail.com" target="_blank">¿Olvidaste tu contraseña?</a>
+                        <Typography gutterBottom variant="subtitle1" style={{textAlign: 'center'}}>
+                            <Link href={`${Routes.FORGET_PASSWORD}`} passHref>
+                                <MuiLink>
+                                    <h4>¿Olvidaste tu contraseña?</h4>
+                                </MuiLink>
+                            </Link>
+                        </Typography>
                     </p>
                 </Grid>
             </Grid>
