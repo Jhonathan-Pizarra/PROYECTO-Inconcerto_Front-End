@@ -22,6 +22,7 @@ import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from "yup";
 import SnackSuccess from "@/components/SnackSuccess";
 import SnackError from "@/components/SnackError";
+import translateMessage from "@/constants/messages";
 
 const schema = yup.object().shape({
     name: yup.string().required("Este campo es necesario..."),
@@ -104,6 +105,9 @@ const CreateResource = () => {
             setProcessing(false);
             handleClose();
             if (error.response) {
+                if(error.response.data.errors.name){
+                    alert(translateMessage(error.response.data.errors.name));
+                }
                 console.error(error.response);
             } else if (error.request) {
                 console.error(error.request);

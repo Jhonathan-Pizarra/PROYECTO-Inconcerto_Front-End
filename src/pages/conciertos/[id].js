@@ -37,6 +37,12 @@ const useStyles = makeStyles((theme) => ({
     items: {
         textAlign: "center",
     },
+    title: {
+        overflow: "hidden",
+        display: "-webkit-box",
+        "-webkit-line-clamp": 2,
+        "-webkit-box-orient": "vertical",
+    },
     detail:{
         color: "#3f51b5",
     },
@@ -44,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
         /*width: 240,
         height: 420*/
         width: 400,
-        height: 320
+        height: 476
     },
     content: {
         flex: '1 0 ',
@@ -70,7 +76,7 @@ const ConciertosID = () => {
                         <Card className={classes.root}>
                             <Box m={2} className={classes.cardDimension}>
                                 <CardContent className={classes.content}>
-                                    <Typography gutterBottom variant="subtitle1" style={{textAlign: 'center'}}>
+                                    <Typography gutterBottom variant="subtitle1" style={{textAlign: 'center'}} className={classes.title}>
                                         <h2>{concert.name}</h2>
                                     </Typography>
                                     <Typography variant="body2" gutterBottom>

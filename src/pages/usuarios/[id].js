@@ -13,6 +13,7 @@ import ReadUserLodging from "@/components/users/lodgings/ReadUserLodging";
 import Image from "next/image";
 import UpdateUser from "@/components/users/UpdateUser";
 import {useAuth} from "@/lib/auth";
+import UpdateUserID from "@/components/users/UpdateUserID";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -78,7 +79,7 @@ const UsuariosID = () => {
                                                 alignItems="center"
                                             >
                                                 <Grid item>
-                                                    {ward === current.id ? ( <UpdateUser id={current.id}/>) : "📋"}
+                                                    {ward === current.id ? ( <UpdateUserID id={current.id}/>) : "📋"}
                                                 </Grid>
                                                 <Grid item>
                                                     <h2>&nbsp;{current.name} </h2>

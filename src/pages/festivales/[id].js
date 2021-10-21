@@ -3,13 +3,14 @@ import {useRouter} from "next/router";
 import Loading from "@/components/Loading";
 import {fetcher} from "../../utils";
 import withAuth from "@/hocs/withAuth";
-import {CardActions, CardMedia, Grid, makeStyles, Paper, Typography} from "@material-ui/core";
+import {Box, Card, CardActions, CardContent, CardMedia, Grid, makeStyles, Paper, Typography} from "@material-ui/core";
 import React from "react";
 import UpdateFestival from "@/components/festivals/UpdateFestival";
 import DeleteFestival from "@/components/festivals/DeleteFestival";
 import ReadFestivalConcerts from "@/components/festivals/concerts/ReadFestivalConcerts";
 import CreateFestivalConcert from "@/components/festivals/concerts/CreateFestivalConcert";
 import NotFound from "../404";
+import ReadArtistCalendars from "@/components/artists/calendars/ReadArtistCalendars";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -20,6 +21,12 @@ const useStyles = makeStyles((theme) => ({
         padding: theme.spacing(2),
         margin: 'auto',
         maxWidth: '100%',
+    },
+    image: {
+        textAlign: 'center',
+        marginLeft: 'auto',
+        display: "block",
+        marginRight: 'auto'
     },
 }));
 
@@ -42,21 +49,24 @@ const FestivalID = () =>{
                 Dimesnions: item xs={12} sm={6} md={4} lg={4} xl={4}
                 */}
 
+
                 <Paper className={classes.paper}>
                     <Grid container spacing={2}>
-                        <Grid item xs={12} sm={6} md={4} lg={4} xl={4}  >
-                            <CardMedia
-                                display="flex"
-                                component="img"
-                                alt={festival.name}
-                                height="100%"
-                                width= "100%"
-                                //image={`https://inconcerto.herokuapp.com/storage/${festival.image}`}
-                                //image={`https://res.cloudinary.com/inconcerto/image/upload/${festival.image}`}
-                                image={`${process.env.NEXT_PUBLIC_STORAGE_URL}/${festival.image}`}
-                                title={festival.name}
-                            />
-                        </Grid>
+
+                        <Grid item xs={12} sm={3} md={4} lg={4} xl={4} className={classes.image} >
+                                <CardMedia
+                                    display="flex"
+                                    component="img"
+                                    alt={festival.name}
+                                    height="100%"
+                                    width= "100%"
+                                    //image={`https://inconcerto.herokuapp.com/storage/${festival.image}`}
+                                    //image={`https://res.cloudinary.com/inconcerto/image/upload/${festival.image}`}
+                                    image={`${process.env.NEXT_PUBLIC_STORAGE_URL}/${festival.image}`}
+                                    title={festival.name}
+                                />
+                            </Grid>
+
                         <Grid item xs={12} sm container>
                             <Grid item xs container direction="column" spacing={2}>
                                 <Grid item xs>

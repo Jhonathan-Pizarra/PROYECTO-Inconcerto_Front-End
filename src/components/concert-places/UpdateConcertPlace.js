@@ -91,8 +91,11 @@ const UpdateConcertPlace = ({id}) => {
             setUpdateError(true);
             setProcessing(false);
             handleClose();
+            //console.log(data.errors.aforo);
             if (error.response) {
-                alert(translateMessage(error.response.data.message));
+                //alert(translateMessage(error.response.data.message));
+                //console.log(data.errors.aforo);
+                alert(translateMessage(error.response.data.errors.aforo));
                 console.error(error.response);
             } else if (error.request) {
                 alert(translateMessage(error.request));

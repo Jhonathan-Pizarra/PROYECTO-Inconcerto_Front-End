@@ -24,11 +24,12 @@ import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from "yup";
 import SnackSuccess from "@/components/SnackSuccess";
 import SnackError from "@/components/SnackError";
+import translateMessage from "@/constants/messages";
 
 const schema = yup.object().shape({
     name: yup.string().required("Este campo es necesario..."),
     address: yup.string().required("Este campo es necesario..."),
-    aforo: yup.number().typeError('Debes escribir un número').positive('La cantidad no es válida').min(1, 'Capacidad mínima es 1').required("Este campo es necesario..."),
+    aforo: yup.number().typeError('Debes escribir un número').positive('La cantidad no es válida').min(1, 'Capacidad mínima es 1').max(150000, "Lo máximo posible es 150.000").required("Este campo es necesario..."),
 });
 
 const useStyles = makeStyles((theme) => ({
@@ -108,7 +109,16 @@ const CreateFeedingPlace = () => {
             handleClose();
             setCreateSuccess(true);
         } catch (error) {
+            setCreateError(true);
+            setProcessing(false);
+            handleClose();
             if (error.response) {
+                if (error.response.data.errors.name) {
+                    alert(translateMessage(error.response.data.errors.name));
+                }
+                if (error.response.data.errors.address) {
+                    alert(translateMessage(error.response.data.errors.address));
+                }
                 console.error(error.response);
             } else if (error.request) {
                 console.error(error.request);
