@@ -7,8 +7,10 @@ const translateMessage = (message) =>{
         'already_registered': 'Ya existe una cuenta con el correo proporcionado',
         'token_absent': "Inicia sesión para continuar",
         //Modulos
-        'The name has already been taken.': 'Ese nombre ya existe',
-        'The given data was invalid.': 'Cédula o E-mail ya existen.',
+        'The name has already been taken.': 'Ese ya existe, pruebe con otro',
+        'The email has already been taken.': 'Ese email ya existe, prueba con otro',
+        'The address has already been taken.': 'Esa dirección ya fue registrada, intente con otra',
+        'The given data was invalid.': 'Los datos no son válidos, inténtelo otra vez.',
         'undefined': "No hay datos.",
         'The image must be an image.': 'No se ha cargado una imagen.',
         'The image has invalid image dimensions.': 'La imagen no tiene dimensiones permitirdas (min 600x600)',

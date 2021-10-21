@@ -1,4 +1,4 @@
-import {useRef, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import Image from "next/image";
 import {makeStyles} from "@material-ui/core/styles";
 import Link from "next/link";
@@ -31,6 +31,7 @@ import Routes from "../constants/routes";
 import IconsMenu from "./NavigationIcons";
 import Typography from "@material-ui/core/Typography";
 import {useAuth} from "@/lib/auth";
+import api from "@/lib/api";
 
 
 const drawerWidth = 250;
@@ -200,6 +201,59 @@ export default function MainMenu(props) {
     const anchorRefM2 = useRef(null);
     const anchorRefM3 = useRef(null);
     const anchorRefM4 = useRef(null);
+    const { user } = useAuth();
+
+    async function getAuthenticatedUser() {
+        try {
+            const response = await api.get("/user");
+            console.log("response user", response);
+            return response;
+        } catch (error) {
+            if (error.response) {
+                // The request was made and the server responded with a status code
+                // that falls out of the range of 2xx
+                console.log(error.response.data);
+                console.log(error.response.status);
+                console.log(error.response.headers);
+                return error.response;
+            } else if (error.request) {
+                // The request was made but no response was received
+                // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+                // http.ClientRequest in node.js
+                console.log(error.request);
+            } else {
+                // Something happened in setting up the request that triggered an Error
+                console.log("Error", error.message);
+            }
+            console.log(error.config);
+        }
+    }
+
+    useEffect(() => {
+        console.log("RENDER AUTH", user);
+        try {
+            getAuthenticatedUser();
+        } catch (error) {
+            console.log("NO USER");
+        }
+    }, []);
+
+    const renderUserSection = () => {
+
+        try {
+            if (user.role === 'ROLE_ADMIN' || user.user.role === 'ROLE_ADMIN'){
+                return (
+                    <Link href={Routes.USERS}>
+                        <MenuItem onClick={handleClose}>Coordinadores</MenuItem>
+                    </Link>
+                );
+            }
+        }catch (error) {
+            console.log("NO USER");
+        }
+    }
+
+    //console.log('a ver2', user.role);
 
     const handleToggleM1 = () => {
         setOpenM1((prevOpen) => !prevOpen);
@@ -543,11 +597,11 @@ export default function MainMenu(props) {
                                     >
                                         <Paper>
                                             <ClickAwayListener onClickAway={handleClose}>
-
                                                 <MenuList autoFocusItem={open} id="menu-list-grow" onKeyDown={handleListKeyDown}>
-                                                    <Link href={Routes.USERS}>
-                                                        <MenuItem onClick={handleClose}>Coordinadores</MenuItem>
-                                                    </Link>
+                                                    {/*<Link href={Routes.USERS}>*/}
+                                                    {/*    <MenuItem onClick={handleClose}>Coordinadores</MenuItem>*/}
+                                                    {/*</Link>*/}
+                                                    {renderUserSection()}
                                                     <Link href={Routes.ARTISTS}>
                                                         <MenuItem onClick={handleClose}>Artistas</MenuItem>
                                                     </Link>
@@ -560,6 +614,7 @@ export default function MainMenu(props) {
                                 )}
                             </Popper>
                             {/*Fin*/}
+
 
                           {/*  <Link href={Routes.ABOUT}>
                                 <MenuItem onClick={handleClose}>About</MenuItem>

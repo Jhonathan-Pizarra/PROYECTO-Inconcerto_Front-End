@@ -20,6 +20,7 @@ import EditIcon from "@material-ui/icons/Edit";
 import {FeedingPlace} from "@/lib/feeding_places";
 import SnackInfo from "@/components/SnackInfo";
 import SnackError from "@/components/SnackError";
+import translateMessage from "@/constants/messages";
 
 const useStyles = makeStyles((theme) => ({
     edit:{

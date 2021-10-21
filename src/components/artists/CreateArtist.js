@@ -155,7 +155,13 @@ const CreateArtist = () => {
                 // The request was made and the server responded with a status code
                 // that falls out of the range of 2xx
                 //alert(error.response.message);
-                alert(translateMessage(error.response.data.message));
+                if(error.response.data.errors.ciOrPassport){
+                    alert(translateMessage(error.response.data.errors.ciOrPassport));
+                }
+                if(error.response.data.errors.mail){
+                    alert(translateMessage(error.response.data.errors.mail));
+                }
+                //alert(translateMessage(error.response.data.message));
                 console.error(error.response);
             } else if (error.request) {
                 // The request was made but no response was received

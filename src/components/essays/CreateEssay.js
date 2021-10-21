@@ -24,6 +24,7 @@ import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from "yup";
 import SnackSuccess from "@/components/SnackSuccess";
 import SnackError from "@/components/SnackError";
+import translateMessage from "@/constants/messages";
 
 const schema = yup.object().shape({
     name: yup.string().required("Este campo es necesario..."),
@@ -123,6 +124,9 @@ const CreateEssay  = () => {
                 // The request was made and the server responded with a status code
                 // that falls out of the range of 2xx
                 // alert(error.response.message);
+                if (error.response.data.errors.name) {
+                    alert(translateMessage(error.response.data.errors.name));
+                }
                 console.error(error.response);
             } else if (error.request) {
                 // The request was made but no response was received

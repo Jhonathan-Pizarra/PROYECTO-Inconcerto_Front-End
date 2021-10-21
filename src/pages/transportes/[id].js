@@ -29,7 +29,13 @@ const useStyles = makeStyles((theme) => ({
         /*width: 240,
         height: 420*/
         width: 400,
-        height: 300
+        height: 402
+    },
+    title: {
+        overflow: "hidden",
+        display: "-webkit-box",
+        "-webkit-line-clamp": 2,
+        "-webkit-box-orient": "vertical",
     },
     content: {
         flex: '1 0 ',
@@ -63,7 +69,7 @@ const TransportesID = () =>{
                         <Box m={2} className={classes.cardDimension}>
                             <CardContent className={classes.content}>
 
-                                    <Typography gutterBottom variant="subtitle1" style={{textAlign: 'center'}}>
+                                    <Typography gutterBottom variant="subtitle1" style={{textAlign: 'center'}} className={classes.title}>
                                         <h2>{transport.type}</h2>
                                     </Typography>
                                     <Typography variant="body2" gutterBottom>

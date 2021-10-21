@@ -25,6 +25,7 @@ import {yupResolver} from "@hookform/resolvers/yup";
 import SnackError from "@/components/SnackError";
 import useSWR, {mutate as mutateTo} from "swr";
 import Unauthorized from "./401";
+import translateMessage from "@/constants/messages";
 //import translateMessage from "@/constants/messages";
 
 const schema = yup.object().shape({
@@ -70,10 +71,10 @@ const Register = () => {
     const [createError, setCreateError] = useState(false);
     const [processing, setProcessing] = useState(false);
 
-    const ward = (user.id === undefined) ? user.user.id: user.id;
+    //const ward = (user.id === undefined) ? user.user.id: user.id;
     const rol = (user.name === undefined) ? user.user.role: user.role;
-    console.log("Valor ID?", ward);
-    console.log("Valor ROLE?", rol);
+    //console.log("Valor ID?", ward);
+    //console.log("Valor ROLE?", rol);
 
     const handleOpen = () => {
         reset();

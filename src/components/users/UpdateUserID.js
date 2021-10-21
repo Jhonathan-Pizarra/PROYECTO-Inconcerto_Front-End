@@ -52,7 +52,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 //Este {id} lo recibe desde el componente donde lo llamemos, en este caso sería: <UpdateArtistForm id={artist.id}/>
-const UpdateUser = ({id}) => {
+const UpdateUserID = ({id}) => {
 
     const classes = useStyles();
     const {data: user, mutate, error} = useSWR(`/users/${id}`, fetcher);
@@ -64,6 +64,8 @@ const UpdateUser = ({id}) => {
     const [updateInfo, setUpdateInfo] = useState(false);
     const [updateError, setUpdateError] = useState(false);
     const [processing, setProcessing] = useState(false)
+
+    const rol = (user.role === 'ROLE_ADMIN') ? 'Administrador': 'Operario';
 
     if(error) return <div>"Recarga la página para continuar..."</div>;
     if(!user) return <Loading/>;
@@ -213,12 +215,11 @@ const UpdateUser = ({id}) => {
                             fullWidth
                             native
                             defaultValue={user.role}
-                            value={selectRole}
-                            onChange={handleChangeRole}
+                            value={user.role}
+                            //onChange={handleChangeRole}
                             {...register("role")}
                         >
-                            <option value={'ROLE_USER'}>Operario</option>
-                            <option value={'ROLE_ADMIN'}>Administrador</option>
+                            <option value={user.role} disabled>{rol}</option>
                         </Select>
                     </DialogContent>
 
@@ -245,4 +246,4 @@ const UpdateUser = ({id}) => {
     );
 };
 
-export default UpdateUser;
+export default UpdateUserID;

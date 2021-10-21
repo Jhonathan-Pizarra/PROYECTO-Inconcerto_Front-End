@@ -29,7 +29,7 @@ const schema = yup.object().shape({
     name: yup.string().required("Este campo es necesario..."),
     address: yup.string().required("Este campo es necesario..."),
     //permit: yup.string().required("Este campo es necesario..."),
-    aforo: yup.number().typeError('Debes escribir un número').positive('Esa cantidad no es válida').min(1, 'Lo mínimo es 1').required("Este campo es necesario..."),
+    aforo: yup.number().typeError('Debes escribir un número').positive('Esa cantidad no es válida').min(1, 'Lo mínimo es 1').max(150000, "Lo máximo posible es 150.000").required("Este campo es necesario..."),
     description: yup.string().required("Este campo es necesario..."),
 });
 
